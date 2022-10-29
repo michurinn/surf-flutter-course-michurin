@@ -3,21 +3,18 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      //home:  MyFirstWidget(title: 'Flutter Demo Home Page'),
-      home: MySecondWidget(),
+      title: "Surf",
+      home:  MyFirstWidget(title: 'Flutter Demo Home Page'),
+      //home: MySecondWidget(),
     );
   }
 }
@@ -28,8 +25,11 @@ class MyFirstWidget extends StatelessWidget {
     title = title;
    }
    late final String title;
-  int _counter = 0;
-      
+        int _counter = 0;
+  //Type method ()
+  //{
+    //return context.runtimeType;
+  //}
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +54,10 @@ class MySecondWidget extends StatefulWidget {
 
 class _MySecondWidgetState extends State<MySecondWidget> {
   int _counter = 0;
+  Type method ()
+  {
+    return context.runtimeType;
+  }
 
   @override
   Widget build(BuildContext context) {
