@@ -15,18 +15,13 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: "Surf",
       home:  SightListScreen(),
-      //home: MySecondWidget(),
     );
   }
 }
 
 
 class MyFirstWidget extends StatelessWidget {
-   MyFirstWidget({Key? key, String title = 'Flutter Demo'}) : super(key: key) {
-    title = title;
-   }
-   late final String title;
-        int _counter = 0;
+  int _counter = 0;
   //Type method ()
   //{
     //return context.runtimeType;
@@ -47,8 +42,6 @@ class MyFirstWidget extends StatelessWidget {
 }
 
 class MySecondWidget extends StatefulWidget {
-   MySecondWidget({Key? key}) : super(key: key);
-
   @override
   State<MySecondWidget> createState() => _MySecondWidgetState();
 }
