@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-// Класс создаёт екран с корневым виджетом Scaffold, используется в практической работе 4-2 на курсе Surf. 
-// Параметр resizeToAvoidBottomInset: false для демонстрации поведения содержимого Scaffold при изменении размера екрана (например, при появлении клавиатуры)
+
+// Екран списка мест
 class SightListScreen extends StatefulWidget {
   const SightListScreen({Key? key}) : super(key: key);
 
