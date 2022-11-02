@@ -17,7 +17,7 @@ class _SightListScreenState extends State<SightListScreen> {
       appBar: AppBar(
         toolbarHeight: 100,        
           backgroundColor: ThemeData.light().scaffoldBackgroundColor,
-          //elevation: 0,
+          elevation: 0,
           title: RichText(
               text: const TextSpan(
             text: "С",
