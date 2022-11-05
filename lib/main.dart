@@ -17,7 +17,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Surf",
-      home:  SideDetails(sight: mocks[0],),
+      home:  SightListScreen(),
     );
   }
 }
