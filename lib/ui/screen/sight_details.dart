@@ -18,98 +18,92 @@ class SideDetails extends StatelessWidget {
               height: 360,
               color: Colors.amber,
             ),
-            Padding(
+            Container(
               padding: const EdgeInsets.only(top: 36, left: 16),
-              child: Container(
-                width: 32,
-                height: 32,
-                color: Colors.teal,
-              ),
+              width: 32,
+              height: 32,
+              color: Colors.teal,
             ),
           ]),
           const SizedBox(
             height: 24,
           ),
-          Padding(
+          Container(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Container(
-              child: Text(
-                sight.name,
-                style: const TextStyle(
-                  letterSpacing: .5,
-                  wordSpacing: 2,
-                  fontStyle: FontStyle.normal,
-                  fontSize: 24,
-                  color: Color(0xff3B3E5B),
-                  fontFamily: "Roboto",
-                  fontWeight: FontWeight.w700,
-                ),
+            child: Text(
+              sight.name,
+              style: const TextStyle(
+                letterSpacing: .5,
+                wordSpacing: 2,
+                fontStyle: FontStyle.normal,
+                fontSize: 24,
+                color: Color(0xff3B3E5B),
+                fontFamily: "Roboto",
+                fontWeight: FontWeight.w700,
               ),
-              width: double.infinity,
             ),
           ),
           const SizedBox(
             height: 10,
           ),
           Row(
-            children: [Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                          sight.type,
-                          style: const TextStyle(
-                            letterSpacing: .5,
-                            wordSpacing: 2,
-                            fontStyle: FontStyle.normal,
-                            fontSize: 14,
-                            color: Color(0xff3B3E5B),
-                            fontFamily: "Roboto",
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-            ), const Text(
-                          "режим работы",
-                          style: TextStyle(
-                            letterSpacing: .5,
-                            wordSpacing: 2,
-                            fontStyle: FontStyle.normal,
-                            fontSize: 14,
-                            color: Color(0xff7C7E92),
-                            fontFamily: "Roboto",
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),],
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  sight.type,
+                  style: const TextStyle(
+                    letterSpacing: .5,
+                    wordSpacing: 2,
+                    fontStyle: FontStyle.normal,
+                    fontSize: 14,
+                    color: Color(0xff3B3E5B),
+                    fontFamily: "Roboto",
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              const Text(
+                "режим работы",
+                style: TextStyle(
+                  letterSpacing: .5,
+                  wordSpacing: 2,
+                  fontStyle: FontStyle.normal,
+                  fontSize: 14,
+                  color: Color(0xff7C7E92),
+                  fontFamily: "Roboto",
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
           ),
           const SizedBox(
             height: 24,
           ),
-          Padding(
+          Container(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Container(
-              width: double.infinity,
-              child: Text(
-                              sight.details,
-                              style: const TextStyle(
-                                letterSpacing: .5,
-                                wordSpacing: 2,
-                                fontStyle: FontStyle.normal,
-                                fontSize: 14,
-                                color: Color(0xff3B3E5B),
-                                fontFamily: "Roboto",
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
+            width: double.infinity,
+            child: Text(
+              sight.details,
+              style: const TextStyle(
+                letterSpacing: .5,
+                wordSpacing: 2,
+                fontStyle: FontStyle.normal,
+                fontSize: 14,
+                color: Color(0xff3B3E5B),
+                fontFamily: "Roboto",
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
           const SizedBox(
             height: 24,
           ),
-          Padding(
+          Container(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Container(
-              width: double.infinity,
-              height: 48,
-              color: Colors.lime,
-            ),
+            width: double.infinity,
+            height: 48,
+            color: Colors.lime,
           ),
           const SizedBox(
             height: 24,
