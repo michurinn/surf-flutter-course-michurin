@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:places/domain/sight.dart';
+import '/res/AppTypography.dart';
+
 
 class SightCard extends StatelessWidget {
   const SightCard({Key? key, required this.sight}) : super(key: key);
@@ -40,15 +40,7 @@ class SightCard extends StatelessWidget {
                     top: 16,
                     child: Text(
                       sight.type,
-                      style: const TextStyle(
-                        letterSpacing: .5,
-                        wordSpacing: 2,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 14,
-                        color: Colors.white,
-                        fontFamily: "Roboto",
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: AppTypography.smallBoldwhite,
                     )),
               ],
             ),
@@ -64,15 +56,7 @@ class SightCard extends StatelessWidget {
                     ),
                     Text(
                       sight.name,
-                      style: const TextStyle(
-                        letterSpacing: .5,
-                        wordSpacing: 2,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 14,
-                        color: Color(0xff3B3E5B),
-                        fontFamily: "Roboto",
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: AppTypography.simpleText
                     ),
                     const SizedBox(
                       height: 4,
@@ -80,15 +64,7 @@ class SightCard extends StatelessWidget {
                     ),
                     Text(
                       sight.details,
-                      style: const TextStyle(
-                        letterSpacing: .5,
-                        wordSpacing: 2,
-                        fontStyle: FontStyle.normal,
-                        fontSize: 14,
-                        color: Color(0xff7C7E92),
-                        fontFamily: "Roboto",
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: AppTypography.small
                     ),
                   ]),
             ),

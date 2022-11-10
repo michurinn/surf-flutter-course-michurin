@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/screen/sight_card.dart';
-
+import '/res/AppTypography.dart';
 // Екран списка мест
 class SightListScreen extends StatefulWidget {
   const SightListScreen({Key? key}) : super(key: key);
@@ -20,14 +20,8 @@ class _SightListScreenState extends State<SightListScreen> {
         elevation: 0,
         title: const Text(
           "Список\nинтересных мест",
-          style: TextStyle(
-              color: Color(0xFF3B3E5B),
-              fontFamily: "Roboto",
-              fontSize: 32,
-              fontWeight: FontWeight.w700),
-          softWrap: true,
-        ),
-      ),
+          style: AppTypography.largeTitle,
+      )),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -43,8 +37,6 @@ class _SightListScreenState extends State<SightListScreen> {
           ],
         ),
       ),
-      resizeToAvoidBottomInset:
-          false, // Чтобы содержимое Scaffold не смещалось при изменении размера екрана (например, при появлении клавиатуры)
     );
   }
 }
