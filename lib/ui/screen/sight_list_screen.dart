@@ -32,7 +32,7 @@ class _SightListScreenState extends State<SightListScreen> {
     );
   }
 }
-
+// Создаёт Column из карт по списку mocks, разделённых SizedBox(height:20)
 class returnColumnFromList extends StatelessWidget {
    returnColumnFromList({super.key, required this.inputList});
   final List inputList;
