@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/res/AppTypography.dart';
+import 'package:places/res/AppStrings.dart';
+
 
 class SideDetails extends StatelessWidget {
   const SideDetails({Key? key, required this.sight}) : super(key: key);
@@ -51,7 +52,7 @@ class SideDetails extends StatelessWidget {
                     const SizedBox(
                       width: 16,
                     ),
-                    const Text("режим работы", style: AppTypography.small),
+                    const Text(AppStrings.workTime, style: AppTypography.small),
                   ],
                 ),
                 const SizedBox(
