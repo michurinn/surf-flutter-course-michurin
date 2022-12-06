@@ -8,13 +8,8 @@ class Sight {
   final String details;
   final String type;
   final String imagePath;
+  final String workTime;
 
-  const Sight(
-    this.name,
-    this.lat,
-    this.lon,
-    this.details,
-    this.type,
-    this.imagePath
-  );
+  const Sight(this.name, this.lat, this.lon, this.details, this.type,
+      this.imagePath, this.workTime);
 }

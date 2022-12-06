@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/res/AppColors.dart';
 import '/res/AppTypography.dart';
 
+// Карточка для показа места
 class SightCard extends StatelessWidget {
   const SightCard({Key? key, required this.sight}) : super(key: key);
 
@@ -14,6 +16,7 @@ class SightCard extends StatelessWidget {
         child: AspectRatio(
             aspectRatio: 3 / 2,
             child: Card(
+                color: AppColors.background,
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                   Radius.circular(10),
@@ -31,18 +34,8 @@ class SightCard extends StatelessWidget {
                             fit: BoxFit.fitWidth,
                             image: AssetImage(sight.imagePath)),
                       ),
-                    ), // BorderRadius пока не виден
-                    Positioned(
-                        right: 18,
-                        top: 19,
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: SvgPicture.asset(
-                            'assets/icons/like.svg',
-                            color: Colors.white,
-                          ),
-                        )),
+                    ),
+                    Positioned(right: 18, top: 19, child: getLeading()),
                     Positioned(
                         left: 16,
                         top: 16,
@@ -53,20 +46,36 @@ class SightCard extends StatelessWidget {
                   ])),
                   Expanded(
                       child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          padding: const EdgeInsets.all(16.0),
                           child: Column(
+                              mainAxisAlignment: getSpacesBehavior,
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                const SizedBox(
-                                  height: 16,
-                                ),
                                 Text(sight.name,
                                     style: AppTypography.simpleText),
-                                const SizedBox(
-                                  height: 4,
-                                ),
+                                getPlannedText(),
                                 Text(sight.details, style: AppTypography.small)
                               ])))
                 ]))));
+  }
+
+  // Чтобы переопределить в унаследованных классах
+  MainAxisAlignment get getSpacesBehavior => MainAxisAlignment.spaceBetween;
+
+  // Чтобы переопределить в унаследованных классах
+  Widget getPlannedText() {
+    return const SizedBox.shrink();
+  }
+
+  // Чтобы переопределить в унаследованных классах
+  Widget getLeading() {
+    return SizedBox(
+      width: 20,
+      height: 20,
+      child: SvgPicture.asset(
+        'assets/icons/like.svg',
+        color: Colors.white,
+      ),
+    );
   }
 }

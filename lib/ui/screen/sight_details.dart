@@ -27,8 +27,8 @@ class SideDetails extends StatelessWidget {
                 height: 32,
                 color: Colors.white,
                 child: Padding(
-                  padding: const EdgeInsets.only(
-                      top: 11, bottom: 11, left: 13.5, right: 13.5),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 11, horizontal: 13.5),
                   child: SvgPicture.asset('assets/icons/back_arrow.svg'),
                 ),
               ),
@@ -56,7 +56,7 @@ class SideDetails extends StatelessWidget {
                     const SizedBox(
                       width: 16,
                     ),
-                    const Text(AppStrings.workTime, style: AppTypography.small),
+                    Text(sight.workTime),
                   ],
                 ),
                 const SizedBox(

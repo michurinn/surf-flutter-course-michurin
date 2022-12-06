@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'AppColors.dart';
 
 class AppTypography {
+  static const subtitle = TextStyle(
+      fontSize: 18.0,
+      fontFamily: "Roboto",
+      height: 1.25,
+      fontWeight: FontWeight.w700,
+      color: AppColors.whiteMain);
   static const largeTitle = TextStyle(
       fontSize: 32.0,
       fontFamily: "Roboto",
@@ -64,5 +70,13 @@ class AppTypography {
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.normal,
     color: AppColors.whiteSecondary2,
+  );
+  static const smallGreen = TextStyle(
+    fontSize: 14.0,
+    fontFamily: "Roboto",
+    height: 1.25,
+    fontWeight: FontWeight.w400,
+    fontStyle: FontStyle.normal,
+    color: AppColors.whiteGreen,
   );
 }
