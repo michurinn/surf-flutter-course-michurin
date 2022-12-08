@@ -1,24 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/domain/sight.dart';
-import 'package:places/res/AppColors.dart';
-import 'package:places/res/AppTypography.dart';
+import 'package:places/res/app_colors.dart';
+import 'package:places/res/app_typography.dart';
 
 import 'sight_card.dart';
 
 // Карточка для Хочу посетить в Избранном
 class FinishedSight extends SightCard {
-  const FinishedSight({super.key, required this.sight}) : super(sight: sight);
+  const FinishedSight({super.key, required sight}) : super(sight: sight);
 
-  final Sight sight;
-
-  @override
-  Widget build(BuildContext context) {
-    return super.build(context);
-  }
 
   @override
   Widget getLeading() {

@@ -1,13 +1,12 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:places/mocks.dart';
-import 'package:places/res/AppColors.dart';
-import 'package:places/res/AppTypography.dart';
+import 'package:places/res/app_colors.dart';
+import 'package:places/res/app_typography.dart';
 import 'package:places/ui/screen/favorite_card.dart';
 import 'package:places/ui/screen/finished_card.dart';
+import 'package:places/ui/screen/widgets/app_tab_bar.dart';
 
 class VisitingScreen extends StatefulWidget {
   const VisitingScreen({super.key});
@@ -28,14 +27,14 @@ class _VisitingScreenState extends State<VisitingScreen> {
               title: const Text("Избранное", style: AppTypography.subtitle),
               centerTitle: true,
               bottom: PreferredSize(
-                  preferredSize: _tabBar().preferredSize,
+                  preferredSize: AppTabBar().preferredSize,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Material(
                       color: AppColors.background,
                       borderRadius:
                           const BorderRadius.all(Radius.circular(40.0)),
-                      child: _tabBar(),
+                      child: AppTabBar(),
                     ),
                   )),
             ),
@@ -69,18 +68,5 @@ class _VisitingScreenState extends State<VisitingScreen> {
                   const BottomNavigationBarItem(
                       icon: Icon(Icons.settings_outlined), label: "Settings")
                 ])));
-  }
-
-  TabBar _tabBar() {
-    return const TabBar(
-        indicator: BoxDecoration(
-            color: AppColors.whiteSecondary,
-            borderRadius: BorderRadius.all(Radius.circular(40.0))),
-        unselectedLabelColor: AppColors.whiteSecondary2,
-        unselectedLabelStyle: AppTypography.smallBoldwhite,
-        labelStyle: AppTypography.smallBoldwhite,
-        labelColor: AppColors.white,
-        labelPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        tabs: [Text("Хочу посетить"), Text("Посетил")]);
   }
 }

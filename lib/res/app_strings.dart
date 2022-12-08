@@ -15,4 +15,8 @@ class AppStrings {
 
   static const sightType0 = "Природа";
   static const sightType1 = "Экскурсии";
+
+  static const wouldLikeToVisit = "Хочу посетить";
+  static const justVisited = "Посетил";
+
 }
