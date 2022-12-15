@@ -9,12 +9,13 @@ class Sight {
   final String imagePath;
   final String workTime;
 
-  const Sight(
-      {required this.name,
-      required this.lat,
-      required this.lon,
-      required this.details,
-      required this.type,
-      required this.imagePath,
-      required this.workTime});
+  const Sight({
+    required this.name,
+    required this.lat,
+    required this.lon,
+    required this.details,
+    required this.type,
+    required this.imagePath,
+    required this.workTime,
+  });
 }

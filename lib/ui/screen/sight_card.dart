@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
-import '../../res/app_typography.dart';
+import 'package:places/res/app_typography.dart';
 
 // Карточка для показа места
 class SightCard extends StatelessWidget {
@@ -39,9 +39,11 @@ class SightCard extends StatelessWidget {
                             image: Image.network(
                               sight.imagePath,
                               fit: BoxFit.fitWidth,
-                              loadingBuilder: (BuildContext context,
-                                  Widget child,
-                                  ImageChunkEvent? loadingProgress) {
+                              loadingBuilder: (
+                                BuildContext context,
+                                Widget child,
+                                ImageChunkEvent? loadingProgress,
+                              ) {
                                 if (loadingProgress == null) {
                                   return child;
                                 }
@@ -59,7 +61,18 @@ class SightCard extends StatelessWidget {
                             ).image),
                       ),
                     ),
-                    Positioned(right: 18, top: 19, child: getLeading()),
+                    Positioned(
+                      right: 18,
+                      top: 19,
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: SvgPicture.asset(
+                          AppAssets.heart,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                     Positioned(
                       left: 16,
                       top: 16,
@@ -75,12 +88,18 @@ class SightCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    mainAxisAlignment: getSpacesBehavior,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Text(sight.name, style: AppTypography.simpleText),
-                      getPlannedText(),
-                      Text(sight.details, style: AppTypography.small)
+                      Text(
+                        sight.name,
+                        style: AppTypography.simpleText,
+                      ),
+                      const SizedBox.shrink(),
+                      Text(
+                        sight.details,
+                        style: AppTypography.small,
+                      ),
                     ],
                   ),
                 ),
@@ -88,26 +107,6 @@ class SightCard extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  // Чтобы переопределить в унаследованных классах
-  MainAxisAlignment get getSpacesBehavior => MainAxisAlignment.spaceBetween;
-
-  // Чтобы переопределить в унаследованных классах
-  Widget getPlannedText() {
-    return const SizedBox.shrink();
-  }
-
-  // Чтобы переопределить в унаследованных классах
-  Widget getLeading() {
-    return SizedBox(
-      width: 20,
-      height: 20,
-      child: SvgPicture.asset(
-        AppAssets.heart,
-        color: Colors.white,
       ),
     );
   }

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:places/mocks.dart';
 import 'package:places/res/app_colors.dart';
-import 'package:places/ui/screen/finished_card.dart';
-import '../../res/app_typography.dart';
+import 'package:places/res/app_typography.dart';
 import 'package:places/res/app_strings.dart';
 
 // Екран списка мест
@@ -17,20 +16,15 @@ class _SightListScreenState extends State<SightListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(120),
-        child: AppBar(
-          toolbarHeight: 120,
-          backgroundColor: ThemeData.light().scaffoldBackgroundColor,
-          elevation: 0,
-          title: const Text(
-            AppStrings.listOfInterestingPlases,
-            style: AppTypography.largeTitle,
-          ),
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(120),
+        child: _AppBar(),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: _returnColumnFromMocks,
         ),
       ),
-      body:
-          SingleChildScrollView(child: ReturnColumnFromList(inputList: mocks)),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
@@ -59,28 +53,30 @@ class _SightListScreenState extends State<SightListScreen> {
   }
 }
 
-// Создаёт Column из карт по списку mocks, разделённых SizedBox(height:20)
-class ReturnColumnFromList extends StatelessWidget {
-  const ReturnColumnFromList({super.key, required this.inputList});
-  final List inputList;
-
-  Widget _makeColumnWithSpaces() {
-    List<Widget> returnedColumn = [];
-    for (int i = 0; i < inputList.length; i++) {
-      returnedColumn.add(FinishedSight(sight: inputList[i]));
-      if (i != inputList.length - 1) {
-        returnedColumn.add(
-          const SizedBox(
-            height: 20,
-          ),
-        );
-      }
-    }
-    return Column(children: returnedColumn);
-  }
+class _AppBar extends StatelessWidget {
+  const _AppBar({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return _makeColumnWithSpaces();
+    return AppBar(
+      toolbarHeight: 120,
+      backgroundColor: ThemeData.light().scaffoldBackgroundColor,
+      elevation: 0,
+      title: const Text(
+        AppStrings.listOfInterestingPlases,
+        style: AppTypography.largeTitle,
+      ),
+    );
   }
 }
+
+// Создаёт СПИСОК по карточкам mocks, разделённых SizedBox(height:20)
+List<Widget> _returnColumnFromMocks = <Widget>[
+  mocks[0],
+  const SizedBox(height: 20),
+  mocks[1],
+  const SizedBox(height: 20),
+  mocks[2],
+];
