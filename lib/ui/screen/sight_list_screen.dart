@@ -3,6 +3,7 @@ import 'package:places/mocks.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/res/app_strings.dart';
+import 'package:places/ui/screen/sight_card.dart';
 
 // Екран списка мест
 class SightListScreen extends StatefulWidget {
@@ -22,7 +23,9 @@ class _SightListScreenState extends State<SightListScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: _returnColumnFromMocks,
+          children: mocks
+              .expand((e) => [SightCard(sight: e), const SizedBox(height: 20)])
+              .toList(),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -72,11 +75,3 @@ class _AppBar extends StatelessWidget {
   }
 }
 
-// Создаёт СПИСОК по карточкам mocks, разделённых SizedBox(height:20)
-List<Widget> _returnColumnFromMocks = <Widget>[
-  mocks[0],
-  const SizedBox(height: 20),
-  mocks[1],
-  const SizedBox(height: 20),
-  mocks[2],
-];
