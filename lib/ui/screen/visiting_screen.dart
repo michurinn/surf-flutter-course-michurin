@@ -26,15 +26,16 @@ class _VisitingScreenState extends State<VisitingScreen> {
           title: const Text("Избранное", style: AppTypography.subtitle),
           centerTitle: true,
           bottom: PreferredSize(
-              preferredSize: _appTabBar().preferredSize,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Material(
-                  color: AppColors.background,
-                  borderRadius: const BorderRadius.all(Radius.circular(40.0)),
-                  child: _appTabBar(),
-                ),
-              )),
+            preferredSize: _appTabBar().preferredSize,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Material(
+                color: AppColors.background,
+                borderRadius: const BorderRadius.all(Radius.circular(40.0)),
+                child: _appTabBar(),
+              ),
+            ),
+          ),
         ),
         body: TabBarView(children: [
           Column(
@@ -90,6 +91,7 @@ TabBar _appTabBar() {
     unselectedLabelStyle: AppTypography.smallBoldwhite,
     labelStyle: AppTypography.smallBoldwhite,
     labelColor: AppColors.white,
+    splashBorderRadius: BorderRadius.all(Radius.circular(40.0)),
     labelPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
     tabs: [
       Text(AppStrings.wouldLikeToVisit),
