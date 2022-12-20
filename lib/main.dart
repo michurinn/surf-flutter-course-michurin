@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
-import 'package:places/ui/screen/visiting_screen.dart';
 
 void main() {
   runApp(const App());
@@ -14,7 +13,7 @@ class App extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Surf",
-      home: VisitingScreen(),
+      home: SightListScreen(),
     );
   }
 }
