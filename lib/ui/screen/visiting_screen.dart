@@ -20,23 +20,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white,
-          title: const Text("Избранное", style: AppTypography.subtitle),
-          centerTitle: true,
-          bottom: PreferredSize(
-            preferredSize: _AppTabBar().build(context).preferredSize,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Material(
-                color: AppColors.background,
-                borderRadius: const BorderRadius.all(Radius.circular(40.0)),
-                child: _AppTabBar(),
-              ),
-            ),
-          ),
-        ),
+        appBar: const FavoriteAppBar(),
         body: TabBarView(
           children: [
             Column(
@@ -54,7 +38,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
                 FavoriteSight(
                   sight: mocks[1],
                   isFinished: true,
-                )
+                ),
               ],
             )
           ],
@@ -80,12 +64,41 @@ class _VisitingScreenState extends State<VisitingScreen> {
   }
 }
 
+class FavoriteAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const FavoriteAppBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      elevation: 0,
+      backgroundColor: Colors.white,
+      title:
+          const Text(AppStrings.favoritePlaces, style: AppTypography.subtitle),
+      centerTitle: true,
+      bottom: PreferredSize(
+        preferredSize: _AppTabBar().build(context).preferredSize,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Material(
+            color: AppColors.background,
+            borderRadius: const BorderRadius.all(Radius.circular(40.0)),
+            child: _AppTabBar(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size(double.infinity, 108);
+}
+
 // ТабБАр приложения
 class _AppTabBar extends StatelessWidget {
   @override
   TabBar build(BuildContext context) {
-    return const TabBar(
-      indicator: BoxDecoration(
+    return TabBar(
+      indicator: const BoxDecoration(
         color: AppColors.whiteSecondary,
         borderRadius: BorderRadius.all(
           Radius.circular(40.0),
@@ -95,13 +108,20 @@ class _AppTabBar extends StatelessWidget {
       unselectedLabelStyle: AppTypography.smallBoldwhite,
       labelStyle: AppTypography.smallBoldwhite,
       labelColor: AppColors.white,
-      splashBorderRadius: BorderRadius.all(Radius.circular(40.0)),
-      labelPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      splashBorderRadius: const BorderRadius.all(Radius.circular(40.0)),
+      labelPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       tabs: [
-        Text(AppStrings.wouldLikeToVisit),
-        Text(AppStrings.justVisited),
+        const Text(AppStrings.wouldLikeToVisit),
+        const Text(AppStrings.justVisited),
       ],
       splashFactory: NoSplash.splashFactory,
+      overlayColor: MaterialStateProperty.resolveWith<Color?>(
+        (Set<MaterialState> states) {
+          return states.contains(MaterialState.focused)
+              ? null
+              : Colors.transparent;
+        },
+      ),
     );
   }
 }

@@ -19,4 +19,5 @@ class AppStrings {
   static const wouldLikeToVisit = "Хочу посетить";
   static const justVisited = "Посетил";
 
+  static const favoritePlaces = "Избранное";
 }
