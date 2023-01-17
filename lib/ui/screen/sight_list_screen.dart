@@ -17,40 +17,14 @@ class _SightListScreenState extends State<SightListScreen> {
       appBar: AppBar(
         toolbarHeight: 100,        
           backgroundColor: ThemeData.light().scaffoldBackgroundColor,
-          elevation: 0,
-          title: RichText(
-              text: const TextSpan(
-            text: "С",
-            style: TextStyle(
-                color: Color(0xFF4CAF50),
+          elevation: 0,          
+          title: const Text("Список\nинтересных мест",
+                style: const TextStyle(color: const Color(0xFF3B3E5B),
                 fontFamily: "Roboto",
                 fontSize: 32,
                 fontWeight: FontWeight.w700),
-                children: [TextSpan(
-            text: "писок \n",
-            style: TextStyle( 
-                color: Color(0xFF3B3E5B),
-          )),TextSpan(
-            text: "и",
-            style: TextStyle(
-                color: Colors.yellow,),
+                softWrap: true,),                
           ),
-          TextSpan(
-            text: "нтересных ",
-            style: TextStyle(
-                color: Color(0xFF3B3E5B),),
-          ),
-          TextSpan(
-            text: "м",
-            style: TextStyle(
-                color: Color(0xFF252849),),
-          ),
-          TextSpan(
-            text: "ест",
-            style: TextStyle(
-                color: Color(0xFF3B3E5B),),
-          ),]
-          ))),
       resizeToAvoidBottomInset:
           false, // Чтобы содержимое Scaffold не смещалось при изменении размера екрана (например, при появлении клавиатуры)
     );
