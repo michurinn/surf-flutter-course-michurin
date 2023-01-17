@@ -8,48 +8,48 @@ import 'package:places/res/AppStrings.dart';
 class SightListScreen extends StatefulWidget {
   const SightListScreen({Key? key}) : super(key: key);
 
- 
   @override
   State<SightListScreen> createState() => _SightListScreenState();
 }
 
 class _SightListScreenState extends State<SightListScreen> {
-    @override
+  @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 120,
-        backgroundColor: ThemeData.light().scaffoldBackgroundColor,
-        elevation: 0,
-        title: const Text(
-          AppStrings.listOfInterestingPlases,
-          style: AppTypography.largeTitle,
-      )),
-      body: SingleChildScrollView(
-        child: returnColumnFromList(inputList: mocks)
-      )
-    );
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(120),
+          child: AppBar(
+              toolbarHeight: 120,
+              backgroundColor: ThemeData.light().scaffoldBackgroundColor,
+              elevation: 0,
+              title: const Text(
+                AppStrings.listOfInterestingPlases,
+                style: AppTypography.largeTitle,
+              )),
+        ),
+        body: SingleChildScrollView(
+            child: returnColumnFromList(inputList: mocks)));
   }
 }
+
 // Создаёт Column из карт по списку mocks, разделённых SizedBox(height:20)
 class returnColumnFromList extends StatelessWidget {
-   returnColumnFromList({super.key, required this.inputList});
+  returnColumnFromList({super.key, required this.inputList});
   final List inputList;
   List<Widget> returnedColumn = [];
 
   @override
   Widget build(BuildContext context) {
-    for (int i = 0; i < inputList.length; i++)
-    {
+    for (int i = 0; i < inputList.length; i++) {
       returnedColumn.add(SightCard(sight: inputList[i]));
-      if (i != inputList.length - 1)
-      {
+      if (i != inputList.length - 1) {
         returnedColumn.add(const SizedBox(
-              height: 20,
-            ));
+          height: 20,
+        ));
       }
     }
-    return Column(children: returnedColumn,);
+    return Column(
+      children: returnedColumn,
+    );
   }
 }
