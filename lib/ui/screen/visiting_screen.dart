@@ -1,8 +1,9 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/mocks.dart';
-import 'package:places/res/app_colors.dart';
+import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/ui/screen/favorite_card.dart';
@@ -18,49 +19,80 @@ class _VisitingScreenState extends State<VisitingScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: const _FavoriteAppBar(),
-        body: TabBarView(
-          children: [
-            Column(
-              children: [
-                const SizedBox(height: 30),
-                FavoriteSight(
-                  sight: mocks[0],
-                  isFinished: false,
+        length: 2,
+        child: Scaffold(
+          appBar: const _FavoriteAppBar(),
+          body: TabBarView(
+            children: [
+              Column(
+                children: [
+                  const SizedBox(height: 30),
+                  FavoriteSight(
+                    sight: mocks[0],
+                    isFinished: false,
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  const SizedBox(height: 30),
+                  FavoriteSight(
+                    sight: mocks[1],
+                    isFinished: true,
+                  ),
+                ],
+              )
+            ],
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: 2,
+            type: BottomNavigationBarType.fixed,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            items: [
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.list_alt),
+                activeIcon: SvgPicture.asset(
+                  AppAssets.listFilled,
+                  color: Theme.of(context)
+                      .bottomNavigationBarTheme
+                      .selectedItemColor,
                 ),
-              ],
-            ),
-            Column(
-              children: [
-                const SizedBox(height: 30),
-                FavoriteSight(
-                  sight: mocks[1],
-                  isFinished: true,
+                label: 'List of Places',
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.map_outlined),
+                activeIcon: SvgPicture.asset(
+                  AppAssets.mapFilled,
+                  color: Theme.of(context)
+                      .bottomNavigationBarTheme
+                      .selectedItemColor,
                 ),
-              ],
-            )
-          ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          unselectedItemColor: AppColors.whiteSecondary,
-          items: [
-            const BottomNavigationBarItem(
-                icon: Icon(Icons.list_alt), label: "List of Places"),
-            const BottomNavigationBarItem(
-                icon: Icon(Icons.map_outlined), label: "Map"),
-            const BottomNavigationBarItem(
-                icon: Icon(Icons.favorite_rounded), label: "Favorite places"),
-            const BottomNavigationBarItem(
-                icon: Icon(Icons.settings_outlined), label: "Settings"),
-          ],
-        ),
-      ),
-    );
+                label: 'Map',
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  AppAssets.like,
+                  color: Theme.of(context)
+                      .bottomNavigationBarTheme
+                      .unselectedItemColor,
+                ),
+                activeIcon: SvgPicture.asset(
+                  AppAssets.likeFilled,
+                  color: Theme.of(context)
+                      .bottomNavigationBarTheme
+                      .selectedItemColor,
+                ),
+                label: 'Favorite places',
+              ),
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.settings_outlined),
+                activeIcon: Icon(Icons.settings),
+                label: 'Settings',
+              ),
+            ],
+          ),
+        ));
   }
 }
 
@@ -71,7 +103,6 @@ class _FavoriteAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0,
-      backgroundColor: Colors.white,
       title:
           const Text(AppStrings.favoritePlaces, style: AppTypography.subtitle),
       centerTitle: true,
@@ -80,19 +111,9 @@ class _FavoriteAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Material(
-            color: AppColors.background,
+            color: Theme.of(context).cardColor,
             borderRadius: const BorderRadius.all(Radius.circular(40.0)),
             child: TabBar(
-              indicator: const BoxDecoration(
-                color: AppColors.whiteSecondary,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(40.0),
-                ),
-              ),
-              unselectedLabelColor: AppColors.whiteSecondary2,
-              unselectedLabelStyle: AppTypography.smallBoldwhite,
-              labelStyle: AppTypography.smallBoldwhite,
-              labelColor: AppColors.white,
               splashBorderRadius: const BorderRadius.all(Radius.circular(40.0)),
               labelPadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 10),

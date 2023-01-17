@@ -19,7 +19,6 @@ class FavoriteSight extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: 3 / 2,
         child: Card(
-          color: AppColors.background,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(10),

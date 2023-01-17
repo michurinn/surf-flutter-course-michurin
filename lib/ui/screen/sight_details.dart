@@ -58,11 +58,16 @@ class _HeadWithImage extends StatelessWidget {
           child: Container(
             width: 32,
             height: 32,
-            color: Colors.white,
+            color: Theme.of(context).backgroundColor,
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 11, horizontal: 13.5),
-              child: SvgPicture.asset(AppAssets.back),
+              child: SvgPicture.asset(
+                AppAssets.back,
+                color: Theme.of(context).primaryColor,
+                width: 5,
+                height: 10,
+              ),
             ),
           ),
         ),
@@ -99,7 +104,10 @@ class _BodyWithTexts extends StatelessWidget {
             const SizedBox(
               width: 16,
             ),
-            Text(sight.workTime),
+            Text(
+              sight.workTime,
+              style: AppTypography.small,
+            ),
           ],
         ),
         const SizedBox(

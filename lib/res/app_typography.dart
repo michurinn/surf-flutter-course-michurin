@@ -3,23 +3,23 @@ import 'app_colors.dart';
 
 class AppTypography {
   static const subtitle = TextStyle(
-      fontSize: 18.0,
-      fontFamily: "Roboto",
-      height: 1.25,
-      fontWeight: FontWeight.w700,
-      color: AppColors.whiteMain);
+    fontSize: 18.0,
+    fontFamily: "Roboto",
+    height: 1.25,
+    fontWeight: FontWeight.w700,
+  );
   static const largeTitle = TextStyle(
-      fontSize: 32.0,
-      fontFamily: "Roboto",
-      height: 1.25,
-      fontWeight: FontWeight.w700,
-      color: AppColors.whiteSecondary);
+    fontSize: 32.0,
+    fontFamily: "Roboto",
+    height: 1.25,
+    fontWeight: FontWeight.w700,
+  );
   static const title = TextStyle(
-      fontSize: 24.0,
-      fontFamily: "Roboto",
-      height: 1.25,
-      fontWeight: FontWeight.w700,
-      color: AppColors.whiteSecondary);
+    fontSize: 24.0,
+    fontFamily: "Roboto",
+    height: 1.25,
+    fontWeight: FontWeight.w700,
+  );
   static const smallBoldwhite = TextStyle(
     fontSize: 14.0,
     fontFamily: "Roboto",
@@ -37,7 +37,6 @@ class AppTypography {
     fontWeight: FontWeight.w700,
     letterSpacing: .5,
     fontStyle: FontStyle.normal,
-    color: AppColors.whiteSecondary,
   );
   static const smallBlue = TextStyle(
     fontSize: 14.0,
@@ -45,7 +44,6 @@ class AppTypography {
     fontWeight: FontWeight.w400,
     letterSpacing: .5,
     fontStyle: FontStyle.normal,
-    color: AppColors.whiteSecondary2,
   );
   static const smallBlueDeep = TextStyle(
     fontSize: 14.0,
@@ -53,7 +51,6 @@ class AppTypography {
     height: 1.25,
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.normal,
-    color: AppColors.whiteSecondary,
   );
   static const simpleText = TextStyle(
     fontSize: 16.0,
@@ -61,7 +58,6 @@ class AppTypography {
     height: 1.25,
     fontWeight: FontWeight.w500,
     fontStyle: FontStyle.normal,
-    color: AppColors.whiteSecondary,
   );
   static const small = TextStyle(
     fontSize: 14.0,
