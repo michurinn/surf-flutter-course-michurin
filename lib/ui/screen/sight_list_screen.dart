@@ -17,7 +17,7 @@ class _SightListScreenState extends State<SightListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(120),
+          preferredSize: const Size.fromHeight(120),
           child: AppBar(
               toolbarHeight: 120,
               backgroundColor: ThemeData.light().scaffoldBackgroundColor,
