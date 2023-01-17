@@ -1,6 +1,9 @@
 // Тексаотвые константы
 class AppStrings {
-  static const workTime = "режим работы";
+  static const sight1workTime = "Закрыто до 20:00";
+  static const sight2workTime = "Открыто до 1:00";
+  static const sight3workTime = "Открытие 21.12.2023";
+
   static const listOfInterestingPlases = "Список\nинтересных мест";
   static const sight0name = "Ольгин пруд";
   static const sight1name = "Форт \"Император Павел I\"";
@@ -12,4 +15,9 @@ class AppStrings {
 
   static const sightType0 = "Природа";
   static const sightType1 = "Экскурсии";
+
+  static const wouldLikeToVisit = "Хочу посетить";
+  static const justVisited = "Посетил";
+
+  static const favoritePlaces = "Избранное";
 }

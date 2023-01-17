@@ -1,5 +1,4 @@
 // Класс места, содержит информацию об интересном месте
-import 'package:flutter/widgets.dart';
 
 class Sight {
   final String name;
@@ -8,13 +7,15 @@ class Sight {
   final String details;
   final String type;
   final String imagePath;
+  final String workTime;
 
-  const Sight(
-    this.name,
-    this.lat,
-    this.lon,
-    this.details,
-    this.type,
-    this.imagePath
-  );
+  const Sight({
+    required this.name,
+    required this.lat,
+    required this.lon,
+    required this.details,
+    required this.type,
+    required this.imagePath,
+    required this.workTime,
+  });
 }
