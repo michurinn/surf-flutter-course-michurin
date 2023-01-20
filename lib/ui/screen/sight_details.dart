@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_typography.dart';
 
@@ -58,13 +59,13 @@ class _HeadWithImage extends StatelessWidget {
           child: Container(
             width: 32,
             height: 32,
-            color: Theme.of(context).backgroundColor,
+            color: themeProvider.appTheme.cardColor,
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 11, horizontal: 13.5),
               child: SvgPicture.asset(
                 AppAssets.back,
-                color: Theme.of(context).primaryColor,
+                color: themeProvider.appTheme.cardIconColor,
                 width: 5,
                 height: 10,
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:places/main.dart';
 import 'package:places/mocks.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_strings.dart';
@@ -37,8 +38,7 @@ class _SightListScreenState extends State<SightListScreen> {
             icon: const Icon(Icons.list_alt),
             activeIcon: SvgPicture.asset(
               AppAssets.listFilled,
-              color:
-                  Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
             ),
             label: 'List of Places',
           ),
@@ -46,22 +46,18 @@ class _SightListScreenState extends State<SightListScreen> {
             icon: const Icon(Icons.map_outlined),
             activeIcon: SvgPicture.asset(
               AppAssets.mapFilled,
-              color:
-                  Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
             ),
             label: 'Map',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               AppAssets.like,
-              color: Theme.of(context)
-                  .bottomNavigationBarTheme
-                  .unselectedItemColor,
+              color: themeProvider.appTheme.bottomNavBarUnselectedItemColor,
             ),
             activeIcon: SvgPicture.asset(
               AppAssets.likeFilled,
-              color:
-                  Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
             ),
             label: 'Favorite places',
           ),
@@ -88,7 +84,6 @@ class _AppBar extends StatelessWidget {
       elevation: 0,
       title: const Text(
         AppStrings.listOfInterestingPlases,
-        //style: AppTypography.largeTitle,
       ),
     );
   }

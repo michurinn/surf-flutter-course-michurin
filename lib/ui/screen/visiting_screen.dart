@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/main.dart';
 import 'package:places/mocks.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_strings.dart';
@@ -54,9 +55,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
                 icon: const Icon(Icons.list_alt),
                 activeIcon: SvgPicture.asset(
                   AppAssets.listFilled,
-                  color: Theme.of(context)
-                      .bottomNavigationBarTheme
-                      .selectedItemColor,
+                  color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
                 ),
                 label: 'List of Places',
               ),
@@ -64,24 +63,18 @@ class _VisitingScreenState extends State<VisitingScreen> {
                 icon: const Icon(Icons.map_outlined),
                 activeIcon: SvgPicture.asset(
                   AppAssets.mapFilled,
-                  color: Theme.of(context)
-                      .bottomNavigationBarTheme
-                      .selectedItemColor,
+                  color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
                 ),
                 label: 'Map',
               ),
               BottomNavigationBarItem(
                 icon: SvgPicture.asset(
                   AppAssets.like,
-                  color: Theme.of(context)
-                      .bottomNavigationBarTheme
-                      .unselectedItemColor,
+                  color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
                 ),
                 activeIcon: SvgPicture.asset(
                   AppAssets.likeFilled,
-                  color: Theme.of(context)
-                      .bottomNavigationBarTheme
-                      .selectedItemColor,
+                  color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
                 ),
                 label: 'Favorite places',
               ),
@@ -111,7 +104,7 @@ class _FavoriteAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Material(
-            color: Theme.of(context).cardColor,
+            color: themeProvider.appTheme.cardColor,
             borderRadius: const BorderRadius.all(Radius.circular(40.0)),
             child: TabBar(
               splashBorderRadius: const BorderRadius.all(Radius.circular(40.0)),
