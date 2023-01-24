@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
-import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_typography.dart';
 
 // Карточка для показа места
@@ -17,7 +17,6 @@ class SightCard extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: 3 / 2,
         child: Card(
-          color: AppColors.background,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(10),
@@ -49,6 +48,7 @@ class SightCard extends StatelessWidget {
                                 }
                                 return Center(
                                   child: CircularProgressIndicator(
+                                    strokeWidth: 6.0,
                                     value: loadingProgress.expectedTotalBytes !=
                                             null
                                         ? loadingProgress
@@ -69,7 +69,7 @@ class SightCard extends StatelessWidget {
                         height: 20,
                         child: SvgPicture.asset(
                           AppAssets.heart,
-                          color: Colors.white,
+                          color: themeProvider.appTheme.iconColor,
                         ),
                       ),
                     ),

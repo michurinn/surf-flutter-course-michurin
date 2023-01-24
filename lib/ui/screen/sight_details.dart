@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_typography.dart';
 
@@ -58,11 +59,16 @@ class _HeadWithImage extends StatelessWidget {
           child: Container(
             width: 32,
             height: 32,
-            color: Colors.white,
+            color: themeProvider.appTheme.cardColor,
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 11, horizontal: 13.5),
-              child: SvgPicture.asset(AppAssets.back),
+              child: SvgPicture.asset(
+                AppAssets.back,
+                color: themeProvider.appTheme.cardIconColor,
+                width: 5,
+                height: 10,
+              ),
             ),
           ),
         ),
@@ -99,7 +105,10 @@ class _BodyWithTexts extends StatelessWidget {
             const SizedBox(
               width: 16,
             ),
-            Text(sight.workTime),
+            Text(
+              sight.workTime,
+              style: AppTypography.small,
+            ),
           ],
         ),
         const SizedBox(

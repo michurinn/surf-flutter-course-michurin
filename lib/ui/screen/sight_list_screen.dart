@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:places/main.dart';
 import 'package:places/mocks.dart';
-import 'package:places/res/app_colors.dart';
-import 'package:places/res/app_typography.dart';
+import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/ui/screen/sight_card.dart';
 
@@ -32,22 +33,37 @@ class _SightListScreenState extends State<SightListScreen> {
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
         showUnselectedLabels: false,
-        unselectedItemColor: AppColors.whiteSecondary,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.list_alt),
+            icon: const Icon(Icons.list_alt),
+            activeIcon: SvgPicture.asset(
+              AppAssets.listFilled,
+              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
+            ),
             label: 'List of Places',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.map_outlined),
+            icon: const Icon(Icons.map_outlined),
+            activeIcon: SvgPicture.asset(
+              AppAssets.mapFilled,
+              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
+            ),
             label: 'Map',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_rounded),
+            icon: SvgPicture.asset(
+              AppAssets.like,
+              color: themeProvider.appTheme.bottomNavBarUnselectedItemColor,
+            ),
+            activeIcon: SvgPicture.asset(
+              AppAssets.likeFilled,
+              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
+            ),
             label: 'Favorite places',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.settings_outlined),
+            activeIcon: Icon(Icons.settings),
             label: 'Settings',
           ),
         ],
@@ -65,13 +81,10 @@ class _AppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppBar(
       toolbarHeight: 120,
-      backgroundColor: ThemeData.light().scaffoldBackgroundColor,
       elevation: 0,
       title: const Text(
         AppStrings.listOfInterestingPlases,
-        style: AppTypography.largeTitle,
       ),
     );
   }
 }
-

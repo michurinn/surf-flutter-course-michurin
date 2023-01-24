@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
-import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_typography.dart';
 
 // Карточка для Хочу посетить в Избранном
@@ -19,7 +19,6 @@ class FavoriteSight extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: 3 / 2,
         child: Card(
-          color: AppColors.background,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(10),
@@ -69,12 +68,13 @@ class FavoriteSight extends StatelessWidget {
                         child: Row(
                           children: [
                             isFinished
-                                ? const Icon(Icons.share,
-                                    color: AppColors.white)
+                                ? Icon(Icons.share,
+                                    color: themeProvider.appTheme.iconColor)
                                 : SvgPicture.asset(AppAssets.calendar,
-                                    color: AppColors.white),
+                                    color: themeProvider.appTheme.iconColor),
                             const SizedBox(width: 20),
-                            const Icon(Icons.close, color: AppColors.white)
+                            Icon(Icons.close,
+                                color: themeProvider.appTheme.iconColor)
                           ],
                         ),
                       ),
