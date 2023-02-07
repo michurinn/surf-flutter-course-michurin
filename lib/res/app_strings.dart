@@ -15,9 +15,27 @@ class AppStrings {
 
   static const sightType0 = "Природа";
   static const sightType1 = "Экскурсии";
+  static const sightType2 = "Отель";
+  static const sightType3 = "Ресторан";
+  static const sightType4 = "Особое место";
+  static const sightType5 = "Парк";
+  static const sightType6 = "Музей";
+  static const sightType7 = "Кафе";
 
   static const wouldLikeToVisit = "Хочу посетить";
   static const justVisited = "Посетил";
 
   static const favoritePlaces = "Избранное";
+
+  static const buildRoute = "Построить маршрут";
+  static const addToCalendar = "Запланировать";
+  static const inFavorite = "В избранное";
+
+  static const distance = "Расстояние";
+  static const categories = "Категории";
+  static const clearIt = "Очистить";
+
+  static const settings = "Настройки";
+  static const darkTheme = "Тёмная тема";
+  static const showTutorial = "Смотреть туториал";
 }

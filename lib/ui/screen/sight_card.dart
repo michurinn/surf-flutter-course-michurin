@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
@@ -28,7 +30,7 @@ class SightCard extends StatelessWidget {
               Expanded(
                 child: Stack(
                   children: [
-                    Container(
+                    Ink(
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(10),
@@ -60,17 +62,20 @@ class SightCard extends StatelessWidget {
                               },
                             ).image),
                       ),
+                      child: InkWell(onTap: () => print("InkTapped")),
                     ),
                     Positioned(
-                      right: 18,
-                      top: 19,
-                      child: SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: SvgPicture.asset(
+                      right: 10,
+                      top: 10,
+                      child: IconButton(
+                        iconSize: 20.0,
+                        icon: SvgPicture.asset(
                           AppAssets.heart,
                           color: themeProvider.appTheme.iconColor,
                         ),
+                        onPressed: () {
+                          print("Icon-heart on card pressed");
+                        },
                       ),
                     ),
                     Positioned(
@@ -85,22 +90,27 @@ class SightCard extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        sight.name,
-                        style: AppTypography.simpleText,
-                      ),
-                      const SizedBox.shrink(),
-                      Text(
-                        sight.details,
-                        style: AppTypography.small,
-                      ),
-                    ],
+                child: InkWell(
+                  onTap: () {
+                    print("Ink tapped");
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          sight.name,
+                          style: AppTypography.simpleText,
+                        ),
+                        const SizedBox.shrink(),
+                        Text(
+                          sight.details,
+                          style: AppTypography.small,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

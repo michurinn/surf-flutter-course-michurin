@@ -1,8 +1,11 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
+import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 
 class SightDetails extends StatelessWidget {
@@ -56,19 +59,24 @@ class _HeadWithImage extends StatelessWidget {
         Positioned(
           left: 16,
           top: 36,
-          child: Container(
-            width: 32,
-            height: 32,
-            color: themeProvider.appTheme.cardColor,
-            child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 11, horizontal: 13.5),
-              child: SvgPicture.asset(
-                AppAssets.back,
-                color: themeProvider.appTheme.cardIconColor,
-                width: 5,
-                height: 10,
-              ),
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              padding: const EdgeInsets.all(0),
+              backgroundColor: themeProvider.appTheme.cardColor,
+              minimumSize: const Size(32, 32),
+              maximumSize: const Size(32, 32),
+              alignment: Alignment.center,
+            ),
+            onPressed: () {
+              print("Back button on card pressed");
+            },
+            child: SvgPicture.asset(
+              AppAssets.back,
+              color: themeProvider.appTheme.cardIconColor,
+              width: 5,
+              height: 10,
             ),
           ),
         ),
@@ -132,16 +140,33 @@ class _BottomWithButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.only(left: 67, top: 13, bottom: 13),
-          width: double.infinity,
-          height: 48,
-          color: Colors.lime,
-          child: SvgPicture.asset(
-            AppAssets.route,
-            height: 20,
-            width: 20,
+        OutlinedButton(
+          onPressed: () {
+            print("Route button on card pressed");
+          },
+          style: OutlinedButton.styleFrom(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(12))),
+            backgroundColor: themeProvider.appTheme.routeButtonColor,
+            minimumSize: const Size(328, 48),
+            alignment: Alignment.center,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                AppAssets.route,
+                height: 20,
+                width: 20,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Text(
+                AppStrings.buildRoute.toUpperCase(),
+                style: AppTypography.button,
+              )
+            ],
           ),
         ),
         const SizedBox(
@@ -153,30 +178,66 @@ class _BottomWithButtons extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: Container(
-                padding:
-                    const EdgeInsets.only(top: 10.5, left: 17, bottom: 10.5),
-                alignment: Alignment.centerLeft,
-                height: 40,
-                color: Colors.lightGreen,
-                child: SvgPicture.asset(
-                  AppAssets.calendar,
-                  width: 22,
-                  height: 19,
+              child: TextButton(
+                onPressed: () {
+                  print("Calendar button pressed");
+                },
+                style: const ButtonStyle(
+                  minimumSize: MaterialStatePropertyAll(Size(0, 40)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      AppAssets.calendar,
+                      width: 22,
+                      height: 19,
+                      color:
+                          themeProvider.appTheme.bottomNavBarSelectedItemColor,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      AppStrings.addToCalendar,
+                      style: AppTypography.small.copyWith(
+                        color: themeProvider
+                            .appTheme.bottomNavBarSelectedItemColor,
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
             Expanded(
-              child: Container(
-                padding:
-                    const EdgeInsets.only(top: 10.5, left: 26, bottom: 10.5),
-                alignment: Alignment.centerLeft,
-                height: 40,
-                color: const Color.fromARGB(255, 167, 24, 67),
-                child: SvgPicture.asset(
-                  AppAssets.heart,
-                  width: 20,
-                  height: 20,
+              child: TextButton(
+                onPressed: () {
+                  print("Like button   pressed");
+                },
+                style: const ButtonStyle(
+                  minimumSize: MaterialStatePropertyAll(Size(0, 40)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      AppAssets.heart,
+                      width: 20,
+                      height: 20,
+                      color:
+                          themeProvider.appTheme.bottomNavBarSelectedItemColor,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      AppStrings.inFavorite,
+                      style: AppTypography.small.copyWith(
+                        color: themeProvider
+                            .appTheme.bottomNavBarSelectedItemColor,
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
