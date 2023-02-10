@@ -49,7 +49,7 @@ final lightTheme = ThemeData(
     labelStyle: AppTypography.smallBoldwhite,
     labelColor: AppColors.white,
   ),
-  dividerColor: AppColors.whiteSecondary,
+  dividerColor: AppColors.inactiveBlack,
   primaryColor: AppColors.whiteSecondary,
   progressIndicatorTheme: const ProgressIndicatorThemeData(
       circularTrackColor: AppColors.backgroundDarkCardColor,
@@ -102,6 +102,34 @@ abstract class BaseTheme {
   Color get cardIconColor {
     return secondary;
   }
+
+  Color get routeButtonColor {
+    return green;
+  }
+
+  Color get clearButtonColor {
+    return green;
+  }
+
+  Color get mainColor {
+    return main;
+  }
+
+  Color get backgroundColor {
+    return white;
+  }
+
+  Color get badgeColor {
+    return main;
+  }
+
+  List<Color> get badgeColors {
+    return [main, white];
+  }
+
+  Color get appTitle {
+    return main;
+  }
 }
 
 class LightTheme extends BaseTheme {}
@@ -140,6 +168,36 @@ class DarkTheme extends BaseTheme {
 
   @override
   Color get cardIconColor {
+    return white;
+  }
+
+  @override
+  Color get routeButtonColor {
+    return green;
+  }
+
+  @override
+  Color get clearButtonColor {
+    return green;
+  }
+
+  @override
+  Color get mainColor {
+    return main;
+  }
+
+  @override
+  Color get backgroundColor {
+    return background;
+  }
+
+  @override
+  List<Color> get badgeColors {
+    return [white, main];
+  }
+
+  @override
+  Color get appTitle {
     return white;
   }
 }

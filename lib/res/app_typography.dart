@@ -75,4 +75,20 @@ class AppTypography {
     fontStyle: FontStyle.normal,
     color: AppColors.whiteGreen,
   );
+  static const button = TextStyle(
+    fontSize: 14.0,
+    fontFamily: "Roboto",
+    height: 1.25,
+    fontWeight: FontWeight.w700,
+    fontStyle: FontStyle.normal,
+    color: AppColors.white,
+  );
+  static const superSmall = TextStyle(
+    fontSize: 12.0,
+    fontFamily: "Roboto",
+    height: 1.25,
+    fontWeight: FontWeight.w400,
+    fontStyle: FontStyle.normal,
+    color: AppColors.whiteSecondary,
+  );
 }

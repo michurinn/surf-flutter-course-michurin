@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
@@ -61,22 +63,39 @@ class FavoriteSight extends StatelessWidget {
                       ),
                     ),
                     Positioned(
-                      right: 18,
-                      top: 19,
-                      child: SizedBox(
-                        height: 20,
-                        child: Row(
-                          children: [
-                            isFinished
-                                ? Icon(Icons.share,
-                                    color: themeProvider.appTheme.iconColor)
-                                : SvgPicture.asset(AppAssets.calendar,
-                                    color: themeProvider.appTheme.iconColor),
-                            const SizedBox(width: 20),
-                            Icon(Icons.close,
-                                color: themeProvider.appTheme.iconColor)
-                          ],
-                        ),
+                      right: 5,
+                      top: 5,
+                      child: Row(
+                        children: [
+                          isFinished
+                              ? IconButton(
+                                  padding: const EdgeInsets.all(0),
+                                  iconSize: 22,
+                                  icon: Icon(Icons.share,
+                                      color: themeProvider.appTheme.iconColor),
+                                  onPressed: () {
+                                    print("Share on card pressed");
+                                  },
+                                )
+                              : IconButton(
+                                  padding: const EdgeInsets.all(0),
+                                  iconSize: 22,
+                                  icon: SvgPicture.asset(AppAssets.calendar,
+                                      color: themeProvider.appTheme.iconColor),
+                                  onPressed: () {
+                                    print("Calendar on card pressed");
+                                  },
+                                ),
+                          IconButton(
+                            iconSize: 22,
+                            padding: const EdgeInsets.all(0),
+                            icon: Icon(Icons.close,
+                                color: themeProvider.appTheme.iconColor),
+                            onPressed: () {
+                              print("Close on card pressed");
+                            },
+                          )
+                        ],
                       ),
                     ),
                     Positioned(
