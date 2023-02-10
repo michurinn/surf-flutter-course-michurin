@@ -94,7 +94,7 @@ class _SettingScreenState extends State<SettingScreen> {
               AppAssets.listFilled,
               color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
             ),
-            label: 'List of Places',
+            label: AppStrings.bottomLabel1,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.map_outlined),
@@ -102,19 +102,19 @@ class _SettingScreenState extends State<SettingScreen> {
               AppAssets.mapFilled,
               color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
             ),
-            label: 'Map',
+            label: AppStrings.bottomLabel2,
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               AppAssets.like,
               color: themeProvider.appTheme.bottomNavBarUnselectedItemColor,
             ),
-            label: 'Favorite places',
+            label: AppStrings.bottomLabel3,
           ),
           const BottomNavigationBarItem(
             icon: Icon(Icons.settings_outlined),
             activeIcon: Icon(Icons.settings),
-            label: 'Settings',
+            label: AppStrings.bottomLabel4,
           ),
         ],
       ),

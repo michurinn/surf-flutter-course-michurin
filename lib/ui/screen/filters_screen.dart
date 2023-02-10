@@ -20,6 +20,21 @@ class _FilterScreenState extends State<FilterScreen> {
   double _endValue = 9;
   double _startValue = 2;
 
+  Text _getRangeLabel(double startValue, double endValue) {
+    return startValue < 1.0
+        ? // Отсчёт начинаетс от 100 м, затем в км
+        Text(
+            "от 100 м до ${endValue.toInt()} км",
+            style: AppTypography.simpleText
+                .copyWith(color: AppColors.whiteSecondary2),
+          )
+        : Text(
+            "от ${startValue.toInt()} км до ${endValue.toInt()} км",
+            style: AppTypography.simpleText
+                .copyWith(color: AppColors.whiteSecondary2),
+          );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,18 +117,7 @@ class _FilterScreenState extends State<FilterScreen> {
                       AppStrings.distance,
                       style: AppTypography.simpleText,
                     ),
-                    _startValue < 1.0
-                        ? // Отсчёт начинаетс от 100 м, затем в км
-                        Text(
-                            "от 100 м до ${_endValue.toInt()} км",
-                            style: AppTypography.simpleText
-                                .copyWith(color: AppColors.whiteSecondary2),
-                          )
-                        : Text(
-                            "от ${_startValue.toInt()} км до ${_endValue.toInt()} км",
-                            style: AppTypography.simpleText
-                                .copyWith(color: AppColors.whiteSecondary2),
-                          ),
+                    _getRangeLabel(_startValue, _endValue),
                   ],
                 ),
                 const SizedBox(

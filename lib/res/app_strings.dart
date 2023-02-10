@@ -38,4 +38,9 @@ class AppStrings {
   static const settings = "Настройки";
   static const darkTheme = "Тёмная тема";
   static const showTutorial = "Смотреть туториал";
+
+  static const bottomLabel1 = "List of Places";
+  static const bottomLabel2 = "Map";
+  static const bottomLabel3 = "Favorite places";
+  static const bottomLabel4 = "Settings";
 }
