@@ -2,7 +2,7 @@ import 'package:places/domain/sight.dart';
 import 'package:places/res/app_strings.dart';
 
 //Заглушки с местами
-final List mocks = [
+List<Sight> mocks = [
   const Sight(
     name: 'Ольгин пруд',
     lat: 59.87717719312971,

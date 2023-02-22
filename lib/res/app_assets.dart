@@ -9,4 +9,5 @@ class AppAssets {
   static const listFilled = 'assets/icons/list_filled.svg';
   static const mapFilled = 'assets/icons/map_filled.svg';
   static const like = 'assets/icons/like.svg';
+   static const forwardArrow = 'assets/icons/forward_arrow.svg';
 }

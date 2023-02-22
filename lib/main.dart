@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:places/theme_provider.dart';
-import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/res/themes.dart';
+import 'package:places/ui/screen/sight_list_screen.dart';
 import 'package:provider/provider.dart';
 
 final themeProvider = ThemeProvider();
@@ -25,7 +25,7 @@ class App extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: "Surf",
             theme: theme.isLight ? lightTheme : darkTheme,
-            home: const FilterScreen(),
+            home: const SightListScreen(),
           )),
     );
   }

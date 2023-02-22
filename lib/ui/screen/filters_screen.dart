@@ -1,12 +1,18 @@
 // ignore_for_file: avoid_print, camel_case_types
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/domain/sight.dart';
 import 'package:places/main.dart';
+import 'package:places/mocks.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
+
+late final StreamController<bool> controller;
 
 class FilterScreen extends StatefulWidget {
   const FilterScreen({super.key});
@@ -19,6 +25,19 @@ class FilterScreen extends StatefulWidget {
 class _FilterScreenState extends State<FilterScreen> {
   double _endValue = 9;
   double _startValue = 2;
+
+  @override
+  void initState() {
+    controller = StreamController<bool>.broadcast();
+    results = mocks;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.close();
+    super.dispose();
+  }
 
   Text _getRangeLabel(double startValue, double endValue) {
     return startValue < 1.0
@@ -52,7 +71,7 @@ class _FilterScreenState extends State<FilterScreen> {
             alignment: Alignment.center,
           ),
           onPressed: () {
-            print("Back button on card pressed");
+            Navigator.pop(context);
           },
           child: SvgPicture.asset(
             AppAssets.back,
@@ -66,7 +85,11 @@ class _FilterScreenState extends State<FilterScreen> {
             padding: const EdgeInsets.only(right: 16.0),
             child: TextButton(
               onPressed: () {
-                print("Clear button pressed");
+                setState(() {
+                  _endValue = 9;
+                  _startValue = 2;
+                  controller.sink.add(false);
+                });
               },
               style: const ButtonStyle(
                 minimumSize: MaterialStatePropertyAll(Size(72, 20)),
@@ -163,7 +186,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Показать (190)".toUpperCase(),
+                      "Показать (${results!.length})".toUpperCase(),
                       style: AppTypography.button,
                     )
                   ],
@@ -207,11 +230,15 @@ class _itemGridView extends StatefulWidget {
 
 class __itemGridViewState extends State<_itemGridView> {
   bool isChecked = false;
-
-  void clearBadge() {
-    setState(() {
-      isChecked = false;
+  late final subscription;
+  @override
+  void initState() {
+    subscription = controller.stream.listen((bool data) {
+      setState(() {
+        isChecked = false;
+      });
     });
+    super.initState();
   }
 
   @override
@@ -295,3 +322,10 @@ List<_itemGridView> _itemsList = [
     text: AppStrings.sightType7,
   ),
 ];
+
+List<Sight>? results;
+
+void _cutResults(String type)
+{
+  results!.retainWhere((element) => element.type != type);
+}

@@ -4,7 +4,7 @@ class AppStrings {
   static const sight2workTime = "Открыто до 1:00";
   static const sight3workTime = "Открытие 21.12.2023";
 
-  static const listOfInterestingPlases = "Список\nинтересных мест";
+  static const listOfInterestingPlases = "Список интересных мест";
   static const sight0name = "Ольгин пруд";
   static const sight1name = "Форт \"Император Павел I\"";
   static const sight2name = "Выборгский замок";
@@ -43,4 +43,24 @@ class AppStrings {
   static const bottomLabel2 = "Map";
   static const bottomLabel3 = "Favorite places";
   static const bottomLabel4 = "Settings";
+
+  static const cancel = "Отмена";
+  static const newPlace = "Новое место";
+  static const category = "Категория";
+  static const name = "Название";
+  static const width = "Широта";
+  static const height = "Долгота";
+  static const putOnMap = "Указать на карте";
+  static const description = "Описание";
+  static const inputText = "Введите текст";
+  static const create = "Создать";
+  static const save = "Сохранить";
+  static const doesntChosen = "Не выбрано";
+
+  static const search = "Поиск";
+  static const youFound = "Вы искали";
+  static const clearHistore = "Очистить историю";
+  static const nothingFinded = "Ничего не найдено";
+  static const tryToChangeSearchParams = "Попробуйте изменить параметры поиска";
+  
 }

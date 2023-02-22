@@ -70,7 +70,7 @@ class _HeadWithImage extends StatelessWidget {
               alignment: Alignment.center,
             ),
             onPressed: () {
-              print("Back button on card pressed");
+              Navigator.of(context).pop();
             },
             child: SvgPicture.asset(
               AppAssets.back,

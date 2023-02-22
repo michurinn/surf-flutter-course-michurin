@@ -1,6 +1,8 @@
+import 'package:equatable/equatable.dart';
+
 // Класс места, содержит информацию об интересном месте
 
-class Sight {
+class Sight extends Equatable {
   final String name;
   final double lat;
   final double lon;
@@ -18,4 +20,8 @@ class Sight {
     required this.imagePath,
     required this.workTime,
   });
+
+  @override
+  List<Object> get props => [name, lat,lon,details,type];
+
 }
