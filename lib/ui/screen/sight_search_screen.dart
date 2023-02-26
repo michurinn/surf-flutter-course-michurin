@@ -128,7 +128,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
           showHistory = true;
         },
       );
-
+  // Показывает заглушку либо результаты поиска
   Widget _searchBody(List<Sight>? resultsList) {
     return (resultsList == null || resultsList.isEmpty)
         ? const Padding(
