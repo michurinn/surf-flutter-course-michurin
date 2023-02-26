@@ -5,8 +5,7 @@ import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 
-Map checkedMap = {for (var item in _listOfCategories) item: false};
-
+// Екран выбора категории места
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
 
@@ -15,7 +14,12 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
-  // По умолчанию ни один елемент не выбран
+  late Map<String, bool> checkedMap;
+  @override
+  void initState() {
+    checkedMap = {for (var item in _listOfCategories) item: false};
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +41,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             alignment: Alignment.center,
           ),
           onPressed: () {
-            // Категория не считается выбранной
+            // Категория не выбрана
             Navigator.of(context).pop(false);
           },
           child: SvgPicture.asset(
@@ -88,7 +92,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                   // Может быть выбрана только одна категория, обнуляем прежний выбор
                                   checkedMap
                                       .updateAll((key, value) => value = false);
-                                  checkedMap[element] = !checkedMap[element];
+                                  checkedMap[element] = !checkedMap[element]!;
                                 },
                               );
                             },
@@ -104,6 +108,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
             Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: _SaveButton(
+                  checkedMap: checkedMap,
                   isActive: checkedMap.containsValue(true),
                 )),
           ],
@@ -113,9 +118,11 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   }
 }
 
+// Кнопка Сохранить
 class _SaveButton extends StatefulWidget {
-  const _SaveButton({required this.isActive});
+  const _SaveButton({required this.isActive, required this.checkedMap});
   final bool isActive;
+  final Map<String, bool> checkedMap;
   @override
   State<_SaveButton> createState() => __SaveButtonState();
 }
@@ -127,8 +134,8 @@ class __SaveButtonState extends State<_SaveButton> {
       onPressed: () {
         // Вернём название выбранной категории
         widget.isActive
-            ? Navigator.of(context).pop(checkedMap.keys
-                .firstWhere((element) => checkedMap[element] == true))
+            ? Navigator.of(context).pop(widget.checkedMap.keys
+                .firstWhere((element) => widget.checkedMap[element] == true))
             : null;
       },
       style: OutlinedButton.styleFrom(
@@ -161,6 +168,7 @@ class __SaveButtonState extends State<_SaveButton> {
   }
 }
 
+// Возможные категории
 List<String> _listOfCategories = [
   AppStrings.sightType0,
   AppStrings.sightType1,

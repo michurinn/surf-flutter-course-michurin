@@ -14,6 +14,7 @@ import 'package:places/res/app_typography.dart';
 
 final StreamController<bool> controller = StreamController<bool>.broadcast();
 
+//Екран Фильтров
 class FilterScreen extends StatefulWidget {
   const FilterScreen({super.key});
 
@@ -23,12 +24,13 @@ class FilterScreen extends StatefulWidget {
 
 // Екран фильтров
 class _FilterScreenState extends State<FilterScreen> {
-  double _endValue = 9;
-  double _startValue = 2;
+  double _endValue = 9; // Конечное значение слайдера по умолчанию
+  double _startValue = 2; // Начальное значение слайдера по умолчанию
   List<Sight>? results;
   late List<_itemGridView> _itemsList;
   @override
   void initState() {
+    // Фильтры по типу места
     _itemsList = [
       _itemGridView(
         onPressed: () => setState(() {}),
@@ -64,15 +66,10 @@ class _FilterScreenState extends State<FilterScreen> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
+  // Отсчёт начинаетс от 100 м, затем в км
   Text _getRangeLabel(double startValue, double endValue) {
     return startValue < 1.0
-        ? // Отсчёт начинаетс от 100 м, затем в км
-        Text(
+        ? Text(
             "от 100 м до ${endValue.toInt()} км",
             style: AppTypography.simpleText
                 .copyWith(color: AppColors.whiteSecondary2),
@@ -86,6 +83,7 @@ class _FilterScreenState extends State<FilterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Результат фильтрации менятеся при каждом применении/отмене фильтра
     results = mocks.where(
       (element) {
         return (filter.avaibleTypes.contains(element.type) &&
@@ -238,6 +236,7 @@ class _FilterScreenState extends State<FilterScreen> {
   }
 }
 
+// Сетка типов мест
 class _GridView extends StatefulWidget {
   const _GridView({Key? key, required this.itemsList}) : super(key: key);
   final List<Widget> itemsList;
@@ -257,6 +256,7 @@ class __GridViewState extends State<_GridView> {
   }
 }
 
+// Тип места
 class _itemGridView extends StatefulWidget {
   final VoidCallback? onPressed;
   final String iconAssetPath;
@@ -274,6 +274,7 @@ class __itemGridViewState extends State<_itemGridView> {
 
   @override
   void initState() {
+    // Если уходим из екрана Фильтра, настройки сохраняются
     filter.avaibleTypes.contains(widget.text) ? isChecked = true : null;
     _subscription = controller.stream.listen((bool data) {
       if (!mounted) return;

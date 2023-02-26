@@ -8,17 +8,19 @@ class SearchBar extends StatefulWidget {
   const SearchBar(
       {super.key,
       required this.isEnabled,
-      this.clearHistory,
+      this.hideHistory,
       this.showHistory,
       required this.isFocused,
-      this.searchRequest});
+      this.searchRequest,
+      this.initValue});
+  final String? initValue;
   final bool isEnabled;
-  final VoidCallback? clearHistory;
+  final VoidCallback? hideHistory;
   final VoidCallback? showHistory;
   final Function(String)? searchRequest;
   final bool isFocused;
   @override
-  State<SearchBar> createState() => _SearchBarState();
+  State<SearchBar> createState() => SearchBarState();
 }
 
 class AlwaysDisabledFocusNode extends FocusNode {
@@ -26,15 +28,16 @@ class AlwaysDisabledFocusNode extends FocusNode {
   bool get hasFocus => false;
 }
 
-class _SearchBarState extends State<SearchBar> {
+class SearchBarState extends State<SearchBar> {
   late TextEditingController? controller;
-
+  late FocusNode focusNode;
   @override
   void initState() {
+    focusNode = FocusNode();
     controller = TextEditingController();
     controller!.addListener(() {
       if (controller!.text.isNotEmpty) {
-        widget.clearHistory!();
+        widget.hideHistory!();
       } else if (controller!.text.isEmpty) {
         widget.showHistory!();
       }
@@ -47,8 +50,13 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   void dispose() {
+    focusNode.dispose();
     controller?.dispose();
     super.dispose();
+  }
+
+  void fillControllerWithValue(String str) {
+    controller!.text = str;
   }
 
   @override
@@ -56,11 +64,14 @@ class _SearchBarState extends State<SearchBar> {
     return TextField(
       enableInteractiveSelection:
           widget.isEnabled ? true : false, // will disable paste operation
-      focusNode: widget.isEnabled ? FocusNode() : AlwaysDisabledFocusNode(),
+      focusNode: widget.isEnabled ? focusNode : AlwaysDisabledFocusNode(),
       enabled: widget.isEnabled ? true : false,
-      onSubmitted: widget.searchRequest,
+      onSubmitted: controller!.text == "" ? null : widget.searchRequest,
       autofocus: widget.isFocused ? true : false,
       controller: controller,
+      cursorWidth: 1,
+      cursorHeight: 24,
+      cursorColor: themeProvider.appTheme.cursorColor,
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.never,
         prefixIcon:

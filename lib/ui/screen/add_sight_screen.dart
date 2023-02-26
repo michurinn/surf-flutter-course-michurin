@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:places/domain/sight.dart';
@@ -9,8 +7,8 @@ import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/ui/screen/categories_screen.dart';
-import 'package:places/ui/screen/sight_list_screen.dart';
 
+// Екран Добавления нового места
 class AddSightScreen extends StatefulWidget {
   const AddSightScreen({super.key});
 
@@ -52,7 +50,6 @@ class _AddSightScreenState extends State<AddSightScreen> {
     fn3 = FocusNode();
     fn4 = FocusNode();
     fn1.addListener(() {
-      print('fn1 updated: hasFocus: ${fn1.hasFocus}');
       _clearAllFocusFlags();
       if (fn1.hasFocus) {
         setState(() {
@@ -61,7 +58,6 @@ class _AddSightScreenState extends State<AddSightScreen> {
       }
     });
     fn2.addListener(() {
-      print('fn2 updated: hasFocus: ${fn2.hasFocus}');
       if (fn2.hasFocus) {
         setState(() {
           _widthFieldFocused = true;
@@ -70,7 +66,6 @@ class _AddSightScreenState extends State<AddSightScreen> {
     });
 
     fn3.addListener(() {
-      print('fn3 updated: hasFocus: ${fn3.hasFocus}');
       if (fn3.hasFocus) {
         setState(() {
           _heightFieldFocused = true;
@@ -78,7 +73,6 @@ class _AddSightScreenState extends State<AddSightScreen> {
       }
     });
     fn4.addListener(() {
-      print('fn4 updated: hasFocus: ${fn4.hasFocus}');
       _clearAllFocusFlags();
       if (fn4.hasFocus) {
         setState(() {
@@ -119,7 +113,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   }
 
   String? _validateCoordinates(String? coordinate) {
-    RegExp regex = RegExp(r'\d{2}.\d+'); // translates to 22.222222
+    RegExp regex = RegExp(r'\d{1,3}.\d+'); // translates to 22.222222
     if (coordinate == null) {
       return 'We need the coordinate';
     } else if (!regex.hasMatch(coordinate)) {
@@ -129,6 +123,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
     }
   }
 
+  // Поля не могут быть пустыми
   String? _validate(String? type) {
     if (type == "") {
       return '';
@@ -426,7 +421,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
         Sight newItem = Sight(
           name: nameController!.text,
           details: descriptionController!.text,
-          imagePath: 'https://content.foto.my.mail.ru/mail/nordprod7/boxitogorsk/h-7455.jpg',
+          imagePath:
+              'https://content.foto.my.mail.ru/mail/nordprod7/boxitogorsk/h-7455.jpg',
           lat: double.parse(widthController!.text),
           lon: double.parse(heightController!.text),
           type: '',
@@ -440,6 +436,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   }
 }
 
+// Общий InputDecoration для полей
 InputDecoration _inputDecoration({
   required String label,
   required VoidCallback clear,
@@ -498,6 +495,7 @@ InputDecoration _inputDecoration({
   );
 }
 
+// Филд типа места
 class _TypeFormField extends StatelessWidget {
   final String? Function(String?)? validate;
   final TextEditingController? controller;
@@ -522,10 +520,12 @@ class _TypeFormField extends StatelessWidget {
           ),
         )
             .then((value) {
+          // Заполним Филд выбранным значением
           (value == null || value == '' || value == false)
               ? null
               : controller?.text = value as String;
-          focusNode.requestFocus(); // После выбора типа фокус автоматически переходит на имя
+          focusNode
+              .requestFocus(); // После выбора типа фокус автоматически переходит на имя
         });
       },
       child: TextFormField(

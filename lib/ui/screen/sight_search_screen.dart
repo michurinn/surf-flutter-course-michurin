@@ -22,6 +22,15 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   late TextEditingController? controller;
   bool showHistory = true;
   List<Sight>? results;
+
+  late final GlobalKey<SearchBarState> _keySearchBar;
+
+  @override
+  void initState() {
+    _keySearchBar = GlobalKey<SearchBarState>();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,45 +44,27 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
           child: Column(
             children: [
               SearchBar(
-                searchRequest: (str) => _findSight(str),
-                isFocused: true,
+                key: _keySearchBar,
+                searchRequest: (str) =>
+                    _findSight(str), // добавляем запрос в историю поиска
+                isFocused: true, // автофокус
                 isEnabled: true,
-                clearHistory: () => setState(
-                  () {
-                    showHistory = false;
-                  },
-                ),
-                showHistory: () => setState(
-                  () {
-                    showHistory = true;
-                  },
-                ),
+                hideHistory:
+                    _hideHistory, // Скрываем историю когда начинается ввод запроса
+                showHistory:
+                    _showHistory, // Показываем историю, пока пользователь ещё ничего не ввёл
               ),
               const SizedBox(
                 height: 25,
               ),
               showHistory
                   ? _PreviuousSearchList(
-                      clearHistory: () => setState(
-                        () {
-                          showHistory = false;
-                        },
-                      ),
+                      thenHistoryItemSelected: (str) {
+                        return _findSight(str);
+                      },
+                      clearHistory: _clearHistory,
                     )
-                  : (results == null || results!.isEmpty)
-                      ? const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 180.0),
-                          child: _CantFindIt(),
-                        )
-                      : Column(
-                          children: results!
-                              .expand(
-                                (element) => [
-                                  _ListItem(sight: element),
-                                ],
-                              )
-                              .toList(),
-                        ),
+                  : _searchBody(results)
             ],
           ),
         ),
@@ -120,15 +111,58 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     );
   }
 
+  _hideHistory() => setState(
+        () {
+          showHistory = false;
+        },
+      );
+
+  _clearHistory() => setState(
+        () {
+          history.clear();
+        },
+      );
+
+  _showHistory() => setState(
+        () {
+          showHistory = true;
+        },
+      );
+
+  Widget _searchBody(List<Sight>? resultsList) {
+    return (resultsList == null || resultsList.isEmpty)
+        ? const Padding(
+            padding: EdgeInsets.symmetric(vertical: 180.0),
+            child: _CantFindIt(),
+          )
+        : Column(
+            children: results!
+                .expand(
+                  (element) => [
+                    _ListItem(sight: element),
+                  ],
+                )
+                .toList(),
+          );
+  }
+
   _findSight(String str) {
+    _keySearchBar.currentState!.fillControllerWithValue(str); // Повторный поиск - тоже поиск )
     List<Sight> res = widget.filteredPlaces
-        .where((element) =>
-            element.name.toUpperCase().contains(str.toUpperCase().trim()))
+        .where(
+          (element) => element.name.toUpperCase().contains(
+                str.toUpperCase().trim(),
+              ),
+        ) // Поиск без учёта регистра и пробелов
         .toList();
-    history.add(str);
+
+    if (!history.contains(str)) {
+      history.insert(0,str); // Добавляем в начало списка
+    }
     setState(
       () {
         results = res;
+        showHistory = false;
       },
     );
   }
@@ -141,13 +175,16 @@ class _ListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => SightDetails(
-            sight: sight,
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SightDetails(
+              sight: sight,
+            ),
           ),
-        ),
-      ),
+        );
+      },
       child: Column(
         children: [
           Row(
@@ -220,8 +257,9 @@ class _ListItem extends StatelessWidget {
 }
 
 class _PreviuousSearchList extends StatefulWidget {
-  const _PreviuousSearchList({this.clearHistory});
+  const _PreviuousSearchList({this.clearHistory, this.thenHistoryItemSelected});
   final VoidCallback? clearHistory;
+  final Function(String str)? thenHistoryItemSelected;
   @override
   State<_PreviuousSearchList> createState() => __PreviuousSearchListState();
 }
@@ -229,6 +267,9 @@ class _PreviuousSearchList extends StatefulWidget {
 class __PreviuousSearchListState extends State<_PreviuousSearchList> {
   @override
   Widget build(BuildContext context) {
+    if (history.isEmpty) {
+      return Container();
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -242,6 +283,7 @@ class __PreviuousSearchListState extends State<_PreviuousSearchList> {
               .expand(
                 (element) => [
                   HistoryItem(
+                    whenSelected: widget.thenHistoryItemSelected,
                     text: element,
                     delete: () {
                       history.remove(element);
@@ -255,10 +297,10 @@ class __PreviuousSearchListState extends State<_PreviuousSearchList> {
               )
               .toList(),
         ),
+        // Кнопка Очистить историю
         TextButton(
             onPressed: () {
               setState(() {
-                //history.clear();
                 widget.clearHistory!();
               });
             },
@@ -290,19 +332,27 @@ class _AppBar extends StatelessWidget {
   }
 }
 
+// Елемент списка Истории поиска с кнопкой удаления из истории
 class HistoryItem extends StatelessWidget {
-  const HistoryItem({super.key, required this.text, required this.delete});
+  const HistoryItem(
+      {super.key, required this.text, required this.delete, this.whenSelected});
   final String text;
   final VoidCallback delete;
+  final Function(String str)? whenSelected;
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          text,
-          style: AppTypography.formLabel
-              .copyWith(color: AppColors.whiteSecondary2),
+        GestureDetector(
+          onTap: () {
+            whenSelected!(text);
+          },
+          child: Text(
+            text,
+            style: AppTypography.formLabel
+                .copyWith(color: AppColors.whiteSecondary2),
+          ),
         ),
         IconButton(
           onPressed: () {
@@ -318,8 +368,9 @@ class HistoryItem extends StatelessWidget {
   }
 }
 
-List<String> history = ["Мок1"];
+List<String> history = ["WarnerBros studio"]; // Моковые данные для истории
 
+// Заглушка Ничего не найдено
 class _CantFindIt extends StatelessWidget {
   const _CantFindIt();
 

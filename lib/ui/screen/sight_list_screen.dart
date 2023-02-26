@@ -21,10 +21,13 @@ class SightListScreen extends StatefulWidget {
 }
 
 class _SightListScreenState extends State<SightListScreen> {
+  // Храним здесь список, который будем отображать с учётом фильтров и поиска,
+  // изменения из екранов поиска передаём через callback .then(...) навигатора
   late List<Sight> places;
 
   @override
   void initState() {
+    // По умолчанию
     places = mocks;
     super.initState();
   }
@@ -49,6 +52,8 @@ class _SightListScreenState extends State<SightListScreen> {
                     Stack(
                       alignment: Alignment.centerRight,
                       children: [
+                        // При тапе на виджет поиска переход на страницу поиска,
+                        // а при тапе именно на иконку Icons.tune_rounded - переход на екран фильтров
                         GestureDetector(
                           onTap: () => Navigator.of(context).push(
                             MaterialPageRoute(
@@ -70,19 +75,18 @@ class _SightListScreenState extends State<SightListScreen> {
                             onPressed: () {
                               Navigator.of(context)
                                   .push(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const FilterScreen()),
-                                  )
-                                  .then(
-                                    (value) {
-                                      if (value == null) return;
-                                       setState(
-                                      () {
-                                        places = value;
-                                      },
-                                    );}
-                                  );
+                                MaterialPageRoute(
+                                    builder: (context) => const FilterScreen()),
+                              )
+                                  .then((value) {
+                                //Теперь покажем только отфильтрованные места
+                                if (value == null) return;
+                                setState(
+                                  () {
+                                    places = value;
+                                  },
+                                );
+                              });
                             },
                           ),
                         )
@@ -97,11 +101,15 @@ class _SightListScreenState extends State<SightListScreen> {
                               [SightCard(sight: e), const SizedBox(height: 20)])
                           .toList(),
                     ),
+                    const SizedBox(
+                      height: 50,
+                    ),
                   ],
                 ),
               ),
             ),
           ),
+          // Кнопка Добавить
           Positioned(
             bottom: 16,
             child: Padding(
@@ -109,9 +117,10 @@ class _SightListScreenState extends State<SightListScreen> {
                 horizontal: 90,
               ),
               child: _AddButton(
-                onNewPlaceCreated: (() => setState(() {
-                      print('List of Places');
-                    })),
+                onNewPlaceCreated: (() => setState(
+                      // Покажем обновлённый список
+                      () {},
+                    )),
               ),
             ),
           ),
@@ -180,6 +189,7 @@ class _AppBar extends StatelessWidget {
   }
 }
 
+// Кнопка Добавить новое место
 class _AddButton extends StatelessWidget {
   final VoidCallback onNewPlaceCreated;
 
