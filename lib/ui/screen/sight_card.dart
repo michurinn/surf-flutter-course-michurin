@@ -51,8 +51,7 @@ class SightCard extends StatelessWidget {
                                   strokeWidth: 6.0,
                                   value: loadingProgress.expectedTotalBytes !=
                                           null
-                                      ? loadingProgress
-                                              .cumulativeBytesLoaded /
+                                      ? loadingProgress.cumulativeBytesLoaded /
                                           loadingProgress.expectedTotalBytes!
                                       : null,
                                 ),

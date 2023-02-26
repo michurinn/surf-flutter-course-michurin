@@ -152,12 +152,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
         centerTitle: true,
         leading: TextButton(
           onPressed: () {
-            print("Cancel pressed");
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const SightListScreen(),
-              ),
-            );
+            Navigator.of(context).pop();
           },
           child: Text(
             AppStrings.cancel,
@@ -425,24 +420,21 @@ class _AddSightScreenState extends State<AddSightScreen> {
   }
 
   _saveButtonOnTap() {
-    print("Create button on card pressed");
     if (!_isButtonEnabled) {
     } else {
       if (_keyForm.currentState!.validate()) {
         Sight newItem = Sight(
           name: nameController!.text,
           details: descriptionController!.text,
-          imagePath: '',
+          imagePath: 'https://content.foto.my.mail.ru/mail/nordprod7/boxitogorsk/h-7455.jpg',
           lat: double.parse(widthController!.text),
           lon: double.parse(heightController!.text),
           type: '',
           workTime: '',
         );
         mocks.contains(newItem) ? null : mocks.add(newItem);
-        for (var element in mocks) {
-          print("${element.name}");
-        }
-        Navigator.of(context).pop();
+
+        Navigator.of(context).pop(true);
       }
     }
   }
@@ -533,7 +525,7 @@ class _TypeFormField extends StatelessWidget {
           (value == null || value == '' || value == false)
               ? null
               : controller?.text = value as String;
-          focusNode.requestFocus();
+          focusNode.requestFocus(); // После выбора типа фокус автоматически переходит на имя
         });
       },
       child: TextFormField(

@@ -62,5 +62,4 @@ class AppStrings {
   static const clearHistore = "Очистить историю";
   static const nothingFinded = "Ничего не найдено";
   static const tryToChangeSearchParams = "Попробуйте изменить параметры поиска";
-  
 }

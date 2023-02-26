@@ -12,7 +12,7 @@ import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 
-late final StreamController<bool> controller;
+final StreamController<bool> controller = StreamController<bool>.broadcast();
 
 class FilterScreen extends StatefulWidget {
   const FilterScreen({super.key});
@@ -25,17 +25,47 @@ class FilterScreen extends StatefulWidget {
 class _FilterScreenState extends State<FilterScreen> {
   double _endValue = 9;
   double _startValue = 2;
-
+  List<Sight>? results;
+  late List<_itemGridView> _itemsList;
   @override
   void initState() {
-    controller = StreamController<bool>.broadcast();
-    results = mocks;
+    _itemsList = [
+      _itemGridView(
+        onPressed: () => setState(() {}),
+        iconAssetPath: 'assets/icons/hotel.svg',
+        text: AppStrings.sightType2,
+      ),
+      _itemGridView(
+        onPressed: () => setState(() {}),
+        iconAssetPath: 'assets/icons/restraunt.svg',
+        text: AppStrings.sightType3,
+      ),
+      _itemGridView(
+        onPressed: () => setState(() {}),
+        iconAssetPath: 'assets/icons/unique_place.svg',
+        text: AppStrings.sightType4,
+      ),
+      _itemGridView(
+        onPressed: () => setState(() {}),
+        iconAssetPath: 'assets/icons/park.svg',
+        text: AppStrings.sightType5,
+      ),
+      _itemGridView(
+        onPressed: () => setState(() {}),
+        iconAssetPath: 'assets/icons/museum.svg',
+        text: AppStrings.sightType6,
+      ),
+      _itemGridView(
+        onPressed: () => setState(() {}),
+        iconAssetPath: 'assets/icons/cafe.svg',
+        text: AppStrings.sightType7,
+      ),
+    ];
     super.initState();
   }
 
   @override
   void dispose() {
-    controller.close();
     super.dispose();
   }
 
@@ -56,6 +86,13 @@ class _FilterScreenState extends State<FilterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    results = mocks.where(
+      (element) {
+        return (filter.avaibleTypes.contains(element.type) &&
+            filter.arePointInRange(element, mockCoordinates,
+                filter.distanceFrom, filter.distanceTo));
+      },
+    ).toList();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -126,9 +163,9 @@ class _FilterScreenState extends State<FilterScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(
+                SizedBox(
                   height: 265,
-                  child: _GridView(),
+                  child: _GridView(itemsList: _itemsList),
                 ),
                 const SizedBox(
                   height: 56,
@@ -158,6 +195,7 @@ class _FilterScreenState extends State<FilterScreen> {
                     inactiveColor: AppColors.inactiveBlack,
                     values: RangeValues(_startValue, _endValue),
                     onChanged: (values) {
+                      filter.setDistanses(values.start, values.end);
                       setState(() {
                         _startValue = values.start;
                         _endValue = values.end;
@@ -173,7 +211,7 @@ class _FilterScreenState extends State<FilterScreen> {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: OutlinedButton(
                 onPressed: () {
-                  print("Show button pressed");
+                  Navigator.pop(context, results);
                 },
                 style: OutlinedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
@@ -201,8 +239,8 @@ class _FilterScreenState extends State<FilterScreen> {
 }
 
 class _GridView extends StatefulWidget {
-  const _GridView({Key? key}) : super(key: key);
-
+  const _GridView({Key? key, required this.itemsList}) : super(key: key);
+  final List<Widget> itemsList;
   @override
   State<_GridView> createState() => __GridViewState();
 }
@@ -214,15 +252,17 @@ class __GridViewState extends State<_GridView> {
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
       ),
-      children: _itemsList,
+      children: widget.itemsList,
     );
   }
 }
 
 class _itemGridView extends StatefulWidget {
+  final VoidCallback? onPressed;
   final String iconAssetPath;
   final String text;
-  const _itemGridView({required this.iconAssetPath, required this.text});
+  const _itemGridView(
+      {required this.iconAssetPath, required this.text, this.onPressed});
 
   @override
   State<_itemGridView> createState() => __itemGridViewState();
@@ -230,10 +270,13 @@ class _itemGridView extends StatefulWidget {
 
 class __itemGridViewState extends State<_itemGridView> {
   bool isChecked = false;
-  late final subscription;
+  late final StreamSubscription<bool> _subscription;
+
   @override
   void initState() {
-    subscription = controller.stream.listen((bool data) {
+    filter.avaibleTypes.contains(widget.text) ? isChecked = true : null;
+    _subscription = controller.stream.listen((bool data) {
+      if (!mounted) return;
       setState(() {
         isChecked = false;
       });
@@ -245,9 +288,11 @@ class __itemGridViewState extends State<_itemGridView> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        filter.addOrRemoveFilter(widget.text);
         setState(() {
           isChecked = !isChecked;
         });
+        widget.onPressed!();
       },
       child: Column(
         children: [
@@ -294,38 +339,4 @@ class __itemGridViewState extends State<_itemGridView> {
       ),
     );
   }
-}
-
-List<_itemGridView> _itemsList = [
-  const _itemGridView(
-    iconAssetPath: 'assets/icons/hotel.svg',
-    text: AppStrings.sightType2,
-  ),
-  const _itemGridView(
-    iconAssetPath: 'assets/icons/restraunt.svg',
-    text: AppStrings.sightType3,
-  ),
-  const _itemGridView(
-    iconAssetPath: 'assets/icons/unique_place.svg',
-    text: AppStrings.sightType4,
-  ),
-  const _itemGridView(
-    iconAssetPath: 'assets/icons/park.svg',
-    text: AppStrings.sightType5,
-  ),
-  const _itemGridView(
-    iconAssetPath: 'assets/icons/museum.svg',
-    text: AppStrings.sightType6,
-  ),
-  const _itemGridView(
-    iconAssetPath: 'assets/icons/cafe.svg',
-    text: AppStrings.sightType7,
-  ),
-];
-
-List<Sight>? results;
-
-void _cutResults(String type)
-{
-  results!.retainWhere((element) => element.type != type);
 }

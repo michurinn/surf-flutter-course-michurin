@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:places/domain/filter.dart';
 import 'package:places/theme_provider.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
 import 'package:provider/provider.dart';
 
 final themeProvider = ThemeProvider();
+final filter = Filter();
 
 void main() {
   runApp(

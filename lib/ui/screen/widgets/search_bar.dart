@@ -54,8 +54,10 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      enableInteractiveSelection: widget.isEnabled? true:false, // will disable paste operation
-      focusNode: widget.isEnabled? FocusNode():AlwaysDisabledFocusNode(),
+      enableInteractiveSelection:
+          widget.isEnabled ? true : false, // will disable paste operation
+      focusNode: widget.isEnabled ? FocusNode() : AlwaysDisabledFocusNode(),
+      enabled: widget.isEnabled ? true : false,
       onSubmitted: widget.searchRequest,
       autofocus: widget.isFocused ? true : false,
       controller: controller,
@@ -63,13 +65,6 @@ class _SearchBarState extends State<SearchBar> {
         floatingLabelBehavior: FloatingLabelBehavior.never,
         prefixIcon:
             const Icon(Icons.search_rounded, color: AppColors.inactiveBlack),
-        suffixIcon: widget.isEnabled
-            ? null
-            : InkWell(
-                onTap: () => print("Inner GestDet Tapped"),
-                child: Icon(Icons.tune_rounded,
-                    color: themeProvider.appTheme.filterButtonColor),
-              ),
         suffix: InkWell(
           child: Icon(
             Icons.cancel,

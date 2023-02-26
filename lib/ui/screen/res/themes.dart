@@ -181,7 +181,9 @@ class DarkTheme extends BaseTheme {
   static const inactiveBlack = Color.fromRGBO(124, 126, 146, 0.56);
   static const white = Color(0xFFFFFFFF);
   static const dark = Color(0xFF1A1A20);
-
+  static const scaffoldBackgroundColor  = Color(0xFF2D2E3E);
+  
+  
   @override
   Color get bottomNavBarSelectedItemColor {
     return white;
@@ -224,7 +226,7 @@ class DarkTheme extends BaseTheme {
 
   @override
   Color get backgroundColor {
-    return background;
+    return scaffoldBackgroundColor;
   }
 
   @override

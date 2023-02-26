@@ -21,6 +21,14 @@ class SightListScreen extends StatefulWidget {
 }
 
 class _SightListScreenState extends State<SightListScreen> {
+  late List<Sight> places;
+
+  @override
+  void initState() {
+    places = mocks;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,46 +39,81 @@ class _SightListScreenState extends State<SightListScreen> {
       body: Stack(
         alignment: AlignmentDirectional.bottomCenter,
         children: [
-          SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => const FilterScreen()),
-                      );
-                    },
-                    child: Text(AppStrings.addToCalendar),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => const SightSearchScreen()),
+          SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  children: [
+                    Stack(
+                      alignment: Alignment.centerRight,
+                      children: [
+                        GestureDetector(
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => SightSearchScreen(
+                                      filteredPlaces: places,
+                                    )),
+                          ),
+                          child: const SearchBar(
+                            isEnabled: false,
+                            isFocused: false,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: IconButton(
+                            icon: Icon(Icons.tune_rounded,
+                                color:
+                                    themeProvider.appTheme.filterButtonColor),
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .push(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const FilterScreen()),
+                                  )
+                                  .then(
+                                    (value) {
+                                      if (value == null) return;
+                                       setState(
+                                      () {
+                                        places = value;
+                                      },
+                                    );}
+                                  );
+                            },
+                          ),
+                        )
+                      ],
                     ),
-                    child: const SearchBar(
-                      isEnabled: false,
-                      isFocused: false,
+                    const SizedBox(
+                      height: 20,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Column(
-                    children: mocks
-                        .expand((e) =>
-                            [SightCard(sight: e), const SizedBox(height: 20)])
-                        .toList(),
-                  ),
-                ],
+                    Column(
+                      children: places
+                          .expand((e) =>
+                              [SightCard(sight: e), const SizedBox(height: 20)])
+                          .toList(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 90, vertical: 16),
-            child: _AddButton(),
+          Positioned(
+            bottom: 16,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 90,
+              ),
+              child: _AddButton(
+                onNewPlaceCreated: (() => setState(() {
+                      print('List of Places');
+                    })),
+              ),
+            ),
           ),
         ],
       ),
@@ -138,15 +181,20 @@ class _AppBar extends StatelessWidget {
 }
 
 class _AddButton extends StatelessWidget {
+  final VoidCallback onNewPlaceCreated;
+
+  const _AddButton({required this.onNewPlaceCreated});
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const AddSightScreen(),
-          ),
-        );
+        Navigator.of(context)
+            .push(
+              MaterialPageRoute(
+                builder: (context) => const AddSightScreen(),
+              ),
+            )
+            .then((value) => onNewPlaceCreated());
       },
       style: OutlinedButton.styleFrom(
         side: const BorderSide(width: 0.0, color: Colors.transparent),
@@ -165,25 +213,22 @@ class _AddButton extends StatelessWidget {
               LinearGradient(colors: themeProvider.appTheme.newPlaceButton),
           borderRadius: const BorderRadius.all(Radius.circular(24.0)),
         ),
-        child: Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.plus_one,
-                  size: 20, color: themeProvider.appTheme.addFormActiveLabel),
-              const SizedBox(
-                width: 10,
-              ),
-              Text(
-                AppStrings.create.toUpperCase(),
-                style: AppTypography.button
-                    .copyWith(color: themeProvider.appTheme.addFormActiveLabel),
-              )
-            ],
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.plus_one,
+                size: 20, color: themeProvider.appTheme.addFormActiveLabel),
+            const SizedBox(
+              width: 10,
+            ),
+            Text(
+              AppStrings.create.toUpperCase(),
+              style: AppTypography.button
+                  .copyWith(color: themeProvider.appTheme.addFormActiveLabel),
+            )
+          ],
         ),
       ),
     );
   }
 }
-

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/main.dart';
-import 'package:places/mocks.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
@@ -11,7 +10,9 @@ import 'package:places/ui/screen/sight_details.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 
 class SightSearchScreen extends StatefulWidget {
-  const SightSearchScreen({super.key});
+  const SightSearchScreen({super.key, required this.filteredPlaces});
+
+  final List<Sight> filteredPlaces;
 
   @override
   State<SightSearchScreen> createState() => _SightSearchScreenState();
@@ -23,13 +24,6 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   List<Sight>? results;
   @override
   Widget build(BuildContext context) {
-    if (results != null) {
-      results!.forEach(
-        (element) {
-          print(element.name);
-        },
-      );
-    }
     return Scaffold(
       appBar: const PreferredSize(
         preferredSize: Size.fromHeight(100),
@@ -67,7 +61,10 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
                       ),
                     )
                   : (results == null || results!.isEmpty)
-                      ? const _CantFindIt()
+                      ? const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 180.0),
+                          child: _CantFindIt(),
+                        )
                       : Column(
                           children: results!
                               .expand(
@@ -124,13 +121,16 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   }
 
   _findSight(String str) {
-    List<Sight> res = mocks
+    List<Sight> res = widget.filteredPlaces
         .where((element) =>
             element.name.toUpperCase().contains(str.toUpperCase().trim()))
         .toList();
-    setState(() {
-      results = res;
-    });
+    history.add(str);
+    setState(
+      () {
+        results = res;
+      },
+    );
   }
 }
 
@@ -193,8 +193,8 @@ class _ListItem extends StatelessWidget {
                   Text(
                     sight.name,
                     style: AppTypography.formLabel.copyWith(
-                        color:
-                            themeProvider.appTheme.bottomNavBarSelectedItemColor),
+                        color: themeProvider
+                            .appTheme.bottomNavBarSelectedItemColor),
                   ),
                   const SizedBox(
                     height: 8,
@@ -204,15 +204,17 @@ class _ListItem extends StatelessWidget {
                     style: AppTypography.smallGreen
                         .copyWith(color: AppColors.whiteSecondary2),
                   ),
-                  
                 ],
               )
             ],
           ),
-          const Divider(thickness: 0.8, color: AppColors.inactiveBlack,indent: 70,),
+          const Divider(
+            thickness: 0.8,
+            color: AppColors.inactiveBlack,
+            indent: 70,
+          ),
         ],
       ),
-      
     );
   }
 }
@@ -319,22 +321,28 @@ class HistoryItem extends StatelessWidget {
 List<String> history = ["Мок1"];
 
 class _CantFindIt extends StatelessWidget {
-  const _CantFindIt({super.key});
+  const _CantFindIt();
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: const [
-        Icon(
+      children: [
+        const Icon(
           Icons.search_rounded,
           color: AppColors.inactiveBlack,
           size: 50,
         ),
         Padding(
-          padding: EdgeInsets.only(top: 32.0, bottom: 8),
-          child: Text(AppStrings.nothingFinded),
+          padding: const EdgeInsets.only(top: 32.0, bottom: 8),
+          child: Text(
+            AppStrings.nothingFinded,
+            style:
+                AppTypography.subtitle.copyWith(color: AppColors.inactiveBlack),
+          ),
         ),
-        Text(AppStrings.tryToChangeSearchParams),
+        Text(AppStrings.tryToChangeSearchParams,
+            style:
+                AppTypography.small.copyWith(color: AppColors.inactiveBlack)),
       ],
     );
   }

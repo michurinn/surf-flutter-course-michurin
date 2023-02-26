@@ -14,5 +14,4 @@ class AppColors {
   static const cardBackground = Color(0xFFF5F5F5);
   static const inactiveBlack = Color.fromRGBO(124, 126, 146, 0.56);
   static const yellow = Color(0xFFFCDD3D);
-
 }
