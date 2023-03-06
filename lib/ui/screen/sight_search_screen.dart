@@ -45,8 +45,8 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
             children: [
               SearchBar(
                 key: _keySearchBar,
-                searchRequest: (str) =>
-                    _findSight(str), // добавляем запрос в историю поиска
+                searchRequest: (str, saveInHistory) =>
+                    _findSight(str, saveInHistory: saveInHistory),
                 isFocused: true, // автофокус
                 isEnabled: true,
                 hideHistory:
@@ -60,7 +60,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
               showHistory
                   ? _PreviuousSearchList(
                       thenHistoryItemSelected: (str) {
-                        return _findSight(str);
+                        return _reFindSight(str);
                       },
                       clearHistory: _clearHistory,
                     )
@@ -146,8 +146,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
           );
   }
 
-  _findSight(String str) {
-    _keySearchBar.currentState!.fillControllerWithValue(str); // Повторный поиск - тоже поиск )
+  _findSight(String str, {bool saveInHistory = true}) {
     List<Sight> res = widget.filteredPlaces
         .where(
           (element) => element.name.toUpperCase().contains(
@@ -156,9 +155,32 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
         ) // Поиск без учёта регистра и пробелов
         .toList();
 
-    if (!history.contains(str)) {
-      history.insert(0,str); // Добавляем в начало списка
+    if (saveInHistory) {
+      if (!history.contains(str)) {
+        history.insert(0, str); // Добавляем в начало списка
+      }
     }
+    setState(
+      () {
+        results = res;
+        showHistory = false;
+      },
+    );
+  }
+
+  _reFindSight(String str) {
+    _keySearchBar.currentState!
+        .fillControllerWithValue(str); // Повторный поиск - тоже поиск )
+    List<Sight> res = widget.filteredPlaces
+        .where(
+          (element) => element.name.toUpperCase().contains(
+                str.toUpperCase().trim(),
+              ),
+        ) // Поиск без учёта регистра и пробелов
+        .toList();
+    history.remove(str);
+    history.insert(0, str); // Добавляем в начало списка
+
     setState(
       () {
         results = res;
@@ -341,29 +363,29 @@ class HistoryItem extends StatelessWidget {
   final Function(String str)? whenSelected;
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        GestureDetector(
-          onTap: () {
-            whenSelected!(text);
-          },
-          child: Text(
-            text,
-            style: AppTypography.formLabel
-                .copyWith(color: AppColors.whiteSecondary2),
+    return GestureDetector(
+      onTap: (() => whenSelected!(text)),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              text,
+              style: AppTypography.formLabel
+                  .copyWith(color: AppColors.whiteSecondary2),
+            ),
           ),
-        ),
-        IconButton(
-          onPressed: () {
-            delete();
-          },
-          icon: const Icon(
-            Icons.cancel_outlined,
-            color: AppColors.whiteSecondary2,
-          ),
-        )
-      ],
+          IconButton(
+            onPressed: () {
+              delete();
+            },
+            icon: const Icon(
+              Icons.cancel_outlined,
+              color: AppColors.whiteSecondary2,
+            ),
+          )
+        ],
+      ),
     );
   }
 }

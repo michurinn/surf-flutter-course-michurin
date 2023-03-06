@@ -117,10 +117,15 @@ class _SightListScreenState extends State<SightListScreen> {
                 horizontal: 90,
               ),
               child: _AddButton(
-                onNewPlaceCreated: (() => setState(
-                      // Покажем обновлённый список
-                      () {},
-                    )),
+                onNewPlaceCreated: (() {
+                  setState(
+                    // Покажем обновлённый список
+                    () {},
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('New place has been created'),
+                  ));
+                }),
               ),
             ),
           ),
@@ -200,11 +205,13 @@ class _AddButton extends StatelessWidget {
       onPressed: () {
         Navigator.of(context)
             .push(
-              MaterialPageRoute(
-                builder: (context) => const AddSightScreen(),
-              ),
-            )
-            .then((value) => onNewPlaceCreated());
+          MaterialPageRoute(
+            builder: (context) => const AddSightScreen(),
+          ),
+        )
+            .then((value) {
+          onNewPlaceCreated();
+        });
       },
       style: OutlinedButton.styleFrom(
         side: const BorderSide(width: 0.0, color: Colors.transparent),

@@ -17,7 +17,7 @@ class SearchBar extends StatefulWidget {
   final bool isEnabled;
   final VoidCallback? hideHistory;
   final VoidCallback? showHistory;
-  final Function(String)? searchRequest;
+  final Function(String, bool)? searchRequest;
   final bool isFocused;
   @override
   State<SearchBar> createState() => SearchBarState();
@@ -43,7 +43,8 @@ class SearchBarState extends State<SearchBar> {
           widget.showHistory!();
         }
         if (controller!.text.endsWith(' ')) {
-          widget.searchRequest!(controller!.text);
+          // В историю поиска добавляются только строки поиска по нажатию Enter
+          widget.searchRequest!(controller!.text, false);
         }
       },
     );
@@ -59,6 +60,12 @@ class SearchBarState extends State<SearchBar> {
 
   void fillControllerWithValue(String str) {
     controller!.text = str;
+    controller!.selection = TextSelection.collapsed(offset: str.length);
+  }
+
+  // В историю поиска добавляются только строки поиска по нажатию Enter
+  void parseString(str) {
+    widget.searchRequest!(str, true);
   }
 
   @override
@@ -68,7 +75,7 @@ class SearchBarState extends State<SearchBar> {
           widget.isEnabled ? true : false, // will disable paste operation
       focusNode: widget.isEnabled ? focusNode : AlwaysDisabledFocusNode(),
       enabled: widget.isEnabled ? true : false,
-      onSubmitted: controller!.text == "" ? null : widget.searchRequest,
+      onSubmitted: controller!.text == "" ? null : parseString,
       autofocus: widget.isFocused ? true : false,
       controller: controller,
       cursorWidth: 1,
