@@ -5,9 +5,6 @@ class AppStrings {
   static const sight3workTime = "Открытие 21.12.2023";
 
   static const listOfInterestingPlases = "Список интересных мест";
-  static const sight0name = "Ольгин пруд";
-  static const sight1name = "Форт \"Император Павел I\"";
-  static const sight2name = "Выборгский замок";
 
   static const sight0subscr = "Место в Петергофе, маршрут для прогулки";
   static const sight1subscr = "Форт неадлеко от Кронштадта";
@@ -62,4 +59,36 @@ class AppStrings {
   static const clearHistore = "Очистить историю";
   static const nothingFinded = "Ничего не найдено";
   static const tryToChangeSearchParams = "Попробуйте изменить параметры поиска";
+}
+
+// Возможные категории
+enum SightType {
+  cafe(
+    AppStrings.sightType7,
+    'assets/icons/cafe.svg',
+  ),
+  museum(
+    AppStrings.sightType6,
+    'assets/icons/museum.svg',
+  ),
+  park(
+    AppStrings.sightType5,
+    'assets/icons/park.svg',
+  ),
+  superPlace(
+    AppStrings.sightType4,
+    'assets/icons/unique_place.svg',
+  ),
+  restraunt(
+    AppStrings.sightType3,
+    'assets/icons/restraunt.svg',
+  ),
+  hotel(
+    AppStrings.sightType2,
+    'assets/icons/hotel.svg',
+  );
+
+  const SightType(this.type, this.icon);
+  final String type;
+  final String icon;
 }

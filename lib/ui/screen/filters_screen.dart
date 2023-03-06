@@ -12,8 +12,6 @@ import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 
-final StreamController<bool> controller = StreamController<bool>.broadcast();
-
 //Екран Фильтров
 class FilterScreen extends StatefulWidget {
   const FilterScreen({super.key});
@@ -27,43 +25,18 @@ class _FilterScreenState extends State<FilterScreen> {
   double _endValue = 9; // Конечное значение слайдера по умолчанию
   double _startValue = 2; // Начальное значение слайдера по умолчанию
   List<Sight>? results;
-  late List<_itemGridView> _itemsList;
+
+  late final StreamController<bool> controller;
   @override
-  void initState() {
-    // Фильтры по типу места
-    _itemsList = [
-      _itemGridView(
-        onPressed: () => setState(() {}),
-        iconAssetPath: 'assets/icons/hotel.svg',
-        text: AppStrings.sightType2,
-      ),
-      _itemGridView(
-        onPressed: () => setState(() {}),
-        iconAssetPath: 'assets/icons/restraunt.svg',
-        text: AppStrings.sightType3,
-      ),
-      _itemGridView(
-        onPressed: () => setState(() {}),
-        iconAssetPath: 'assets/icons/unique_place.svg',
-        text: AppStrings.sightType4,
-      ),
-      _itemGridView(
-        onPressed: () => setState(() {}),
-        iconAssetPath: 'assets/icons/park.svg',
-        text: AppStrings.sightType5,
-      ),
-      _itemGridView(
-        onPressed: () => setState(() {}),
-        iconAssetPath: 'assets/icons/museum.svg',
-        text: AppStrings.sightType6,
-      ),
-      _itemGridView(
-        onPressed: () => setState(() {}),
-        iconAssetPath: 'assets/icons/cafe.svg',
-        text: AppStrings.sightType7,
-      ),
-    ];
+  initState() {
+    controller = StreamController<bool>.broadcast();
     super.initState();
+  }
+
+  @override
+  dispose() {
+    controller.close();
+    super.dispose();
   }
 
   // Отсчёт начинаетс от 100 м, затем в км
@@ -163,7 +136,17 @@ class _FilterScreenState extends State<FilterScreen> {
                 ),
                 SizedBox(
                   height: 265,
-                  child: _GridView(itemsList: _itemsList),
+                  child: _GridView(
+                    itemsList: SightType.values
+                        .map(
+                          (e) => _itemGridView(
+                            onPressed: () => setState(() {}),
+                            sightType: e,
+                            markerController: controller,
+                          ),
+                        )
+                        .toList(),
+                  ),
                 ),
                 const SizedBox(
                   height: 56,
@@ -259,10 +242,12 @@ class __GridViewState extends State<_GridView> {
 // Тип места
 class _itemGridView extends StatefulWidget {
   final VoidCallback? onPressed;
-  final String iconAssetPath;
-  final String text;
+  final SightType sightType;
+  final StreamController<bool> markerController;
   const _itemGridView(
-      {required this.iconAssetPath, required this.text, this.onPressed});
+      {required this.sightType,
+      this.onPressed,
+      required this.markerController});
 
   @override
   State<_itemGridView> createState() => __itemGridViewState();
@@ -270,13 +255,16 @@ class _itemGridView extends StatefulWidget {
 
 class __itemGridViewState extends State<_itemGridView> {
   bool isChecked = false;
+  // ignore: unused_field
   late final StreamSubscription<bool> _subscription;
 
   @override
   void initState() {
     // Если уходим из екрана Фильтра, настройки сохраняются
-    filter.avaibleTypes.contains(widget.text) ? isChecked = true : null;
-    _subscription = controller.stream.listen((bool data) {
+    filter.avaibleTypes.contains(widget.sightType.type)
+        ? isChecked = true
+        : null;
+    _subscription = widget.markerController.stream.listen((bool data) {
       if (!mounted) return;
       setState(() {
         isChecked = false;
@@ -289,7 +277,7 @@ class __itemGridViewState extends State<_itemGridView> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        filter.addOrRemoveFilter(widget.text);
+        filter.addOrRemoveFilter(widget.sightType.type);
         setState(() {
           isChecked = !isChecked;
         });
@@ -307,7 +295,7 @@ class __itemGridViewState extends State<_itemGridView> {
                         .withOpacity(0.16),
                     shape: BoxShape.circle),
                 child: SvgPicture.asset(
-                  widget.iconAssetPath,
+                  widget.sightType.icon,
                   fit: BoxFit.none,
                 ),
               ),
@@ -333,7 +321,7 @@ class __itemGridViewState extends State<_itemGridView> {
           const SizedBox(
             height: 12,
           ),
-          Text(widget.text,
+          Text(widget.sightType.type,
               style: AppTypography.superSmall.copyWith(
                   color: themeProvider.appTheme.bottomNavBarSelectedItemColor)),
         ],

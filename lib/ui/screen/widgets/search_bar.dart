@@ -35,16 +35,18 @@ class SearchBarState extends State<SearchBar> {
   void initState() {
     focusNode = FocusNode();
     controller = TextEditingController();
-    controller!.addListener(() {
-      if (controller!.text.isNotEmpty) {
-        widget.hideHistory!();
-      } else if (controller!.text.isEmpty) {
-        widget.showHistory!();
-      }
-      if (controller!.text.endsWith(' ')) {
-        widget.searchRequest!(controller!.text);
-      }
-    });
+    controller!.addListener(
+      () {
+        if (controller!.text.isNotEmpty) {
+          widget.hideHistory!();
+        } else if (controller!.text.isEmpty) {
+          widget.showHistory!();
+        }
+        if (controller!.text.endsWith(' ')) {
+          widget.searchRequest!(controller!.text);
+        }
+      },
+    );
     super.initState();
   }
 
@@ -76,16 +78,18 @@ class SearchBarState extends State<SearchBar> {
         floatingLabelBehavior: FloatingLabelBehavior.never,
         prefixIcon:
             const Icon(Icons.search_rounded, color: AppColors.inactiveBlack),
-        suffix: InkWell(
-          child: Icon(
-            Icons.cancel,
-            color: themeProvider.appTheme.badgeColors[0],
-            size: 18,
-          ),
-          onTap: () {
-            clear();
-          },
-        ),
+        suffix: controller!.text == ""
+            ? null
+            : InkWell(
+                child: Icon(
+                  Icons.cancel,
+                  color: themeProvider.appTheme.badgeColors[0],
+                  size: 18,
+                ),
+                onTap: () {
+                  clear();
+                },
+              ),
         suffixIconColor: themeProvider.appTheme.filterButtonColor,
         fillColor: themeProvider.appTheme.cardColor,
         filled: true,

@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:places/domain/sight.dart';
@@ -26,17 +28,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
       descriptionController;
   Future<dynamic>? chosenCategory;
   bool _isButtonEnabled = false;
-  bool _nameFieldFocused = false;
-  bool _widthFieldFocused = false;
-  bool _heightFieldFocused = false;
-  bool _descriptionFieldFocused = false;
-
-  void _clearAllFocusFlags() {
-    _nameFieldFocused = false;
-    _widthFieldFocused = false;
-    _heightFieldFocused = false;
-    _descriptionFieldFocused = false;
-  }
+  bool _nameFieldShowSuffix = false;
+  bool _widthFieldShowSuffix = false;
+  bool _heightFieldShowSuffix = false;
+  bool _descriptionFieldShowSuffix = false;
 
   @override
   void initState() {
@@ -49,38 +44,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
     fn2 = FocusNode();
     fn3 = FocusNode();
     fn4 = FocusNode();
-    fn1.addListener(() {
-      _clearAllFocusFlags();
-      if (fn1.hasFocus) {
-        setState(() {
-          _nameFieldFocused = true;
-        });
-      }
-    });
-    fn2.addListener(() {
-      if (fn2.hasFocus) {
-        setState(() {
-          _widthFieldFocused = true;
-        });
-      }
-    });
 
-    fn3.addListener(() {
-      if (fn3.hasFocus) {
-        setState(() {
-          _heightFieldFocused = true;
-        });
-      }
-    });
-    fn4.addListener(() {
-      _clearAllFocusFlags();
-      if (fn4.hasFocus) {
-        setState(() {
-          _descriptionFieldFocused = true;
-        });
-      }
-    });
-
+    _setControllersForSuffixIconBehaviors();
+    _setFocusNodesForSuffixIconsBehaviour();
     super.initState();
   }
 
@@ -113,11 +79,15 @@ class _AddSightScreenState extends State<AddSightScreen> {
   }
 
   String? _validateCoordinates(String? coordinate) {
-    RegExp regex = RegExp(r'\d{1,3}.\d+'); // translates to 22.222222
-    if (coordinate == null) {
-      return 'We need the coordinate';
+    RegExp regex =
+        RegExp(r'(\d{1,3})|( \d{1,3}.\d+)'); // translates to 22.222222
+
+    if (coordinate == null || coordinate == '') {
+      return 'Need coordinate';
+    } else if (double.parse(coordinate) > 180.0) {
+      return '0 < coordinate < 180';
     } else if (!regex.hasMatch(coordinate)) {
-      return "Sure?";
+      return "123.456789?";
     } else {
       return null;
     }
@@ -136,278 +106,292 @@ class _AddSightScreenState extends State<AddSightScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double heightVisible = MediaQuery.of(context).viewInsets.bottom;
-    return Scaffold(
-      appBar: AppBar(
-        leadingWidth: 100,
-        elevation: 0,
-        title: const Text(
-          AppStrings.newPlace,
-          style: AppTypography.subtitle,
-        ),
-        centerTitle: true,
-        leading: TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text(
-            AppStrings.cancel,
-            style: AppTypography.simpleText
-                .copyWith(color: themeProvider.appTheme.appLeading),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      behavior: HitTestBehavior.opaque,
+      child: Scaffold(
+        appBar: AppBar(
+          leadingWidth: 100,
+          elevation: 0,
+          title: const Text(
+            AppStrings.newPlace,
+            style: AppTypography.subtitle,
+          ),
+          centerTitle: true,
+          leading: TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              AppStrings.cancel,
+              style: AppTypography.simpleText
+                  .copyWith(color: themeProvider.appTheme.appLeading),
+            ),
           ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: SingleChildScrollView(
-          // Получить возможность прокрутки, потому что клавиатура закрывает поля
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Form(
-                key: _keyForm,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 24.0),
-                        child: Text(
-                          AppStrings.category.toUpperCase(),
-                          style: AppTypography.superSmall.copyWith(
-                              color:
-                                  themeProvider.appTheme.addFormInactiveLabel),
-                        ),
-                      ),
-                      _TypeFormField(
-                          validate: _validate,
-                          controller: controller,
-                          onChanged: (string) {
-                            _checkEmptyFields();
-                          },
-                          focusNode: fn1),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 24, bottom: 12),
-                        child: Text(
-                          AppStrings.name.toUpperCase(),
-                          style: AppTypography.superSmall.copyWith(
-                              color:
-                                  themeProvider.appTheme.addFormInactiveLabel),
-                        ),
-                      ),
-                      TextFormField(
-                        onTap: () => FocusScope.of(context).requestFocus(fn1),
-                        focusNode: fn1,
-                        controller: nameController,
-                        validator: _validate,
-                        onEditingComplete: () {
-                          _checkEmptyFields();
-                        },
-                        onChanged: (value) {
-                          FocusScope.of(context).requestFocus(fn1);
-                        },
-                        textCapitalization: TextCapitalization.sentences,
-                        style: AppTypography.formLabel.copyWith(
-                            color: themeProvider.appTheme.cursorColor),
-                        cursorWidth: 1,
-                        cursorHeight: 24,
-                        cursorColor: themeProvider.appTheme.cursorColor,
-                        decoration: _inputDecoration(
-                            label: AppStrings.name,
-                            clear: () => nameController?.clear(),
-                            showSuffix: _nameFieldFocused),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 24),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 150,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 12),
-                                    child: Text(
-                                      AppStrings.width.toUpperCase(),
-                                      style: AppTypography.superSmall.copyWith(
-                                          color: themeProvider
-                                              .appTheme.addFormInactiveLabel),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    fit: FlexFit.loose,
-                                    child: TextFormField(
-                                      textAlignVertical: TextAlignVertical.top,
-                                      focusNode: fn2,
-                                      controller: widthController,
-                                      cursorWidth: 1,
-                                      cursorHeight: 24,
-                                      cursorColor:
-                                          themeProvider.appTheme.cursorColor,
-                                      onEditingComplete: () {
-                                        _checkEmptyFields();
-                                        fn2.unfocus();
-                                        fn3.requestFocus();
-                                      },
-                                      onChanged: (value) {
-                                        FocusScope.of(context)
-                                            .requestFocus(fn2);
-                                      },
-                                      validator: _validateCoordinates,
-                                      keyboardType: TextInputType.number,
-                                      decoration: _inputDecoration(
-                                          label: AppStrings.width,
-                                          clear: () => widthController?.clear(),
-                                          showSuffix: _widthFieldFocused),
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                          RegExp('[0-9.]'),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              width: 150,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 12),
-                                    child: Text(
-                                      AppStrings.height.toUpperCase(),
-                                      style: AppTypography.superSmall.copyWith(
-                                          color: themeProvider
-                                              .appTheme.addFormInactiveLabel),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    fit: FlexFit.loose,
-                                    child: TextFormField(
-                                      focusNode: fn3,
-                                      controller: heightController,
-                                      cursorWidth: 1,
-                                      cursorHeight: 24,
-                                      cursorColor:
-                                          themeProvider.appTheme.cursorColor,
-                                      onEditingComplete: () {
-                                        _checkEmptyFields();
-                                        fn3.unfocus();
-                                        fn4.requestFocus();
-                                      },
-                                      onChanged: (value) {
-                                        FocusScope.of(context)
-                                            .requestFocus(fn3);
-                                      },
-                                      validator: _validateCoordinates,
-                                      keyboardType: TextInputType.number,
-                                      decoration: _inputDecoration(
-                                          label: AppStrings.height,
-                                          clear: () =>
-                                              heightController?.clear(),
-                                          showSuffix: _heightFieldFocused),
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp('[0-9.]')),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 15.0),
-                        child: TextButton(
-                          onPressed: () {
-                            print("Put on map pressed");
-                          },
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: SingleChildScrollView(
+            // Получить возможность прокрутки, потому что клавиатура закрывает поля
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Form(
+                  key: _keyForm,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 24.0),
                           child: Text(
-                            AppStrings.putOnMap,
-                            style: AppTypography.simpleText.copyWith(
-                                color: themeProvider.appTheme.clearButtonColor),
+                            AppStrings.category.toUpperCase(),
+                            style: AppTypography.superSmall.copyWith(
+                                color: themeProvider
+                                    .appTheme.addFormInactiveLabel),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 37.0),
-                        child: Text(
-                          AppStrings.description.toUpperCase(),
-                          style: AppTypography.superSmall.copyWith(
-                              color:
-                                  themeProvider.appTheme.addFormInactiveLabel),
+                        _TypeFormField(
+                            validate: _validate,
+                            controller: controller,
+                            onChanged: (string) {
+                              _checkEmptyFields();
+                            },
+                            focusNode: fn1),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 24, bottom: 12),
+                          child: Text(
+                            AppStrings.name.toUpperCase(),
+                            style: AppTypography.superSmall.copyWith(
+                                color: themeProvider
+                                    .appTheme.addFormInactiveLabel),
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12.0),
-                        child: TextFormField(
-                          focusNode: fn4,
+                        TextFormField(
+                          onTap: () => FocusScope.of(context).requestFocus(fn1),
+                          focusNode: fn1,
+                          controller: nameController,
                           validator: _validate,
-                          controller: descriptionController,
                           onEditingComplete: () {
                             _checkEmptyFields();
-                            fn4.unfocus();
+                            fn1.unfocus();
+                            fn2.requestFocus();
                           },
-                          keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.sentences,
                           style: AppTypography.formLabel.copyWith(
                               color: themeProvider.appTheme.cursorColor),
                           cursorWidth: 1,
                           cursorHeight: 24,
                           cursorColor: themeProvider.appTheme.cursorColor,
-                          minLines: 3,
-                          maxLines: 8,
-                          textAlignVertical: TextAlignVertical.top,
                           decoration: _inputDecoration(
+                              label: AppStrings.name,
+                              clear: () => nameController?.clear(),
+                              showSuffix: _nameFieldShowSuffix),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 24),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: 150,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 12),
+                                      child: Text(
+                                        AppStrings.width.toUpperCase(),
+                                        style: AppTypography.superSmall
+                                            .copyWith(
+                                                color: themeProvider.appTheme
+                                                    .addFormInactiveLabel),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      fit: FlexFit.loose,
+                                      child: TextFormField(
+                                        textAlignVertical:
+                                            TextAlignVertical.top,
+                                        focusNode: fn2,
+                                        controller: widthController,
+                                        cursorWidth: 1,
+                                        cursorHeight: 24,
+                                        cursorColor:
+                                            themeProvider.appTheme.cursorColor,
+                                        onEditingComplete: () {
+                                          _checkEmptyFields();
+                                          fn2.unfocus();
+                                          fn3.requestFocus();
+                                        },
+                                        // onChanged: (value) {
+                                        //   FocusScope.of(context)
+                                        //       .requestFocus(fn2);
+                                        // },
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
+                                        validator: _validateCoordinates,
+                                        keyboardType: TextInputType.number,
+                                        decoration: _inputDecoration(
+                                          label: AppStrings.width,
+                                          clear: () => widthController?.clear(),
+                                          showSuffix: _widthFieldShowSuffix,
+                                        ),
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp('[0-9.]'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 150,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 12),
+                                      child: Text(
+                                        AppStrings.height.toUpperCase(),
+                                        style: AppTypography.superSmall
+                                            .copyWith(
+                                                color: themeProvider.appTheme
+                                                    .addFormInactiveLabel),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      fit: FlexFit.loose,
+                                      child: TextFormField(
+                                        focusNode: fn3,
+                                        controller: heightController,
+                                        cursorWidth: 1,
+                                        cursorHeight: 24,
+                                        cursorColor:
+                                            themeProvider.appTheme.cursorColor,
+                                        onEditingComplete: () {
+                                          _checkEmptyFields();
+                                          fn3.unfocus();
+                                          fn4.requestFocus();
+                                        },
+                                        // onChanged: (value) {
+                                        //   FocusScope.of(context)
+                                        //       .requestFocus(fn3);
+                                        // },
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
+                                        validator: _validateCoordinates,
+                                        keyboardType: TextInputType.number,
+                                        decoration: _inputDecoration(
+                                          label: AppStrings.height,
+                                          clear: () =>
+                                              heightController?.clear(),
+                                          showSuffix: _heightFieldShowSuffix,
+                                        ),
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp('[0-9.]')),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              AppStrings.putOnMap,
+                              style: AppTypography.simpleText.copyWith(
+                                  color:
+                                      themeProvider.appTheme.clearButtonColor),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 37.0),
+                          child: Text(
+                            AppStrings.description.toUpperCase(),
+                            style: AppTypography.superSmall.copyWith(
+                                color: themeProvider
+                                    .appTheme.addFormInactiveLabel),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12.0),
+                          child: TextFormField(
+                            focusNode: fn4,
+                            validator: _validate,
+                            controller: descriptionController,
+                            onEditingComplete: () {
+                              _checkEmptyFields();
+                              fn4.unfocus();
+                            },
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.sentences,
+                            style: AppTypography.formLabel.copyWith(
+                                color: themeProvider.appTheme.cursorColor),
+                            cursorWidth: 1,
+                            cursorHeight: 24,
+                            cursorColor: themeProvider.appTheme.cursorColor,
+                            minLines: 3,
+                            maxLines: 8,
+                            textAlignVertical: TextAlignVertical.top,
+                            decoration: _inputDecoration(
                               label: AppStrings.inputText,
                               clear: (() => descriptionController?.clear()),
-                              showSuffix: _descriptionFieldFocused),
+                              showSuffix: _descriptionFieldShowSuffix,
+                            ),
+                          ),
+                        ),
+                      ]),
+                ),
+                SizedBox(
+                  height: heightVisible > 0 ? 0 : height / 4,
+                ), // Когда показана вирутальная клавиатура
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: OutlinedButton(
+                    onPressed: _saveButtonOnTap,
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(
+                          width: 0.0, color: Colors.transparent),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12),
                         ),
                       ),
-                    ]),
-              ),
-              SizedBox(
-                height: heightVisible > 0 ? 0 : height / 4,
-              ), // Когда показана вирутальная клавиатура
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: OutlinedButton(
-                  onPressed: _saveButtonOnTap,
-                  style: OutlinedButton.styleFrom(
-                    side:
-                        const BorderSide(width: 0.0, color: Colors.transparent),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
+                      backgroundColor: !_isButtonEnabled
+                          ? themeProvider.appTheme.cardColor
+                          : themeProvider.appTheme.routeButtonColor,
+                      minimumSize: const Size(328, 48),
+                      alignment: Alignment.center,
                     ),
-                    backgroundColor: !_isButtonEnabled
-                        ? themeProvider.appTheme.cardColor
-                        : themeProvider.appTheme.routeButtonColor,
-                    minimumSize: const Size(328, 48),
-                    alignment: Alignment.center,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppStrings.create.toUpperCase(),
-                        style: AppTypography.button.copyWith(
-                            color: !_isButtonEnabled
-                                ? themeProvider.appTheme.addFormInactiveLabel
-                                : themeProvider.appTheme.addFormActiveLabel),
-                      )
-                    ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          AppStrings.create.toUpperCase(),
+                          style: AppTypography.button.copyWith(
+                              color: !_isButtonEnabled
+                                  ? themeProvider.appTheme.addFormInactiveLabel
+                                  : themeProvider.appTheme.addFormActiveLabel),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -434,6 +418,100 @@ class _AddSightScreenState extends State<AddSightScreen> {
       }
     }
   }
+
+  void _setFocusNodesForSuffixIconsBehaviour() {
+    fn1.addListener(
+      () {
+        if (fn1.hasFocus && nameController!.value.text.isNotEmpty) {
+          setState(
+            () {
+              _nameFieldShowSuffix = true;
+            },
+          );
+        } else {
+          setState(
+            () {
+              _nameFieldShowSuffix = false;
+            },
+          );
+        }
+      },
+    );
+    fn2.addListener(
+      () {
+        if (fn2.hasFocus && widthController!.value.text.isNotEmpty) {
+          setState(
+            () {
+              _widthFieldShowSuffix = true;
+            },
+          );
+        } else {
+          setState(
+            () {
+              _widthFieldShowSuffix = false;
+            },
+          );
+        }
+      },
+    );
+    fn3.addListener(
+      () {
+        if (fn3.hasFocus && heightController!.value.text.isNotEmpty) {
+          setState(
+            () {
+              _heightFieldShowSuffix = true;
+            },
+          );
+        } else {
+          setState(
+            () {
+              _heightFieldShowSuffix = false;
+            },
+          );
+        }
+      },
+    );
+    fn4.addListener(
+      () {
+        if (fn4.hasFocus && descriptionController!.value.text.isNotEmpty) {
+          setState(
+            () {
+              _descriptionFieldShowSuffix = true;
+            },
+          );
+        } else {
+          setState(
+            () {
+              _descriptionFieldShowSuffix = false;
+            },
+          );
+        }
+      },
+    );
+  }
+
+  void _setControllersForSuffixIconBehaviors() {
+    nameController!.addListener(
+      () {
+        fn1.notifyListeners();
+      },
+    );
+    widthController!.addListener(
+      () {
+        fn2.notifyListeners();
+      },
+    );
+    heightController!.addListener(
+      () {
+        fn3.notifyListeners();
+      },
+    );
+    descriptionController!.addListener(
+      () {
+        fn4.notifyListeners();
+      },
+    );
+  }
 }
 
 // Общий InputDecoration для полей
@@ -443,7 +521,7 @@ InputDecoration _inputDecoration({
   required bool showSuffix,
 }) {
   return InputDecoration(
-    suffix: showSuffix
+    suffixIcon: showSuffix
         ? InkWell(
             child: Icon(
               Icons.cancel,

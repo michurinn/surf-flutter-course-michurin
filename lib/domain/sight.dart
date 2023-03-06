@@ -22,6 +22,5 @@ class Sight extends Equatable {
   });
 
   @override
-  List<Object> get props => [name, lat,lon,details,type];
-
+  List<Object> get props => [name, lat, lon, details, type];
 }

@@ -17,7 +17,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   late Map<String, bool> checkedMap;
   @override
   void initState() {
-    checkedMap = {for (var item in _listOfCategories) item: false};
+    checkedMap = {for (var item in SightType.values) item.type: false};
     super.initState();
   }
 
@@ -58,7 +58,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
-              children: _listOfCategories.map((element) {
+              children: SightType.values.map((element) {
                 return GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
@@ -66,7 +66,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                       () {
                         // Может быть выбрана только одна категория, обнуляем прежний выбор
                         checkedMap.updateAll((key, value) => value = false);
-                        checkedMap.update(element, (value) => value = !value);
+                        checkedMap.update(
+                            element.type, (value) => value = !value);
                       },
                     );
                   },
@@ -76,7 +77,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            element,
+                            element.type,
                             style: AppTypography.formLabel,
                           ),
                           Checkbox(
@@ -85,14 +86,15 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                   const BorderSide(color: Colors.transparent),
                             ),
                             checkColor: themeProvider.appTheme.routeButtonColor,
-                            value: checkedMap[element],
+                            value: checkedMap[element.type],
                             onChanged: (value) {
                               setState(
                                 () {
                                   // Может быть выбрана только одна категория, обнуляем прежний выбор
                                   checkedMap
                                       .updateAll((key, value) => value = false);
-                                  checkedMap[element] = !checkedMap[element]!;
+                                  checkedMap[element.type] =
+                                      !checkedMap[element]!;
                                 },
                               );
                             },
@@ -149,7 +151,7 @@ class __SaveButtonState extends State<_SaveButton> {
         backgroundColor: widget.isActive
             ? themeProvider.appTheme.routeButtonColor
             : themeProvider.appTheme.cardColor,
-        minimumSize: const Size(328, 48),
+        minimumSize: const Size(0, 48),
         alignment: Alignment.center,
       ),
       child: Row(
@@ -167,15 +169,3 @@ class __SaveButtonState extends State<_SaveButton> {
     );
   }
 }
-
-// Возможные категории
-List<String> _listOfCategories = [
-  AppStrings.sightType0,
-  AppStrings.sightType1,
-  AppStrings.sightType2,
-  AppStrings.sightType3,
-  AppStrings.sightType4,
-  AppStrings.sightType5,
-  AppStrings.sightType6,
-  AppStrings.sightType7,
-];
