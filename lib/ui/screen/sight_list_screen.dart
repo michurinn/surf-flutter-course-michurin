@@ -122,9 +122,19 @@ class _SightListScreenState extends State<SightListScreen> {
                     // Покажем обновлённый список
                     () {},
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('New place has been created'),
-                  ));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0)),
+                      behavior: SnackBarBehavior.floating,
+                      duration: const Duration(milliseconds: 500),
+                      content: const Text(
+                        AppStrings.newPlaceAdded,
+                        style: AppTypography.simpleText,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  );
                 }),
               ),
             ),
@@ -210,7 +220,10 @@ class _AddButton extends StatelessWidget {
           ),
         )
             .then((value) {
-          onNewPlaceCreated();
+          //if (value == true)
+          {
+            onNewPlaceCreated();
+          }
         });
       },
       style: OutlinedButton.styleFrom(

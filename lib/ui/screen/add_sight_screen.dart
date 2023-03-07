@@ -79,16 +79,16 @@ class _AddSightScreenState extends State<AddSightScreen> {
   }
 
   String? _validateCoordinates(String? coordinate) {
-    RegExp regex =
-        RegExp(r'(\d{1,3})|( \d{1,3}.\d+)'); // translates to 22.222222
+    RegExp regex = RegExp(r'\d{1,3}\.?\d{0,8}'); // translates to 22.222222
 
     if (coordinate == null || coordinate == '') {
       return 'Need coordinate';
-    } else if (double.parse(coordinate) > 180.0) {
-      return '0 < coordinate < 180';
-    } else if (!regex.hasMatch(coordinate)) {
+    } else if (regex.allMatches(coordinate).length != 1) {
       return "123.456789?";
     } else {
+      if (double.tryParse(coordinate)! > 180.0) {
+        return '0 < coordinate < 180';
+      }
       return null;
     }
   }
@@ -120,7 +120,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
           centerTitle: true,
           leading: TextButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(false);
             },
             child: Text(
               AppStrings.cancel,

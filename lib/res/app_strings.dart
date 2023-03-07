@@ -6,6 +6,8 @@ class AppStrings {
 
   static const listOfInterestingPlases = "Список интересных мест";
 
+  static const newPlaceAdded = "Добавлено новое место";
+
   static const sight0subscr = "Место в Петергофе, маршрут для прогулки";
   static const sight1subscr = "Форт неадлеко от Кронштадта";
   static const sight2subscr = "Замок в г.Выборг";
