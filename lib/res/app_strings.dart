@@ -12,14 +12,14 @@ class AppStrings {
   static const sight1subscr = "Форт неадлеко от Кронштадта";
   static const sight2subscr = "Замок в г.Выборг";
 
-  static const sightType0 = "Природа";
-  static const sightType1 = "Экскурсии";
-  static const sightType2 = "Отель";
-  static const sightType3 = "Ресторан";
-  static const sightType4 = "Особое место";
-  static const sightType5 = "Парк";
-  static const sightType6 = "Музей";
-  static const sightType7 = "Кафе";
+  static const nature = "Природа";
+  static const excursions = "Экскурсии";
+  static const hotel = "Отель";
+  static const restraunt = "Ресторан";
+  static const uniquePlace = "Особое место";
+  static const park = "Парк";
+  static const museum = "Музей";
+  static const cafe = "Кафе";
 
   static const wouldLikeToVisit = "Хочу посетить";
   static const justVisited = "Посетил";
@@ -66,27 +66,27 @@ class AppStrings {
 // Возможные категории
 enum SightType {
   cafe(
-    AppStrings.sightType7,
+    AppStrings.cafe,
     'assets/icons/cafe.svg',
   ),
   museum(
-    AppStrings.sightType6,
+    AppStrings.museum,
     'assets/icons/museum.svg',
   ),
   park(
-    AppStrings.sightType5,
+    AppStrings.park,
     'assets/icons/park.svg',
   ),
   superPlace(
-    AppStrings.sightType4,
+    AppStrings.uniquePlace,
     'assets/icons/unique_place.svg',
   ),
   restraunt(
-    AppStrings.sightType3,
+    AppStrings.restraunt,
     'assets/icons/restraunt.svg',
   ),
   hotel(
-    AppStrings.sightType2,
+    AppStrings.hotel,
     'assets/icons/hotel.svg',
   );
 
