@@ -1,13 +1,18 @@
 // ignore_for_file: avoid_print, camel_case_types
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/domain/sight.dart';
 import 'package:places/main.dart';
+import 'package:places/mocks.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 
+//Екран Фильтров
 class FilterScreen extends StatefulWidget {
   const FilterScreen({super.key});
 
@@ -17,13 +22,27 @@ class FilterScreen extends StatefulWidget {
 
 // Екран фильтров
 class _FilterScreenState extends State<FilterScreen> {
-  double _endValue = 9;
-  double _startValue = 2;
+  double _endValue = 9; // Конечное значение слайдера по умолчанию
+  double _startValue = 2; // Начальное значение слайдера по умолчанию
+  List<Sight>? results;
 
+  late final StreamController<bool> controller;
+  @override
+  initState() {
+    controller = StreamController<bool>.broadcast();
+    super.initState();
+  }
+
+  @override
+  dispose() {
+    controller.close();
+    super.dispose();
+  }
+
+  // Отсчёт начинаетс от 100 м, затем в км
   Text _getRangeLabel(double startValue, double endValue) {
     return startValue < 1.0
-        ? // Отсчёт начинаетс от 100 м, затем в км
-        Text(
+        ? Text(
             "от 100 м до ${endValue.toInt()} км",
             style: AppTypography.simpleText
                 .copyWith(color: AppColors.whiteSecondary2),
@@ -37,6 +56,14 @@ class _FilterScreenState extends State<FilterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Результат фильтрации менятеся при каждом применении/отмене фильтра
+    results = mocks.where(
+      (element) {
+        return (filter.avaibleTypes.contains(element.type) &&
+            filter.arePointInRange(element, mockCoordinates,
+                filter.distanceFrom, filter.distanceTo));
+      },
+    ).toList();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -52,7 +79,7 @@ class _FilterScreenState extends State<FilterScreen> {
             alignment: Alignment.center,
           ),
           onPressed: () {
-            print("Back button on card pressed");
+            Navigator.pop(context);
           },
           child: SvgPicture.asset(
             AppAssets.back,
@@ -66,7 +93,11 @@ class _FilterScreenState extends State<FilterScreen> {
             padding: const EdgeInsets.only(right: 16.0),
             child: TextButton(
               onPressed: () {
-                print("Clear button pressed");
+                setState(() {
+                  _endValue = 9;
+                  _startValue = 2;
+                  controller.sink.add(false);
+                });
               },
               style: const ButtonStyle(
                 minimumSize: MaterialStatePropertyAll(Size(72, 20)),
@@ -103,9 +134,19 @@ class _FilterScreenState extends State<FilterScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(
+                SizedBox(
                   height: 265,
-                  child: _GridView(),
+                  child: _GridView(
+                    itemsList: SightType.values
+                        .map(
+                          (e) => _itemGridView(
+                            onPressed: () => setState(() {}),
+                            sightType: e,
+                            markerController: controller,
+                          ),
+                        )
+                        .toList(),
+                  ),
                 ),
                 const SizedBox(
                   height: 56,
@@ -135,6 +176,7 @@ class _FilterScreenState extends State<FilterScreen> {
                     inactiveColor: AppColors.inactiveBlack,
                     values: RangeValues(_startValue, _endValue),
                     onChanged: (values) {
+                      filter.setDistanses(values.start, values.end);
                       setState(() {
                         _startValue = values.start;
                         _endValue = values.end;
@@ -150,7 +192,7 @@ class _FilterScreenState extends State<FilterScreen> {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: OutlinedButton(
                 onPressed: () {
-                  print("Show button pressed");
+                  Navigator.pop(context, results);
                 },
                 style: OutlinedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
@@ -163,7 +205,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Показать (190)".toUpperCase(),
+                      "Показать (${results!.length})".toUpperCase(),
                       style: AppTypography.button,
                     )
                   ],
@@ -177,9 +219,10 @@ class _FilterScreenState extends State<FilterScreen> {
   }
 }
 
+// Сетка типов мест
 class _GridView extends StatefulWidget {
-  const _GridView({Key? key}) : super(key: key);
-
+  const _GridView({Key? key, required this.itemsList}) : super(key: key);
+  final List<Widget> itemsList;
   @override
   State<_GridView> createState() => __GridViewState();
 }
@@ -191,15 +234,20 @@ class __GridViewState extends State<_GridView> {
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
       ),
-      children: _itemsList,
+      children: widget.itemsList,
     );
   }
 }
 
+// Тип места
 class _itemGridView extends StatefulWidget {
-  final String iconAssetPath;
-  final String text;
-  const _itemGridView({required this.iconAssetPath, required this.text});
+  final VoidCallback? onPressed;
+  final SightType sightType;
+  final StreamController<bool> markerController;
+  const _itemGridView(
+      {required this.sightType,
+      this.onPressed,
+      required this.markerController});
 
   @override
   State<_itemGridView> createState() => __itemGridViewState();
@@ -207,20 +255,33 @@ class _itemGridView extends StatefulWidget {
 
 class __itemGridViewState extends State<_itemGridView> {
   bool isChecked = false;
+  // ignore: unused_field
+  late final StreamSubscription<bool> _subscription;
 
-  void clearBadge() {
-    setState(() {
-      isChecked = false;
+  @override
+  void initState() {
+    // Если уходим из екрана Фильтра, настройки сохраняются
+    filter.avaibleTypes.contains(widget.sightType.type)
+        ? isChecked = true
+        : null;
+    _subscription = widget.markerController.stream.listen((bool data) {
+      if (!mounted) return;
+      setState(() {
+        isChecked = false;
+      });
     });
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        filter.addOrRemoveFilter(widget.sightType.type);
         setState(() {
           isChecked = !isChecked;
         });
+        widget.onPressed!();
       },
       child: Column(
         children: [
@@ -234,7 +295,7 @@ class __itemGridViewState extends State<_itemGridView> {
                         .withOpacity(0.16),
                     shape: BoxShape.circle),
                 child: SvgPicture.asset(
-                  widget.iconAssetPath,
+                  widget.sightType.icon,
                   fit: BoxFit.none,
                 ),
               ),
@@ -260,7 +321,7 @@ class __itemGridViewState extends State<_itemGridView> {
           const SizedBox(
             height: 12,
           ),
-          Text(widget.text,
+          Text(widget.sightType.type,
               style: AppTypography.superSmall.copyWith(
                   color: themeProvider.appTheme.bottomNavBarSelectedItemColor)),
         ],
@@ -268,30 +329,3 @@ class __itemGridViewState extends State<_itemGridView> {
     );
   }
 }
-
-List<_itemGridView> _itemsList = [
-  const _itemGridView(
-    iconAssetPath: 'assets/icons/hotel.svg',
-    text: AppStrings.sightType2,
-  ),
-  const _itemGridView(
-    iconAssetPath: 'assets/icons/restraunt.svg',
-    text: AppStrings.sightType3,
-  ),
-  const _itemGridView(
-    iconAssetPath: 'assets/icons/unique_place.svg',
-    text: AppStrings.sightType4,
-  ),
-  const _itemGridView(
-    iconAssetPath: 'assets/icons/park.svg',
-    text: AppStrings.sightType5,
-  ),
-  const _itemGridView(
-    iconAssetPath: 'assets/icons/museum.svg',
-    text: AppStrings.sightType6,
-  ),
-  const _itemGridView(
-    iconAssetPath: 'assets/icons/cafe.svg',
-    text: AppStrings.sightType7,
-  ),
-];

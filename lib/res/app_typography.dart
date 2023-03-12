@@ -3,6 +3,7 @@ import 'app_colors.dart';
 
 class AppTypography {
   static const subtitle = TextStyle(
+    letterSpacing: 1,
     fontSize: 18.0,
     fontFamily: "Roboto",
     height: 1.25,
@@ -76,6 +77,7 @@ class AppTypography {
     color: AppColors.whiteGreen,
   );
   static const button = TextStyle(
+    letterSpacing: 1,
     fontSize: 14.0,
     fontFamily: "Roboto",
     height: 1.25,
@@ -90,5 +92,12 @@ class AppTypography {
     fontWeight: FontWeight.w400,
     fontStyle: FontStyle.normal,
     color: AppColors.whiteSecondary,
+  );
+  static const formLabel = TextStyle(
+    fontSize: 16.0,
+    fontFamily: "Roboto",
+    height: 1.25,
+    fontWeight: FontWeight.w400,
+    fontStyle: FontStyle.normal,
   );
 }

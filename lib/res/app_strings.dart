@@ -4,23 +4,22 @@ class AppStrings {
   static const sight2workTime = "Открыто до 1:00";
   static const sight3workTime = "Открытие 21.12.2023";
 
-  static const listOfInterestingPlases = "Список\nинтересных мест";
-  static const sight0name = "Ольгин пруд";
-  static const sight1name = "Форт \"Император Павел I\"";
-  static const sight2name = "Выборгский замок";
+  static const listOfInterestingPlases = "Список интересных мест";
+
+  static const newPlaceAdded = "Добавлено новое место";
 
   static const sight0subscr = "Место в Петергофе, маршрут для прогулки";
   static const sight1subscr = "Форт неадлеко от Кронштадта";
   static const sight2subscr = "Замок в г.Выборг";
 
-  static const sightType0 = "Природа";
-  static const sightType1 = "Экскурсии";
-  static const sightType2 = "Отель";
-  static const sightType3 = "Ресторан";
-  static const sightType4 = "Особое место";
-  static const sightType5 = "Парк";
-  static const sightType6 = "Музей";
-  static const sightType7 = "Кафе";
+  static const nature = "Природа";
+  static const excursions = "Экскурсии";
+  static const hotel = "Отель";
+  static const restraunt = "Ресторан";
+  static const uniquePlace = "Особое место";
+  static const park = "Парк";
+  static const museum = "Музей";
+  static const cafe = "Кафе";
 
   static const wouldLikeToVisit = "Хочу посетить";
   static const justVisited = "Посетил";
@@ -43,4 +42,55 @@ class AppStrings {
   static const bottomLabel2 = "Map";
   static const bottomLabel3 = "Favorite places";
   static const bottomLabel4 = "Settings";
+
+  static const cancel = "Отмена";
+  static const newPlace = "Новое место";
+  static const category = "Категория";
+  static const name = "Название";
+  static const width = "Широта";
+  static const height = "Долгота";
+  static const putOnMap = "Указать на карте";
+  static const description = "Описание";
+  static const inputText = "Введите текст";
+  static const create = "Создать";
+  static const save = "Сохранить";
+  static const doesntChosen = "Не выбрано";
+
+  static const search = "Поиск";
+  static const youFound = "Вы искали";
+  static const clearHistore = "Очистить историю";
+  static const nothingFinded = "Ничего не найдено";
+  static const tryToChangeSearchParams = "Попробуйте изменить параметры поиска";
+}
+
+// Возможные категории
+enum SightType {
+  cafe(
+    AppStrings.cafe,
+    'assets/icons/cafe.svg',
+  ),
+  museum(
+    AppStrings.museum,
+    'assets/icons/museum.svg',
+  ),
+  park(
+    AppStrings.park,
+    'assets/icons/park.svg',
+  ),
+  superPlace(
+    AppStrings.uniquePlace,
+    'assets/icons/unique_place.svg',
+  ),
+  restraunt(
+    AppStrings.restraunt,
+    'assets/icons/restraunt.svg',
+  ),
+  hotel(
+    AppStrings.hotel,
+    'assets/icons/hotel.svg',
+  );
+
+  const SightType(this.type, this.icon);
+  final String type;
+  final String icon;
 }

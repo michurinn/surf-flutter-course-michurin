@@ -3,6 +3,10 @@ import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_typography.dart';
 
 final darkTheme = ThemeData(
+  checkboxTheme: CheckboxThemeData(
+    fillColor:
+        MaterialStateProperty.resolveWith((states) => Colors.transparent),
+  ),
   tabBarTheme: const TabBarTheme(
     indicator: BoxDecoration(
       color: AppColors.white,
@@ -37,6 +41,10 @@ final darkTheme = ThemeData(
 );
 
 final lightTheme = ThemeData(
+  checkboxTheme: CheckboxThemeData(
+    fillColor:
+        MaterialStateProperty.resolveWith((states) => Colors.transparent),
+  ),
   tabBarTheme: const TabBarTheme(
     indicator: BoxDecoration(
       color: AppColors.whiteSecondary,
@@ -58,7 +66,7 @@ final lightTheme = ThemeData(
   backgroundColor: AppColors.white,
   appBarTheme: AppBarTheme(
     titleTextStyle:
-        AppTypography.largeTitle.copyWith(color: AppColors.whiteSecondary),
+        AppTypography.subtitle.copyWith(color: AppColors.whiteSecondary),
     backgroundColor: AppColors.white,
   ),
   brightness: Brightness.light,
@@ -75,7 +83,7 @@ final lightTheme = ThemeData(
 abstract class BaseTheme {
   static const cardBackground = Color(0xFFF5F5F5);
   static const green = Color(0xFF4CAF50);
-  static const yellow = Color(0xFFFBC02D);
+  static const yellow = Color(0xFFFCDD3D);
   static const red = Color(0xFFEF4343);
   static const main = Color(0xFF252849);
   static const secondary = Color(0xFF3B3E5B);
@@ -111,6 +119,10 @@ abstract class BaseTheme {
     return green;
   }
 
+  Color get filterButtonColor {
+    return green;
+  }
+
   Color get mainColor {
     return main;
   }
@@ -130,6 +142,30 @@ abstract class BaseTheme {
   Color get appTitle {
     return main;
   }
+
+  Color get appLeading {
+    return secondary2;
+  }
+
+  Color get addFormActiveLabel {
+    return white;
+  }
+
+  Color get addFormInactiveLabel {
+    return inactiveBlack;
+  }
+
+  Color get addFormBorder {
+    return green.withOpacity(0.4);
+  }
+
+  Color get cursorColor {
+    return main;
+  }
+
+  List<Color> get newPlaceButton {
+    return [yellow, green];
+  }
 }
 
 class LightTheme extends BaseTheme {}
@@ -145,7 +181,9 @@ class DarkTheme extends BaseTheme {
   static const inactiveBlack = Color.fromRGBO(124, 126, 146, 0.56);
   static const white = Color(0xFFFFFFFF);
   static const dark = Color(0xFF1A1A20);
-
+  static const scaffoldBackgroundColor  = Color(0xFF2D2E3E);
+  
+  
   @override
   Color get bottomNavBarSelectedItemColor {
     return white;
@@ -188,7 +226,7 @@ class DarkTheme extends BaseTheme {
 
   @override
   Color get backgroundColor {
-    return background;
+    return scaffoldBackgroundColor;
   }
 
   @override
@@ -198,6 +236,11 @@ class DarkTheme extends BaseTheme {
 
   @override
   Color get appTitle {
+    return white;
+  }
+
+  @override
+  Color get cursorColor {
     return white;
   }
 }
