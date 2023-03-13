@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/main.dart';
 import 'package:places/mocks.dart';
 import 'package:places/res/app_assets.dart';
+import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/ui/screen/favorite_card.dart';
@@ -25,24 +26,28 @@ class _VisitingScreenState extends State<VisitingScreen> {
           appBar: const _FavoriteAppBar(),
           body: TabBarView(
             children: [
-              Column(
-                children: [
-                  const SizedBox(height: 30),
-                  FavoriteSight(
-                    sight: mocks[0],
-                    isFinished: false,
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 30),
+                      const _FavoriteSightMocks(),
+                    ],
                   ),
-                ],
+                ),
               ),
-              Column(
-                children: [
-                  const SizedBox(height: 30),
-                  FavoriteSight(
-                    sight: mocks[1],
-                    isFinished: true,
+              SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 30),
+                      const _FavoriteSightMocks(),
+                    ],
                   ),
-                ],
-              )
+                ),
+              ),
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(
@@ -86,6 +91,84 @@ class _VisitingScreenState extends State<VisitingScreen> {
             ],
           ),
         ));
+  }
+}
+
+class _FavoriteSightMocks extends StatefulWidget {
+  const _FavoriteSightMocks({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<_FavoriteSightMocks> createState() => _FavoriteSightMocksState();
+}
+
+class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: mocks
+          .expand(
+            (element) => [
+              Stack(
+                children: [
+                  AspectRatio(
+                    aspectRatio: 3 / 2,
+                    child: Card(
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        decoration: BoxDecoration(
+                          color: themeProvider.appTheme.errorColor,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset(
+                                AppAssets.bucket,
+                                color: AppColors.white,
+                                width: 22,
+                                height: 22,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "Удалить",
+                                style: AppTypography.small
+                                    .copyWith(color: AppColors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Dismissible(
+                    key: ValueKey<int>(element.hashCode),
+                    direction: DismissDirection.endToStart,
+                    onDismissed: (direction) {
+                      mocks.remove(element);
+                      setState(() {});
+                    },
+                    child: FavoriteSight(
+                      sight: element,
+                      isFinished: false,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+            ],
+          )
+          .toList(),
+    );
   }
 }
 

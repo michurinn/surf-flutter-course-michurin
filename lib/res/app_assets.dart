@@ -10,4 +10,5 @@ class AppAssets {
   static const mapFilled = 'assets/icons/map_filled.svg';
   static const like = 'assets/icons/like.svg';
    static const forwardArrow = 'assets/icons/forward_arrow.svg';
+   static const bucket = 'assets/icons/Bucket.svg';
 }
