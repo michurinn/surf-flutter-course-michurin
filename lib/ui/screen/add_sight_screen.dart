@@ -658,7 +658,7 @@ class _TopImagesList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        ...[_addPictureButton(addPictures)],
+        _addPictureButton(addPictures),
         ..._topImageList,
       ],
     );
