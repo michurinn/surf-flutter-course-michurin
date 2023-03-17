@@ -95,12 +95,7 @@ class _SightListScreenState extends State<SightListScreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Column(
-                      children: places
-                          .expand((e) =>
-                              [SightCard(sight: e), const SizedBox(height: 20)])
-                          .toList(),
-                    ),
+                    ListOfPlaces(places: places),
                     const SizedBox(
                       height: 50,
                     ),
@@ -184,6 +179,64 @@ class _SightListScreenState extends State<SightListScreen> {
   }
 }
 
+class ListOfPlaces extends StatefulWidget {
+  const ListOfPlaces({
+    Key? key,
+    required this.places,
+  }) : super(key: key);
+
+  final List<Sight> places;
+
+  @override
+  State<ListOfPlaces> createState() => _ListOfPlacesState();
+}
+
+class _ListOfPlacesState extends State<ListOfPlaces> {
+  late Map<String, bool> isDrag = {
+    for (var element in widget.places) element.name: false
+  };
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: widget.places
+          .expand((e) => [
+                DragTarget(
+                  onWillAccept: (data) {
+                    print("Accepted ");
+                    return true;
+                  },
+                  onAcceptWithDetails: (details) {},
+                  builder: (context, candidateData, rejectedData) {
+                    return Draggable(
+                        data: ValueKey<int>(e.hashCode),
+                        axis: Axis.vertical,
+                        onDragStarted: () {
+                          print("On drag started");
+                          setState(() {
+                            isDrag[e.name] = true;
+                          });
+                        },
+                        onDragEnd: (details) {
+                          print("On drag ended");
+                          setState(() {
+                            isDrag[e.name] = false;
+                          });
+                        },
+                        feedback: Opacity(
+                            opacity: 0.8,
+                            child: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                child: SightCard(sight: e))),
+                        child: SightCard(sight: e));
+                  },
+                ),
+                const SizedBox(height: 20)
+              ])
+          .toList(),
+    );
+  }
+}
+
 class _AppBar extends StatelessWidget {
   const _AppBar({
     Key? key,
@@ -220,8 +273,7 @@ class _AddButton extends StatelessWidget {
           ),
         )
             .then((value) {
-          if (value == true)
-          {
+          if (value == true) {
             onNewPlaceCreated();
           }
         });

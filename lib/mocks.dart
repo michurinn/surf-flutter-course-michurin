@@ -30,7 +30,7 @@ List<Sight> mocks = [
     imagePath:
         'https://static.tildacdn.com/tild3063-6337-4662-b536-613839663736/DpDvgAlfgdsfsW0AAE5-.jpg',
     workTime: AppStrings.sight3workTime,
-  )
+  ),
 ];
 
 // Моковые координаты пользователя
