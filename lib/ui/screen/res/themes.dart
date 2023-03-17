@@ -166,6 +166,10 @@ abstract class BaseTheme {
   List<Color> get newPlaceButton {
     return [yellow, green];
   }
+
+  Color get errorColor {
+    return red;
+  }
 }
 
 class LightTheme extends BaseTheme {}

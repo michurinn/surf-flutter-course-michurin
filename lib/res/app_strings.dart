@@ -56,6 +56,7 @@ class AppStrings {
   static const save = "Сохранить";
   static const doesntChosen = "Не выбрано";
 
+  static const delete = "Удалить";
   static const search = "Поиск";
   static const youFound = "Вы искали";
   static const clearHistore = "Очистить историю";

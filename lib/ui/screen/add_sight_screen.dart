@@ -10,6 +10,9 @@ import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/ui/screen/categories_screen.dart';
 
+// Заглушки с картинками
+var mocksPictures = mocksImages;
+
 // Екран Добавления нового места
 class AddSightScreen extends StatefulWidget {
   const AddSightScreen({super.key});
@@ -136,6 +139,11 @@ class _AddSightScreenState extends State<AddSightScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                _TopImagesList(
+                  (() => setState(
+                        () {},
+                      )),
+                ),
                 Form(
                   key: _keyForm,
                   child: Column(
@@ -356,7 +364,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                       ]),
                 ),
                 SizedBox(
-                  height: heightVisible > 0 ? 0 : height / 4,
+                  height: heightVisible > 0 ? 0 : height / 6,
                 ), // Когда показана вирутальная клавиатура
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -637,6 +645,104 @@ class _TypeFormField extends StatelessWidget {
           labelStyle: AppTypography.formLabel
               .copyWith(color: AppColors.whiteSecondary2),
         ),
+      ),
+    );
+  }
+}
+
+class _TopImagesList extends StatelessWidget {
+  final VoidCallback addPictures;
+  const _TopImagesList(this.addPictures);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        _addPictureButton(addPictures),
+        ..._topImageList,
+      ],
+    );
+  }
+}
+
+List<Widget> get _topImageList => mocksPictures
+    .expand((element) => [
+          const SizedBox(
+            width: 16,
+          ),
+          _PictureQuadCard(
+            imagePath: element,
+            key: ValueKey<int>(element.hashCode),
+          ),
+        ])
+    .toList();
+
+Widget _addPictureButton(VoidCallback setStateInParent) => OutlinedButton(
+      onPressed: () {
+        mocksPictures = mocksImages;
+        setStateInParent();
+      },
+      style: OutlinedButton.styleFrom(
+        side: BorderSide(
+            width: 2.0,
+            color: themeProvider.appTheme.clearButtonColor.withOpacity(0.48)),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(12),
+          ),
+        ),
+        backgroundColor: themeProvider.appTheme.backgroundColor,
+        fixedSize: const Size(72, 72),
+        alignment: Alignment.center,
+      ),
+      child: Icon(
+        Icons.add,
+        size: 33,
+        color: themeProvider.appTheme.clearButtonColor,
+      ),
+    );
+
+class _PictureQuadCard extends StatelessWidget {
+  const _PictureQuadCard({required super.key, required this.imagePath});
+  final String imagePath;
+  @override
+  Widget build(BuildContext context) {
+    return Dismissible(
+      onDismissed: (direction) {
+        mocksPictures.removeWhere((element) => element == imagePath);
+      },
+      direction: DismissDirection.up,
+      key: key ?? ValueKey<int>(imagePath.length),
+      child: Stack(
+        alignment: AlignmentDirectional.topEnd,
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              image: DecorationImage(
+                  image: NetworkImage(imagePath), fit: BoxFit.cover),
+            ),
+            child: Container(
+              color: Colors.transparent,
+              width: 72,
+              height: 72,
+            ),
+          ),
+          Positioned(
+              width: 22,
+              height: 22,
+              top: 6,
+              right: 6,
+              child: IconButton(
+                padding: const EdgeInsets.all(0),
+                onPressed: () {},
+                icon: Icon(
+                  Icons.cancel,
+                  color: themeProvider.appTheme.badgeColors[1],
+                  size: 22,
+                ),
+              )),
+        ],
       ),
     );
   }

@@ -220,7 +220,7 @@ class _AddButton extends StatelessWidget {
           ),
         )
             .then((value) {
-          //if (value == true)
+          if (value == true)
           {
             onNewPlaceCreated();
           }

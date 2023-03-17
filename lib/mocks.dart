@@ -38,3 +38,6 @@ Map<String, double> mockCoordinates = {
   'lat': 60.01573297869801,
   'lon': 29.729246819869616,
 };
+
+//Заглушки с картинками
+List<String> get mocksImages => mocks.map((e) => e.imagePath).toList();
