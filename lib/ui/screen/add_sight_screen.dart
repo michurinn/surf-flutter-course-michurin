@@ -233,10 +233,6 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                           fn2.unfocus();
                                           fn3.requestFocus();
                                         },
-                                        // onChanged: (value) {
-                                        //   FocusScope.of(context)
-                                        //       .requestFocus(fn2);
-                                        // },
                                         autovalidateMode:
                                             AutovalidateMode.onUserInteraction,
                                         validator: _validateCoordinates,
@@ -689,7 +685,7 @@ class _PlacePicturesList extends StatelessWidget {
                   _PictureQuadCard(
                     onDeletePressed: onCloseIconPressed,
                     imagePath: element,
-                    key: ValueKey<int>(element.hashCode),
+                    key: UniqueKey(),
                   ),
                 ])
             .toList(),
@@ -735,7 +731,7 @@ class _PictureQuadCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
       onDismissed: (direction) {
-        mocksPictures.removeWhere((element) => element == imagePath);
+        mocksImages.removeWhere((element) => element == imagePath);
       },
       direction: DismissDirection.up,
       key: key ?? ValueKey<int>(imagePath.length),
