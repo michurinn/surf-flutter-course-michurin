@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,7 +14,6 @@ class SightCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: width,maxHeight: width/1.5),
       child: AspectRatio(
@@ -63,7 +61,7 @@ class SightCard extends StatelessWidget {
                               },
                             ).image),
                       ),
-                      child: InkWell(onTap: () => print("InkTapped")),
+                      child: InkWell(onTap: () {}),
                     ),
                     Positioned(
                       right: 10,
@@ -75,7 +73,6 @@ class SightCard extends StatelessWidget {
                           color: themeProvider.appTheme.iconColor,
                         ),
                         onPressed: () {
-                          print("Icon-heart on card pressed");
                         },
                       ),
                     ),
@@ -93,7 +90,6 @@ class SightCard extends StatelessWidget {
               Expanded(
                 child: InkWell(
                   onTap: () {
-                    print("Ink tapped");
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
