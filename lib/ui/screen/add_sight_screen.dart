@@ -233,10 +233,6 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                           fn2.unfocus();
                                           fn3.requestFocus();
                                         },
-                                        // onChanged: (value) {
-                                        //   FocusScope.of(context)
-                                        //       .requestFocus(fn2);
-                                        // },
                                         autovalidateMode:
                                             AutovalidateMode.onUserInteraction,
                                         validator: _validateCoordinates,
@@ -650,32 +646,53 @@ class _TypeFormField extends StatelessWidget {
   }
 }
 
-class _TopImagesList extends StatelessWidget {
+class _TopImagesList extends StatefulWidget {
   final VoidCallback addPictures;
+
   const _TopImagesList(this.addPictures);
 
+  @override
+  State<_TopImagesList> createState() => _TopImagesListState();
+}
+
+class _TopImagesListState extends State<_TopImagesList> {
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        _addPictureButton(addPictures),
-        ..._topImageList,
+        _addPictureButton(widget.addPictures),
+        _PlacePicturesList(onCloseIconPressed: () {
+          setState(() {});
+        }),
       ],
     );
   }
 }
 
-List<Widget> get _topImageList => mocksPictures
-    .expand((element) => [
-          const SizedBox(
-            width: 16,
-          ),
-          _PictureQuadCard(
-            imagePath: element,
-            key: ValueKey<int>(element.hashCode),
-          ),
-        ])
-    .toList();
+class _PlacePicturesList extends StatelessWidget {
+  const _PlacePicturesList({required this.onCloseIconPressed});
+  final VoidCallback onCloseIconPressed;
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Row(
+        children: mocksPictures
+            .expand((element) => [
+                  const SizedBox(
+                    width: 16,
+                  ),
+                  _PictureQuadCard(
+                    onDeletePressed: onCloseIconPressed,
+                    imagePath: element,
+                    key: UniqueKey(),
+                  ),
+                ])
+            .toList(),
+      ),
+    );
+  }
+}
 
 Widget _addPictureButton(VoidCallback setStateInParent) => OutlinedButton(
       onPressed: () {
@@ -703,13 +720,18 @@ Widget _addPictureButton(VoidCallback setStateInParent) => OutlinedButton(
     );
 
 class _PictureQuadCard extends StatelessWidget {
-  const _PictureQuadCard({required super.key, required this.imagePath});
+  const _PictureQuadCard({
+    required super.key,
+    required this.imagePath,
+    required this.onDeletePressed,
+  });
   final String imagePath;
+  final VoidCallback onDeletePressed;
   @override
   Widget build(BuildContext context) {
     return Dismissible(
       onDismissed: (direction) {
-        mocksPictures.removeWhere((element) => element == imagePath);
+        mocksImages.removeWhere((element) => element == imagePath);
       },
       direction: DismissDirection.up,
       key: key ?? ValueKey<int>(imagePath.length),
@@ -735,7 +757,10 @@ class _PictureQuadCard extends StatelessWidget {
               right: 6,
               child: IconButton(
                 padding: const EdgeInsets.all(0),
-                onPressed: () {},
+                onPressed: () {
+                  mocksPictures.removeWhere((element) => element == imagePath);
+                  onDeletePressed();
+                },
                 icon: Icon(
                   Icons.cancel,
                   color: themeProvider.appTheme.badgeColors[1],

@@ -95,12 +95,7 @@ class _SightListScreenState extends State<SightListScreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Column(
-                      children: places
-                          .expand((e) =>
-                              [SightCard(sight: e), const SizedBox(height: 20)])
-                          .toList(),
-                    ),
+                    ListOfPlaces(places: places),
                     const SizedBox(
                       height: 50,
                     ),
@@ -184,6 +179,73 @@ class _SightListScreenState extends State<SightListScreen> {
   }
 }
 
+class ListOfPlaces extends StatefulWidget {
+  const ListOfPlaces({
+    Key? key,
+    required this.places,
+  }) : super(key: key);
+
+  final List<Sight> places;
+
+  @override
+  State<ListOfPlaces> createState() => _ListOfPlacesState();
+}
+
+class _ListOfPlacesState extends State<ListOfPlaces> {
+  late Map<String, bool> isDrag;
+  late List<Sight> places;
+
+  @override
+  void initState() {
+    super.initState();
+    places = widget.places;
+    isDrag = {for (var element in widget.places) element.name: false};
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: places
+          .expand(
+            (e) => [
+              DragTarget(
+                onAccept: (data) {
+                  ValueKey<String> rawData = data as ValueKey<String>;
+
+                  setState(() {
+                    places.insert(
+                      places.indexOf(e),
+                      places.removeAt(
+                        places.indexWhere(
+                          (element) => element.name == rawData.value.toString(),
+                        ),
+                      ),
+                    );
+                  });
+                },
+                builder: (context, candidateData, rejectedData) {
+                  return Draggable(
+                    data: ValueKey<String>(e.name),
+                    axis: Axis.vertical,
+                    feedback: Opacity(
+                      opacity: 0.8,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: SightCard(sight: e),
+                      ),
+                    ),
+                    child: SightCard(sight: e),
+                  );
+                },
+              ),
+              const SizedBox(height: 20)
+            ],
+          )
+          .toList(),
+    );
+  }
+}
+
 class _AppBar extends StatelessWidget {
   const _AppBar({
     Key? key,
@@ -219,12 +281,13 @@ class _AddButton extends StatelessWidget {
             builder: (context) => const AddSightScreen(),
           ),
         )
-            .then((value) {
-          if (value == true)
-          {
-            onNewPlaceCreated();
-          }
-        });
+            .then(
+          (value) {
+            if (value == true) {
+              onNewPlaceCreated();
+            }
+          },
+        );
       },
       style: OutlinedButton.styleFrom(
         side: const BorderSide(width: 0.0, color: Colors.transparent),
@@ -241,7 +304,9 @@ class _AddButton extends StatelessWidget {
         decoration: BoxDecoration(
           gradient:
               LinearGradient(colors: themeProvider.appTheme.newPlaceButton),
-          borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(24.0),
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

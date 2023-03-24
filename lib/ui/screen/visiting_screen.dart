@@ -1,4 +1,3 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,6 +9,7 @@ import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/ui/screen/favorite_card.dart';
 
+// Екран Хочу посетить/Посещённые
 class VisitingScreen extends StatefulWidget {
   const VisitingScreen({super.key});
 
@@ -30,9 +30,9 @@ class _VisitingScreenState extends State<VisitingScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
-                    children: [
-                      const SizedBox(height: 30),
-                      const _FavoriteSightMocks(),
+                    children: const [
+                      SizedBox(height: 30),
+                      _FavoriteSightMocks(),
                     ],
                   ),
                 ),
@@ -41,9 +41,9 @@ class _VisitingScreenState extends State<VisitingScreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
-                    children: [
-                      const SizedBox(height: 30),
-                      const _FavoriteSightMocks(),
+                    children: const [
+                      SizedBox(height: 30),
+                      _FavoriteSightMocks(),
                     ],
                   ),
                 ),
@@ -155,9 +155,42 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                       mocks.remove(element);
                       setState(() {});
                     },
-                    child: FavoriteSight(
-                      sight: element,
-                      isFinished: false,
+                    child: DragTarget(
+                      onAccept: (data) {
+                        ValueKey<String> rawData = data as ValueKey<String>;
+
+                        setState(() {
+                          mocks.insert(
+                            mocks.indexOf(element),
+                            mocks.removeAt(
+                              mocks.indexWhere(
+                                (element) =>
+                                    element.name == rawData.value.toString(),
+                              ),
+                            ),
+                          );
+                        });
+                      },
+                      builder: (context, candidateData, rejectedData) {
+                        return LongPressDraggable(
+                          data: ValueKey<String>(element.name),
+                          axis: Axis.vertical,
+                          feedback: Opacity(
+                            opacity: 0.8,
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              child: FavoriteSight(
+                                sight: element,
+                                isFinished: false,
+                              ),
+                            ),
+                          ),
+                          child: FavoriteSight(
+                            sight: element,
+                            isFinished: false,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -193,9 +226,9 @@ class _FavoriteAppBar extends StatelessWidget implements PreferredSizeWidget {
               splashBorderRadius: const BorderRadius.all(Radius.circular(40.0)),
               labelPadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              tabs: [
-                const Text(AppStrings.wouldLikeToVisit),
-                const Text(AppStrings.justVisited),
+              tabs: const [
+                Text(AppStrings.wouldLikeToVisit),
+                Text(AppStrings.justVisited),
               ],
               splashFactory: NoSplash.splashFactory,
               overlayColor: MaterialStateProperty.resolveWith<Color?>(
