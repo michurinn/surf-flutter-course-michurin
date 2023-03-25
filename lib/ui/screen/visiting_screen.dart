@@ -1,3 +1,4 @@
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -26,26 +27,22 @@ class _VisitingScreenState extends State<VisitingScreen> {
           appBar: const _FavoriteAppBar(),
           body: TabBarView(
             children: [
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    children: const [
-                      SizedBox(height: 30),
-                      _FavoriteSightMocks(),
-                    ],
-                  ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  children: const [
+                    SizedBox(height: 30),
+                    _FavoriteSightMocks(),
+                  ],
                 ),
               ),
-              SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    children: const [
-                      SizedBox(height: 30),
-                      _FavoriteSightMocks(),
-                    ],
-                  ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  children: const [
+                    SizedBox(height: 30),
+                    _FavoriteSightMocks(),
+                  ],
                 ),
               ),
             ],
@@ -106,101 +103,107 @@ class _FavoriteSightMocks extends StatefulWidget {
 class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: mocks
-          .expand(
-            (element) => [
-              Stack(
-                children: [
-                  AspectRatio(
-                    aspectRatio: 3 / 2,
-                    child: Card(
-                      child: Container(
-                        alignment: Alignment.centerRight,
-                        decoration: BoxDecoration(
-                          color: themeProvider.appTheme.errorColor,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10),
-                          ),
+    return Flexible(
+      child: ListView.builder(
+          physics: Platform.isAndroid
+              ? const ClampingScrollPhysics()
+              : const BouncingScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: mocks.length,
+          itemBuilder: (context, index) {
+            return Stack(
+              children: [
+                AspectRatio(
+                  aspectRatio: 3 / 2,
+                  child: Card(
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      decoration: BoxDecoration(
+                        color: themeProvider.appTheme.errorColor,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                AppAssets.bucket,
-                                color: AppColors.white,
-                                width: 22,
-                                height: 22,
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                "Удалить",
-                                style: AppTypography.small
-                                    .copyWith(color: AppColors.white),
-                              ),
-                            ],
-                          ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              AppAssets.bucket,
+                              color: AppColors.white,
+                              width: 22,
+                              height: 22,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "Удалить",
+                              style: AppTypography.small
+                                  .copyWith(color: AppColors.white),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                  Dismissible(
-                    key: ValueKey<int>(element.hashCode),
-                    direction: DismissDirection.endToStart,
-                    onDismissed: (direction) {
-                      mocks.remove(element);
-                      setState(() {});
-                    },
-                    child: DragTarget(
-                      onAccept: (data) {
-                        ValueKey<String> rawData = data as ValueKey<String>;
+                ),
+                Dismissible(
+                  key: ValueKey<int>(mocks[index].hashCode),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) {
+                    mocks.remove(mocks[index]);
+                    setState(() {});
+                  },
+                  child: DragTarget(
+                    onAccept: (data) {
+                      ValueKey<String> rawData = data as ValueKey<String>;
 
-                        setState(() {
-                          mocks.insert(
-                            mocks.indexOf(element),
-                            mocks.removeAt(
-                              mocks.indexWhere(
-                                (element) =>
-                                    element.name == rawData.value.toString(),
-                              ),
+                      setState(() {
+                        mocks.insert(
+                          mocks.indexOf(mocks[index]),
+                          mocks.removeAt(
+                            mocks.indexWhere(
+                              (element) =>
+                                  element.name == rawData.value.toString(),
                             ),
-                          );
-                        });
-                      },
-                      builder: (context, candidateData, rejectedData) {
-                        return LongPressDraggable(
-                          data: ValueKey<String>(element.name),
-                          axis: Axis.vertical,
-                          feedback: Opacity(
-                            opacity: 0.8,
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              child: FavoriteSight(
-                                sight: element,
-                                isFinished: false,
-                              ),
-                            ),
-                          ),
-                          child: FavoriteSight(
-                            sight: element,
-                            isFinished: false,
                           ),
                         );
-                      },
-                    ),
+                      });
+                    },
+                    builder: (context, candidateData, rejectedData) {
+                      return Column(
+                        children: [
+                          LongPressDraggable(
+                            data: ValueKey<String>(mocks[index].name),
+                            axis: Axis.vertical,
+                            feedback: Opacity(
+                              opacity: 0.8,
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                child: FavoriteSight(
+                                  sight: mocks[index],
+                                  isFinished: false,
+                                ),
+                              ),
+                            ),
+                            child: FavoriteSight(
+                              sight: mocks[index],
+                              isFinished: false,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                        ],
+                      );
+                    },
                   ),
-                ],
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-            ],
-          )
-          .toList(),
+                ),
+              ],
+            );
+          }),
     );
   }
 }
