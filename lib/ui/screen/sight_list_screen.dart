@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
@@ -24,6 +26,7 @@ class _SightListScreenState extends State<SightListScreen> {
   // Храним здесь список, который будем отображать с учётом фильтров и поиска,
   // изменения из екранов поиска передаём через callback .then(...) навигатора
   late List<Sight> places;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -44,66 +47,69 @@ class _SightListScreenState extends State<SightListScreen> {
         children: [
           SizedBox(
             height: MediaQuery.of(context).size.height,
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  children: [
-                    Stack(
-                      alignment: Alignment.centerRight,
-                      children: [
-                        // При тапе на виджет поиска переход на страницу поиска,
-                        // а при тапе именно на иконку Icons.tune_rounded - переход на екран фильтров
-                        GestureDetector(
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => SightSearchScreen(
-                                      filteredPlaces: places,
-                                    )),
-                          ),
-                          child: const SearchBar(
-                            isEnabled: false,
-                            isFocused: false,
-                          ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  Stack(
+                    alignment: Alignment.centerRight,
+                    children: [
+                      // При тапе на виджет поиска переход на страницу поиска,
+                      // а при тапе именно на иконку Icons.tune_rounded - переход на екран фильтров
+                      GestureDetector(
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => SightSearchScreen(
+                                    filteredPlaces: places,
+                                  )),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: IconButton(
-                            icon: Icon(Icons.tune_rounded,
-                                color:
-                                    themeProvider.appTheme.filterButtonColor),
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .push(
-                                MaterialPageRoute(
-                                    builder: (context) => const FilterScreen()),
-                              )
-                                  .then((value) {
-                                //Теперь покажем только отфильтрованные места
-                                if (value == null) return;
-                                setState(
-                                  () {
-                                    places = value;
-                                  },
-                                );
-                              });
-                            },
-                          ),
-                        )
-                      ],
+                        child: const SearchBar(
+                          isEnabled: false,
+                          isFocused: false,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: IconButton(
+                          icon: Icon(Icons.tune_rounded,
+                              color: themeProvider.appTheme.filterButtonColor),
+                          onPressed: () {
+                            Navigator.of(context)
+                                .push(
+                              MaterialPageRoute(
+                                  builder: (context) => const FilterScreen()),
+                            )
+                                .then((value) {
+                              //Теперь покажем только отфильтрованные места
+                              if (value == null) return;
+                              setState(
+                                () {
+                                  places = value;
+                                },
+                              );
+                            });
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  OverscrollGlowAbsorver(
+                    child: ListOfPlaces(
+                      places: places,
+                      scrollController: _scrollController,
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ListOfPlaces(places: places),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                ],
               ),
             ),
           ),
+
           // Кнопка Добавить
           Positioned(
             bottom: 16,
@@ -183,65 +189,72 @@ class ListOfPlaces extends StatefulWidget {
   const ListOfPlaces({
     Key? key,
     required this.places,
+    required this.scrollController,
   }) : super(key: key);
 
   final List<Sight> places;
-
+  final ScrollController scrollController;
   @override
   State<ListOfPlaces> createState() => _ListOfPlacesState();
 }
 
 class _ListOfPlacesState extends State<ListOfPlaces> {
-  late Map<String, bool> isDrag;
   late List<Sight> places;
 
   @override
   void initState() {
     super.initState();
     places = widget.places;
-    isDrag = {for (var element in widget.places) element.name: false};
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: places
-          .expand(
-            (e) => [
-              DragTarget(
-                onAccept: (data) {
-                  ValueKey<String> rawData = data as ValueKey<String>;
+    return Flexible(
+      child: ListView.builder(
+        controller: widget.scrollController,
+        shrinkWrap: true,
+        physics: Platform.isAndroid
+            ? const ClampingScrollPhysics()
+            : const BouncingScrollPhysics(),
+        itemCount: places.length,
+        itemBuilder: (context, index) {
+          return DragTarget(
+            onAccept: (data) {
+              ValueKey<String> rawData = data as ValueKey<String>;
 
-                  setState(() {
-                    places.insert(
-                      places.indexOf(e),
-                      places.removeAt(
-                        places.indexWhere(
-                          (element) => element.name == rawData.value.toString(),
-                        ),
-                      ),
-                    );
-                  });
-                },
-                builder: (context, candidateData, rejectedData) {
-                  return Draggable(
-                    data: ValueKey<String>(e.name),
+              setState(() {
+                places.insert(
+                  places.indexOf(places[index]),
+                  places.removeAt(
+                    places.indexWhere(
+                      (element) => element.name == rawData.value.toString(),
+                    ),
+                  ),
+                );
+              });
+            },
+            builder: (context, candidateData, rejectedData) {
+              return Column(
+                children: [
+                  LongPressDraggable(
+                    data: ValueKey<String>(places[index].name),
                     axis: Axis.vertical,
                     feedback: Opacity(
                       opacity: 0.8,
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.9,
-                        child: SightCard(sight: e),
+                        child: SightCard(sight: places[index]),
                       ),
                     ),
-                    child: SightCard(sight: e),
-                  );
-                },
-              ),
-              const SizedBox(height: 20)
-            ],
-          )
-          .toList(),
+                    child: SightCard(sight: places[index]),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
@@ -324,6 +337,24 @@ class _AddButton extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class OverscrollGlowAbsorver extends StatelessWidget {
+  final Widget child;
+  const OverscrollGlowAbsorver({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return NotificationListener(
+      child: child,
+      onNotification: (notification) {
+        if (notification is OverscrollIndicatorNotification) {
+          notification.disallowIndicator();
+        }
+        return false;
+      },
     );
   }
 }

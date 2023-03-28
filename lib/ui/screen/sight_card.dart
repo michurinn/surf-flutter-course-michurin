@@ -15,7 +15,7 @@ class SightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: width,maxHeight: width/1.5),
+      constraints: BoxConstraints(maxWidth: width,maxHeight: width/1.5,minHeight: width/1.5),
       child: AspectRatio(
         aspectRatio: 3 / 2,
         child: Card(
