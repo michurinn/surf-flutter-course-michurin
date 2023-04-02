@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
@@ -15,7 +14,8 @@ class SightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: width,maxHeight: width/1.5,minHeight: width/1.5),
+      constraints: BoxConstraints(
+          maxWidth: width, maxHeight: width / 1.5, minHeight: width / 1.5),
       child: AspectRatio(
         aspectRatio: 3 / 2,
         child: Card(
@@ -40,6 +40,14 @@ class SightCard extends StatelessWidget {
                             image: Image.network(
                               sight.imagePath,
                               fit: BoxFit.fitWidth,
+                              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                                if (wasSynchronouslyLoaded) return child;
+                                return CircularProgressIndicator(
+                                    strokeWidth: 6.0,
+                                    value: frame == null? 0 : frame.toDouble(),
+                                  );
+
+                              },
                               loadingBuilder: (
                                 BuildContext context,
                                 Widget child,
@@ -53,7 +61,8 @@ class SightCard extends StatelessWidget {
                                     strokeWidth: 6.0,
                                     value: loadingProgress.expectedTotalBytes !=
                                             null
-                                        ? loadingProgress.cumulativeBytesLoaded /
+                                        ? loadingProgress
+                                                .cumulativeBytesLoaded /
                                             loadingProgress.expectedTotalBytes!
                                         : null,
                                   ),
@@ -72,8 +81,7 @@ class SightCard extends StatelessWidget {
                           AppAssets.heart,
                           color: themeProvider.appTheme.iconColor,
                         ),
-                        onPressed: () {
-                        },
+                        onPressed: () {},
                       ),
                     ),
                     Positioned(
@@ -89,8 +97,7 @@ class SightCard extends StatelessWidget {
               ),
               Expanded(
                 child: InkWell(
-                  onTap: () {
-                  },
+                  onTap: () {},
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
