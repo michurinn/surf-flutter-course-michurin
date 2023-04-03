@@ -1,8 +1,13 @@
+
 import 'package:flutter/material.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_typography.dart';
 
 final darkTheme = ThemeData(
+  scrollbarTheme: const ScrollbarThemeData().copyWith(
+      thickness: MaterialStateProperty.all(8),
+      radius: const Radius.circular(8),
+      thumbColor: MaterialStateProperty.all((AppColors.white))),
   checkboxTheme: CheckboxThemeData(
     fillColor:
         MaterialStateProperty.resolveWith((states) => Colors.transparent),
@@ -41,6 +46,10 @@ final darkTheme = ThemeData(
 );
 
 final lightTheme = ThemeData(
+  scrollbarTheme: const ScrollbarThemeData().copyWith(
+      thickness: MaterialStateProperty.all(8),
+      radius: const Radius.circular(8),
+      thumbColor: MaterialStateProperty.all((AppColors.whiteMain))),
   checkboxTheme: CheckboxThemeData(
     fillColor:
         MaterialStateProperty.resolveWith((states) => Colors.transparent),
@@ -170,6 +179,10 @@ abstract class BaseTheme {
   Color get errorColor {
     return red;
   }
+
+  Color get onboardingSubtitle {
+    return secondary2;
+  }
 }
 
 class LightTheme extends BaseTheme {}
@@ -185,9 +198,8 @@ class DarkTheme extends BaseTheme {
   static const inactiveBlack = Color.fromRGBO(124, 126, 146, 0.56);
   static const white = Color(0xFFFFFFFF);
   static const dark = Color(0xFF1A1A20);
-  static const scaffoldBackgroundColor  = Color(0xFF2D2E3E);
-  
-  
+  static const scaffoldBackgroundColor = Color(0xFF2D2E3E);
+
   @override
   Color get bottomNavBarSelectedItemColor {
     return white;
@@ -246,5 +258,10 @@ class DarkTheme extends BaseTheme {
   @override
   Color get cursorColor {
     return white;
+  }
+
+  @override
+  Color get onboardingSubtitle {
+    return secondary2;
   }
 }

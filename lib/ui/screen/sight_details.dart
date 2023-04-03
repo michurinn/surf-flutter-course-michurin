@@ -51,10 +51,20 @@ class _HeadWithImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+      alignment: AlignmentDirectional.bottomEnd,
       children: [
         SizedBox(
           height: 360,
-          child: Image.network(sight.imagePath, fit: BoxFit.fitHeight),
+          child: Scrollbar(
+            thumbVisibility: true,
+            child: PageView(
+              children: [
+                Image.network(sight.imagePath, fit: BoxFit.fitHeight),
+                Image.network(sight.imagePath, fit: BoxFit.fitHeight),
+                Image.network(sight.imagePath, fit: BoxFit.fitHeight),
+              ],
+            ),
+          ),
         ),
         Positioned(
           left: 16,
@@ -62,7 +72,8 @@ class _HeadWithImage extends StatelessWidget {
           child: OutlinedButton(
             style: OutlinedButton.styleFrom(
               shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+              ),
               padding: const EdgeInsets.all(0),
               backgroundColor: themeProvider.appTheme.cardColor,
               minimumSize: const Size(32, 32),

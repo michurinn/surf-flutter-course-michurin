@@ -56,6 +56,8 @@ class AppStrings {
   static const save = "Сохранить";
   static const doesntChosen = "Не выбрано";
 
+  static const onStart = "На старт";
+  static const skip = "Пропустить";
   static const delete = "Удалить";
   static const search = "Поиск";
   static const youFound = "Вы искали";
@@ -94,4 +96,24 @@ enum SightType {
   const SightType(this.type, this.icon);
   final String type;
   final String icon;
+}
+
+// Возможные категории
+enum OnboardingTexts {
+  screen1(
+    'Добро пожаловать в Путеводитель',
+    'Ищи новые локации и сохраняй самые любимые. ',
+  ),
+  screen2(
+    'Построй маршрут и отправляйся в путь',
+    'Достигай цели максимально быстро и комфортно.',
+  ),
+  screen3(
+    'Добавляй места, которые нашёл сам',
+    'Делись самыми интересными и помоги нам стать лучше!',
+  );
+
+  const OnboardingTexts(this.title, this.subTitle);
+  final String title;
+  final String subTitle;
 }
