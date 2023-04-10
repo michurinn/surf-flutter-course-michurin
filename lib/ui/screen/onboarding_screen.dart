@@ -186,7 +186,7 @@ class _AppBar extends StatelessWidget {
 
 // Кнопка На старт
 class _OnStartButton extends StatelessWidget {
-  _OnStartButton({
+  const _OnStartButton({
     Key? key,
     required this.isVisible,
   }) : super(key: key);

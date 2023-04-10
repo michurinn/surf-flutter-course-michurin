@@ -11,6 +11,7 @@ import 'package:places/res/app_typography.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/sight_card.dart';
+import 'package:places/ui/screen/sight_details.dart';
 import 'package:places/ui/screen/sight_search_screen.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 
@@ -38,109 +39,70 @@ class _SightListScreenState extends State<SightListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(100),
-        child: _AppBar(),
-      ),
-      body: Stack(
-        alignment: AlignmentDirectional.bottomCenter,
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                children: [
-                  Stack(
-                    alignment: Alignment.centerRight,
-                    children: [
-                      // При тапе на виджет поиска переход на страницу поиска,
-                      // а при тапе именно на иконку Icons.tune_rounded - переход на екран фильтров
-                      GestureDetector(
-                        onTap: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => SightSearchScreen(
-                                    filteredPlaces: places,
-                                  )),
-                        ),
-                        child: const SearchBar(
-                          isEnabled: false,
-                          isFocused: false,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Stack(
+            alignment: AlignmentDirectional.bottomCenter,
+            children: [
+              CustomScrollView(
+                slivers: [
+                  SliverPersistentHeader(
+                    delegate: _SightListScreenPersistantHeaderDelegate(
+                      places: places,
+                      repaint: (value) {
+                        setState(() {
+                          places = value;
+                        });
+                      },
+                    ),
+                    pinned: true,
+                  ),
+                  SliverList(
+                    delegate: SliverChildListDelegate([
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      OverscrollGlowAbsorver(
+                        child: ListOfPlaces(
+                          places: places,
+                          scrollController: _scrollController,
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: IconButton(
-                          icon: Icon(Icons.tune_rounded,
-                              color: themeProvider.appTheme.filterButtonColor),
-                          onPressed: () {
-                            Navigator.of(context)
-                                .push(
-                              MaterialPageRoute(
-                                  builder: (context) => const FilterScreen()),
-                            )
-                                .then((value) {
-                              //Теперь покажем только отфильтрованные места
-                              if (value == null) return;
-                              setState(
-                                () {
-                                  places = value;
-                                },
-                              );
-                            });
-                          },
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  OverscrollGlowAbsorver(
-                    child: ListOfPlaces(
-                      places: places,
-                      scrollController: _scrollController,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 50,
+                      const SizedBox(
+                        height: 50,
+                      ),
+                    ]),
                   ),
                 ],
               ),
-            ),
-          ),
-
-          // Кнопка Добавить
-          Positioned(
-            bottom: 16,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 90,
-              ),
-              child: _AddButton(
-                onNewPlaceCreated: (() {
-                  setState(
-                    // Покажем обновлённый список
-                    () {},
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0)),
-                      behavior: SnackBarBehavior.floating,
-                      duration: const Duration(milliseconds: 500),
-                      content: const Text(
-                        AppStrings.newPlaceAdded,
-                        style: AppTypography.simpleText,
-                        textAlign: TextAlign.center,
+              Positioned(
+                bottom: 25,
+                child: _AddButton(
+                  onNewPlaceCreated: (() {
+                    setState(
+                      // Покажем обновлённый список
+                      () {},
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0)),
+                        behavior: SnackBarBehavior.floating,
+                        duration: const Duration(milliseconds: 500),
+                        content: const Text(
+                          AppStrings.newPlaceAdded,
+                          style: AppTypography.simpleText,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
-                  );
-                }),
+                    );
+                  }),
+                ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -185,6 +147,69 @@ class _SightListScreenState extends State<SightListScreen> {
   }
 }
 
+class _AppBarSearchWidget extends StatelessWidget
+    implements PreferredSizeWidget {
+  const _AppBarSearchWidget({
+    Key? key,
+    required this.places,
+    required this.repaint,
+  }) : super(key: key);
+
+  final List<Sight> places;
+  final Function(List<Sight> value) repaint;
+
+  @override
+  Widget build(BuildContext context) {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(40),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Stack(
+          alignment: Alignment.centerRight,
+          children: [
+            // При тапе на виджет поиска переход на страницу поиска,
+            // а при тапе именно на иконку Icons.tune_rounded - переход на екран фильтров
+            GestureDetector(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (context) => SightSearchScreen(
+                          filteredPlaces: places,
+                        )),
+              ),
+              child: const SearchBar(
+                isEnabled: false,
+                isFocused: false,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 10),
+              child: IconButton(
+                icon: Icon(Icons.tune_rounded,
+                    color: themeProvider.appTheme.filterButtonColor),
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(
+                    MaterialPageRoute(
+                        builder: (context) => const FilterScreen()),
+                  )
+                      .then((value) {
+                    //Теперь покажем только отфильтрованные места
+                    if (value == null) return;
+                    repaint(value);
+                  });
+                },
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => const Size.fromHeight(50);
+}
+
 class ListOfPlaces extends StatefulWidget {
   const ListOfPlaces({
     Key? key,
@@ -209,72 +234,61 @@ class _ListOfPlacesState extends State<ListOfPlaces> {
 
   @override
   Widget build(BuildContext context) {
-    return Flexible(
-      child: ListView.builder(
-        controller: widget.scrollController,
-        shrinkWrap: true,
-        physics: Platform.isAndroid
-            ? const ClampingScrollPhysics()
-            : const BouncingScrollPhysics(),
-        itemCount: places.length,
-        itemBuilder: (context, index) {
-          return DragTarget(
-            onAccept: (data) {
-              ValueKey<String> rawData = data as ValueKey<String>;
-
-              setState(() {
-                places.insert(
-                  places.indexOf(places[index]),
-                  places.removeAt(
-                    places.indexWhere(
-                      (element) => element.name == rawData.value.toString(),
-                    ),
+    return ListView.builder(
+      controller: widget.scrollController,
+      shrinkWrap: true,
+      physics: Platform.isAndroid
+          ? const ClampingScrollPhysics()
+          : const BouncingScrollPhysics(),
+      itemCount: places.length,
+      itemBuilder: (context, index) {
+        return DragTarget(
+          onAccept: (data) {
+            ValueKey<String> rawData = data as ValueKey<String>;
+    
+            setState(() {
+              places.insert(
+                places.indexOf(places[index]),
+                places.removeAt(
+                  places.indexWhere(
+                    (element) => element.name == rawData.value.toString(),
                   ),
-                );
-              });
-            },
-            builder: (context, candidateData, rejectedData) {
-              return Column(
-                children: [
-                  LongPressDraggable(
-                    data: ValueKey<String>(places[index].name),
-                    axis: Axis.vertical,
-                    feedback: Opacity(
-                      opacity: 0.8,
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        child: SightCard(sight: places[index]),
-                      ),
-                    ),
-                    child: SightCard(sight: places[index]),
-                  ),
-                  const SizedBox(height: 20),
-                ],
+                ),
               );
-            },
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _AppBar extends StatelessWidget {
-  const _AppBar({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      toolbarHeight: 100,
-      elevation: 0,
-      centerTitle: true,
-      title: const Text(
-        AppStrings.listOfInterestingPlases,
-        style: AppTypography.subtitle,
-      ),
+            });
+          },
+          builder: (context, candidateData, rejectedData) {
+            return Column(
+              children: [
+                LongPressDraggable(
+                  data: ValueKey<String>(places[index].name),
+                  axis: Axis.vertical,
+                  feedback: Opacity(
+                    opacity: 0.8,
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: SightCard(sight: places[index]),
+                    ),
+                  ),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.deferToChild,
+                      onTap: () {
+                        Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => SightDetails(
+                                sight: places[index],
+                              ),
+                            ),
+                          );
+                      },
+                      child: SightCard(sight: places[index])),
+                ),
+                const SizedBox(height: 20),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -356,5 +370,60 @@ class OverscrollGlowAbsorver extends StatelessWidget {
         return false;
       },
     );
+  }
+}
+
+class _SightListScreenPersistantHeaderDelegate
+    extends SliverPersistentHeaderDelegate {
+  const _SightListScreenPersistantHeaderDelegate(
+      {required this.places, required this.repaint});
+  final List<Sight> places;
+  final Function(List<Sight> value) repaint;
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: themeProvider.appTheme.backgroundColor,
+      child: Column(
+        crossAxisAlignment: shrinkOffset < 100
+            ? CrossAxisAlignment.start
+            : CrossAxisAlignment.center,
+        children: [
+          shrinkOffset < 100
+              ? Text(
+                  AppStrings.listOfInterestingPlases,
+                  style: AppTypography.largeTitle
+                      .copyWith(color: themeProvider.appTheme.appTitle),
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 28.0),
+                  child: Text(
+                    AppStrings.listOfInterestingPlases
+                        .replaceFirst(RegExp(r'\n'), ' '),
+                    style: AppTypography.subtitle
+                        .copyWith(color: themeProvider.appTheme.appTitle),
+                  ),
+                ),
+          if (shrinkOffset == 0)
+            _AppBarSearchWidget(
+              places: places,
+              repaint: (value) {
+                repaint(value);
+              },
+            ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  double get maxExtent => 155;
+
+  @override
+  double get minExtent => 80;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
   }
 }
