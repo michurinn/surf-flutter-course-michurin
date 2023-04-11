@@ -4,7 +4,7 @@ class AppStrings {
   static const sight2workTime = "Открыто до 1:00";
   static const sight3workTime = "Открытие 21.12.2023";
 
-  static const listOfInterestingPlases = "Список интересных мест";
+  static const listOfInterestingPlases = "Список\nинтересных мест";
 
   static const newPlaceAdded = "Добавлено новое место";
 
