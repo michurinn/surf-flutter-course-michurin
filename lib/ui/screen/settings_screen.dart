@@ -83,42 +83,6 @@ class _SettingScreenState extends State<SettingScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 3,
-        type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.list_alt),
-            activeIcon: SvgPicture.asset(
-              AppAssets.listFilled,
-              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
-            ),
-            label: AppStrings.bottomLabel1,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.map_outlined),
-            activeIcon: SvgPicture.asset(
-              AppAssets.mapFilled,
-              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
-            ),
-            label: AppStrings.bottomLabel2,
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              AppAssets.like,
-              color: themeProvider.appTheme.bottomNavBarUnselectedItemColor,
-            ),
-            label: AppStrings.bottomLabel3,
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            activeIcon: Icon(Icons.settings),
-            label: AppStrings.bottomLabel4,
-          ),
-        ],
-      ),
     );
   }
 }

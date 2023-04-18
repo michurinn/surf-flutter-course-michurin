@@ -5,6 +5,7 @@ import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
+import 'package:places/ui/screen/home_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
 
 //Содержимое PageView онбординга
@@ -165,11 +166,8 @@ class _AppBar extends StatelessWidget {
         Visibility(
           visible: skipButtonVisible,
           child: TextButton(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const SightListScreen(),
-              ),
-            ),
+            onPressed: () => Navigator.of(context)
+                .pushReplacementNamed(HomeScreen.routeName),
             child: Padding(
               padding: const EdgeInsets.only(right: 10.0),
               child: Text(
@@ -198,13 +196,8 @@ class _OnStartButton extends StatelessWidget {
     return Visibility(
       visible: isVisible,
       child: OutlinedButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const SightListScreen(),
-            ),
-          );
-        },
+        onPressed: () => Navigator.of(context)
+                .pushReplacementNamed(SightListScreen.routeName),
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.all(0.0),
           side: const BorderSide(width: 0.0, color: Colors.transparent),

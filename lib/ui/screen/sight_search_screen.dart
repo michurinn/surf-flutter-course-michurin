@@ -11,7 +11,7 @@ import 'package:places/ui/screen/widgets/search_bar.dart';
 
 class SightSearchScreen extends StatefulWidget {
   const SightSearchScreen({super.key, required this.filteredPlaces});
-    static const routeName = 'sight_search_screen';
+  static const routeName = 'sight_search_screen';
 
   final List<Sight> filteredPlaces;
 
@@ -200,13 +200,8 @@ class _ListItem extends StatelessWidget {
     return InkWell(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => SightDetails(
-              sight: sight,
-            ),
-          ),
-        );
+        Navigator.of(context)
+            .pushNamed(SightDetails.routeName, arguments: sight);
       },
       child: Column(
         children: [

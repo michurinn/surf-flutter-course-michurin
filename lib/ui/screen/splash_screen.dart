@@ -22,11 +22,8 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _navigateToNext() {
     return Future.delayed(
       const Duration(seconds: 2),
-      () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const OnboardingScreen(),
-        ),
-      ),
+      () => Navigator.of(context)
+          .pushReplacementNamed(OnboardingScreen.routeName),
     );
   }
 

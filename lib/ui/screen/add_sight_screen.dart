@@ -586,11 +586,7 @@ class _TypeFormField extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
-            .push(
-          MaterialPageRoute(
-            builder: (context) => const CategoriesScreen(),
-          ),
-        )
+            .pushNamed(CategoriesScreen.routeName)
             .then((value) {
           // Заполним Филд выбранным значением
           (value == null || value == '' || value == false)

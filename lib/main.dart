@@ -5,6 +5,7 @@ import 'package:places/theme_provider.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
 import 'package:places/ui/screen/categories_screen.dart';
 import 'package:places/ui/screen/filters_screen.dart';
+import 'package:places/ui/screen/home_screen.dart';
 import 'package:places/ui/screen/onboarding_screen.dart';
 import 'package:places/ui/screen/res/themes.dart';
 import 'package:places/ui/screen/settings_screen.dart';
@@ -47,6 +48,7 @@ class App extends StatelessWidget {
               FilterScreen.routeName: (context) => const FilterScreen(),
               CategoriesScreen.routeName: (context) => const CategoriesScreen(),
               AddSightScreen.routeName: (context) => const AddSightScreen(),
+              HomeScreen.routeName: (context) => const HomeScreen(),
             },
             onGenerateRoute: (RouteSettings settings) {
               switch (settings.name) {
