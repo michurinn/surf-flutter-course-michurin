@@ -14,4 +14,5 @@ class AppAssets {
   static const onboardingRouter = 'assets/onboarding1.svg';
   static const onboardingBackPack = 'assets/onboarding2.svg';
   static const onboardingFinger = 'assets/onboarding3.svg';
+  static const splashAvatar = 'assets/icons/onboarding_logo.svg';
 }
