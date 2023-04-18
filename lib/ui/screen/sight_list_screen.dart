@@ -130,8 +130,8 @@ class _AppBarSearchWidget extends StatelessWidget
             // При тапе на виджет поиска переход на страницу поиска,
             // а при тапе именно на иконку Icons.tune_rounded - переход на екран фильтров
             GestureDetector(
-              onTap: () =>
-                  Navigator.of(context).pushNamed(SightSearchScreen.routeName),
+              onTap: () => Navigator.of(context)
+                  .pushNamed(SightSearchScreen.routeName, arguments: places),
               child: const SearchBar(
                 isEnabled: false,
                 isFocused: false,
