@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
-import 'package:places/ui/screen/favorite_card.dart';
 import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
@@ -42,7 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
       body: body,
       bottomNavigationBar: BottomNavigationBar(
         onTap: (value) {
-          print(value);
           setState(() {
             _indexOfTab = HomeScreenTabs.values[value];
           });

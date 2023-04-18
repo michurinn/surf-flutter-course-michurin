@@ -7,8 +7,8 @@ import 'package:places/res/app_typography.dart';
 
 // Карточка для показа места
 class SightCard extends StatelessWidget {
-  const SightCard({Key? key, required this.sight}) : super(key: key);
-
+  const SightCard({Key? key, required this.sight, this.onTap}) : super(key: key);
+  final VoidCallback? onTap;
   final Sight sight;
   @override
   Widget build(BuildContext context) {
@@ -70,7 +70,7 @@ class SightCard extends StatelessWidget {
                               },
                             ).image),
                       ),
-                      child: InkWell(onTap: () {}),
+                      child: InkWell(onTap: onTap),
                     ),
                     Positioned(
                       right: 10,
@@ -97,7 +97,7 @@ class SightCard extends StatelessWidget {
               ),
               Expanded(
                 child: InkWell(
-                  onTap: () {},
+                  onTap: onTap,
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(

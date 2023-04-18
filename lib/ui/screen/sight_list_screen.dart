@@ -1,11 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/main.dart';
 import 'package:places/mocks.dart';
-import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
@@ -203,7 +201,6 @@ class _ListOfPlacesState extends State<ListOfPlaces> {
         return DragTarget(
           onAccept: (data) {
             ValueKey<String> rawData = data as ValueKey<String>;
-
             setState(() {
               places.insert(
                 places.indexOf(places[index]),
@@ -228,12 +225,12 @@ class _ListOfPlacesState extends State<ListOfPlaces> {
                       child: SightCard(sight: places[index]),
                     ),
                   ),
-                  child: GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () => Navigator.of(context).pushNamed(
-                          SightDetails.routeName,
-                          arguments: places[index]),
-                      child: SightCard(sight: places[index])),
+                  child: SightCard(
+                    sight: places[index],
+                    onTap: () => Navigator.of(context).pushNamed(
+                        SightDetails.routeName,
+                        arguments: places[index]),
+                  ),
                 ),
                 const SizedBox(height: 20),
               ],
