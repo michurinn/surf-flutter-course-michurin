@@ -18,6 +18,7 @@ var mocksPictures = mocksImages;
 // Екран Добавления нового места
 class AddSightScreen extends StatefulWidget {
   const AddSightScreen({super.key});
+  static const routeName = 'add_sight_screen';
 
   @override
   State<AddSightScreen> createState() => _AddSightScreenState();

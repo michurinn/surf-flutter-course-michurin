@@ -15,6 +15,7 @@ import 'package:places/res/app_typography.dart';
 //Екран Фильтров
 class FilterScreen extends StatefulWidget {
   const FilterScreen({super.key});
+  static const routeName = 'filters_screen';
 
   @override
   State<FilterScreen> createState() => _FilterScreenState();

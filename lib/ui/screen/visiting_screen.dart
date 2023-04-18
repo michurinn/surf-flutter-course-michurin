@@ -13,6 +13,7 @@ import 'package:places/ui/screen/favorite_card.dart';
 // Екран Хочу посетить/Посещённые
 class VisitingScreen extends StatefulWidget {
   const VisitingScreen({super.key});
+  static const routeName = 'visiting_screen';
 
   @override
   State<VisitingScreen> createState() => _VisitingScreenState();

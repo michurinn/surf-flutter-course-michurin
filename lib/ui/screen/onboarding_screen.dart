@@ -13,6 +13,7 @@ const childrensOfPageview = [_PageFirst(), _PageSecond(), _PageThird()];
 //Екран онбординга
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
+  static const routeName = 'onboarding_screen';
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -247,7 +248,10 @@ class _PageFirst extends StatelessWidget {
       children: [
         Column(
           children: [
-            SvgPicture.asset(AppAssets.onboardingRouter, color: themeProvider.appTheme.appTitle,),
+            SvgPicture.asset(
+              AppAssets.onboardingRouter,
+              color: themeProvider.appTheme.appTitle,
+            ),
             const SizedBox(
               height: 42,
             ),
@@ -284,7 +288,10 @@ class _PageSecond extends StatelessWidget {
       children: [
         Column(
           children: [
-            SvgPicture.asset(AppAssets.onboardingBackPack, color: themeProvider.appTheme.appTitle,),
+            SvgPicture.asset(
+              AppAssets.onboardingBackPack,
+              color: themeProvider.appTheme.appTitle,
+            ),
             const SizedBox(
               height: 42,
             ),
@@ -321,7 +328,10 @@ class _PageThird extends StatelessWidget {
       children: [
         Column(
           children: [
-            SvgPicture.asset(AppAssets.onboardingFinger, color: themeProvider.appTheme.appTitle,),
+            SvgPicture.asset(
+              AppAssets.onboardingFinger,
+              color: themeProvider.appTheme.appTitle,
+            ),
             const SizedBox(
               height: 42,
             ),

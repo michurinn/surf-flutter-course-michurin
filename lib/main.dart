@@ -24,11 +24,10 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ThemeProvider>(
       builder: ((context, theme, child) => MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: "Surf",
-            theme: theme.isLight ? lightTheme : darkTheme,
-            home:  const SplashScreen()
-          )),
+          debugShowCheckedModeBanner: false,
+          title: "Surf",
+          theme: theme.isLight ? lightTheme : darkTheme,
+          initialRoute: SplashScreen.routeName)),
     );
   }
 }

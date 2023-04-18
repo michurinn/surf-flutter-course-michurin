@@ -11,6 +11,7 @@ import 'package:places/ui/screen/widgets/search_bar.dart';
 
 class SightSearchScreen extends StatefulWidget {
   const SightSearchScreen({super.key, required this.filteredPlaces});
+    static const routeName = 'sight_search_screen';
 
   final List<Sight> filteredPlaces;
 

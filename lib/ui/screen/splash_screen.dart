@@ -7,7 +7,7 @@ import 'package:places/ui/screen/onboarding_screen.dart';
 //Splash screen
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
-
+  static const routeName = 'splash_screen';
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }

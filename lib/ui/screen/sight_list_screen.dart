@@ -18,6 +18,7 @@ import 'package:places/ui/screen/widgets/search_bar.dart';
 // Екран списка мест
 class SightListScreen extends StatefulWidget {
   const SightListScreen({Key? key}) : super(key: key);
+    static const routeName = 'sight_list_screen';
 
   @override
   State<SightListScreen> createState() => _SightListScreenState();
