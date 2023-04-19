@@ -9,7 +9,8 @@ import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 
 class SightDetails extends StatelessWidget {
-  SightDetails({Key? key, required this.sight, required this.scrollController}) : super(key: key);
+  SightDetails({Key? key, required this.sight, required this.scrollController})
+      : super(key: key);
   static const routeName = 'sight_details_screen';
 
   final Sight sight;
@@ -53,29 +54,29 @@ class _HeadWithImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      leading: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
+      automaticallyImplyLeading: false,
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 8.0, top: 16.0),
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              shape: const CircleBorder(
+              ),
+              padding: const EdgeInsets.all(0),
+              backgroundColor: themeProvider.appTheme.cardColor,
+              fixedSize: const Size(32, 32),
+              alignment: Alignment.center,
             ),
-            padding: const EdgeInsets.all(0),
-            backgroundColor: themeProvider.appTheme.cardColor,
-            fixedSize: const Size(32, 32),
-            alignment: Alignment.center,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: SvgPicture.asset(
-            AppAssets.back,
-            color: themeProvider.appTheme.cardIconColor,
-            width: 5,
-            height: 10,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: SvgPicture.asset(
+              AppAssets.cancel,
+              color: themeProvider.appTheme.cardIconColor,
+            ),
           ),
         ),
-      ),
+      ],
       expandedHeight: 360,
       flexibleSpace: Scrollbar(
         thumbVisibility: true,
