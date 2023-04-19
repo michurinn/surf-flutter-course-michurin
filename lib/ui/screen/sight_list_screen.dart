@@ -227,9 +227,11 @@ class _ListOfPlacesState extends State<ListOfPlaces> {
                   ),
                   child: SightCard(
                     sight: places[index],
-                    onTap: () => Navigator.of(context).pushNamed(
-                        SightDetails.routeName,
-                        arguments: places[index]),
+                    onTap: () => showModalBottomSheet(
+                        context: context,
+                        builder: (context) => SightDetails(
+                              sight: places[index],
+                            )),
                   ),
                 ),
                 const SizedBox(height: 20),
