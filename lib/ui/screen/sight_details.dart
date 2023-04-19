@@ -9,16 +9,16 @@ import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 
 class SightDetails extends StatelessWidget {
-  SightDetails({Key? key, required this.sight}) : super(key: key);
+  SightDetails({Key? key, required this.sight, required this.scrollController}) : super(key: key);
   static const routeName = 'sight_details_screen';
 
   final Sight sight;
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController scrollController;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
-        controller: _scrollController,
+        controller: scrollController,
         slivers: [
           _HeadWithImage(
             sight: sight,
@@ -108,7 +108,7 @@ class _BodyWithTexts extends StatelessWidget {
         children: [
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(sight.details * 55, style: AppTypography.smallBlueDeep),
+            child: Text(sight.details * 33, style: AppTypography.smallBlueDeep),
           ),
         ],
       ),

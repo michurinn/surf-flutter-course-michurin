@@ -60,13 +60,6 @@ class App extends StatelessWidget {
                       builder: (context) => SightSearchScreen(
                             filteredPlaces: filteredPlaces,
                           ));
-                case SightDetails.routeName:
-                  final Sight sight = settings.arguments as Sight;
-                  return MaterialPageRoute(
-                      settings: settings,
-                      builder: (context) => SightDetails(
-                            sight: sight,
-                          ));
                 default:
                   return null;
               }

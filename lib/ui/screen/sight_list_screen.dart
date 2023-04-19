@@ -228,9 +228,20 @@ class _ListOfPlacesState extends State<ListOfPlaces> {
                   child: SightCard(
                     sight: places[index],
                     onTap: () => showModalBottomSheet(
+                        isScrollControlled: true,
+                        useSafeArea: true,
                         context: context,
-                        builder: (context) => SightDetails(
-                              sight: places[index],
+                        builder: (context) => DraggableScrollableSheet(
+                              expand: false,
+                              snap: true,
+                              maxChildSize: 0.95,
+                              minChildSize: 0.9,
+                              initialChildSize: 0.95,
+                              builder: (context, scrollController) =>
+                                  SightDetails(
+                                sight: places[index],
+                                scrollController: scrollController,
+                              ),
                             )),
                   ),
                 ),
