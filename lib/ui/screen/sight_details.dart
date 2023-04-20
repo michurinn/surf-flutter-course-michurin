@@ -5,11 +5,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
+import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 
 class SightDetails extends StatelessWidget {
-  const SightDetails({Key? key, required this.sight, required this.scrollController})
+  const SightDetails(
+      {Key? key, required this.sight, required this.scrollController})
       : super(key: key);
   static const routeName = 'sight_details_screen';
 
@@ -60,8 +62,7 @@ class _HeadWithImage extends StatelessWidget {
           padding: const EdgeInsets.only(right: 8.0, top: 16.0),
           child: OutlinedButton(
             style: OutlinedButton.styleFrom(
-              shape: const CircleBorder(
-              ),
+              shape: const CircleBorder(),
               padding: const EdgeInsets.all(0),
               backgroundColor: themeProvider.appTheme.cardColor,
               fixedSize: const Size(32, 32),
@@ -80,11 +81,23 @@ class _HeadWithImage extends StatelessWidget {
       expandedHeight: 360,
       flexibleSpace: Scrollbar(
         thumbVisibility: true,
-        child: PageView(
+        child: Stack(
+          alignment: Alignment.topCenter,
           children: [
-            Image.network(sight.imagePath, fit: BoxFit.cover),
-            Image.network(sight.imagePath, fit: BoxFit.cover),
-            Image.network(sight.imagePath, fit: BoxFit.cover),
+            PageView(
+              children: [
+                Image.network(sight.imagePath, fit: BoxFit.cover),
+                Image.network(sight.imagePath, fit: BoxFit.cover),
+                Image.network(sight.imagePath, fit: BoxFit.cover),
+              ],
+            ),
+            Positioned(
+              top: 12,
+              child: SvgPicture.asset(
+                AppAssets.minimize,
+                color: AppColors.white,
+              ),
+            )
           ],
         ),
       ),

@@ -16,4 +16,5 @@ class AppAssets {
   static const onboardingFinger = 'assets/onboarding3.svg';
   static const splashAvatar = 'assets/icons/onboarding_logo.svg';
   static const cancel = 'assets/icons/cancel.svg';
+  static const minimize = 'assets/icons/minimize.svg';
 }
