@@ -9,7 +9,7 @@ import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 
 class SightDetails extends StatelessWidget {
-  SightDetails({Key? key, required this.sight, required this.scrollController})
+  const SightDetails({Key? key, required this.sight, required this.scrollController})
       : super(key: key);
   static const routeName = 'sight_details_screen';
 
