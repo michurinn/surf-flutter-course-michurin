@@ -228,6 +228,12 @@ class _ListOfPlacesState extends State<ListOfPlaces> {
                   child: SightCard(
                     sight: places[index],
                     onTap: () => showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
                         isScrollControlled: true,
                         useSafeArea: true,
                         context: context,
