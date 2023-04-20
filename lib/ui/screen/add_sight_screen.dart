@@ -142,8 +142,68 @@ class _AddSightScreenState extends State<AddSightScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _TopImagesList(
-                (() => setState(
-                      () {},
+                (() => showDialog(
+                      context: context,
+                      builder: (context) => SimpleDialog(
+                          backgroundColor: Colors.transparent,
+                          insetPadding: const EdgeInsets.only(
+                              left: 16, right: 16, bottom: 8),
+                          alignment: Alignment.bottomCenter,
+                          children: <Widget>[
+                            SimpleDialogOption(
+                              padding: const EdgeInsets.all(0),
+                              child: Container(
+                                color: Colors.amberAccent,
+                                width: MediaQuery.of(context).size.width,
+                                height: 100,
+                              ),
+                            ),
+                            SimpleDialogOption(
+                              padding: const EdgeInsets.all(0),
+                              child: Container(
+                                color: Colors.greenAccent,
+                                width: MediaQuery.of(context).size.width,
+                                height: 100,
+                              ),
+                            ),
+                            SimpleDialogOption(
+                              padding: const EdgeInsets.all(0),
+                              child: Container(
+                                color: Colors.grey,
+                                width: MediaQuery.of(context).size.width,
+                                height: 100,
+                              ),
+                            ),
+                            SimpleDialogOption(
+                              child: OutlinedButton(
+                                onPressed: () {},
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(
+                                      width: 0.0, color: Colors.transparent),
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(12),
+                                    ),
+                                  ),
+                                  backgroundColor:
+                                      themeProvider.appTheme.cardColor,
+                                  minimumSize: const Size(328, 48),
+                                  alignment: Alignment.center,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      AppStrings.cancel.toUpperCase(),
+                                      style: AppTypography.button.copyWith(
+                                          color: themeProvider
+                                              .appTheme.routeButtonColor),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ]),
                     )),
               ),
               Form(
