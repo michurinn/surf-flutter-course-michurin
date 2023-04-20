@@ -13,37 +13,37 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-enum HomeScreenTabs { sightList, map, favorite, settings }
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+  @override
+  void initState() {
+    _tabController = TabController(length: 4, vsync: this);
+    //Перерисуем екран, чтобы обновить currentIndex: _tabController.index, в BottomNavigationBar
+    _tabController.addListener(() {
+      setState(() {});
+    });
+    super.initState();
+  }
 
-class _HomeScreenState extends State<HomeScreen> {
-  HomeScreenTabs _indexOfTab = HomeScreenTabs.sightList;
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    Widget body;
-    switch (_indexOfTab) {
-      case HomeScreenTabs.sightList:
-        body = const SightListScreen();
-        break;
-      case HomeScreenTabs.settings:
-        body = const SettingScreen();
-        break;
-      case HomeScreenTabs.favorite:
-        body = const VisitingScreen();
-        break;
-      case HomeScreenTabs.map:
-      default:
-        body = const SizedBox.shrink();
-        break;
-    }
     return Scaffold(
-      body: body,
+      body: TabBarView(controller: _tabController, children: const [
+        SightListScreen(),
+        SizedBox.shrink(), // Map screen
+        VisitingScreen(),
+        SettingScreen(),
+      ]),
       bottomNavigationBar: BottomNavigationBar(
-        onTap: (value) {
-          setState(() {
-            _indexOfTab = HomeScreenTabs.values[value];
-          });
-        },
-        currentIndex: _indexOfTab.index,
+        onTap: _tabController.animateTo,
+        currentIndex: _tabController.index,
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
         showUnselectedLabels: false,
