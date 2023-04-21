@@ -5,20 +5,24 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
+import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 
 class SightDetails extends StatelessWidget {
-  SightDetails({Key? key, required this.sight}) : super(key: key);
+  const SightDetails(
+      {Key? key, required this.sight, required this.scrollController})
+      : super(key: key);
   static const routeName = 'sight_details_screen';
 
   final Sight sight;
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController scrollController;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: CustomScrollView(
-        controller: _scrollController,
+        controller: scrollController,
         slivers: [
           _HeadWithImage(
             sight: sight,
@@ -32,7 +36,8 @@ class SightDetails extends StatelessWidget {
           SliverList(
             delegate: SliverChildListDelegate([
               _BodyWithTexts(sight: sight),
-              const SizedBox(
+              Container(
+                color: themeProvider.appTheme.backgroundColor,
                 height: 24,
               ),
               const _BottomWithButtons(),
@@ -53,38 +58,68 @@ class _HeadWithImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      leading: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: OutlinedButton(
-          style: OutlinedButton.styleFrom(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
+      backgroundColor: Colors.transparent,
+      automaticallyImplyLeading: false,
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 8.0, top: 16.0),
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(0),
+              backgroundColor: themeProvider.appTheme.cardColor,
+              fixedSize: const Size(32, 32),
+              alignment: Alignment.center,
             ),
-            padding: const EdgeInsets.all(0),
-            backgroundColor: themeProvider.appTheme.cardColor,
-            fixedSize: const Size(32, 32),
-            alignment: Alignment.center,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: SvgPicture.asset(
-            AppAssets.back,
-            color: themeProvider.appTheme.cardIconColor,
-            width: 5,
-            height: 10,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: SvgPicture.asset(
+              AppAssets.cancel,
+              color: themeProvider.appTheme.cardIconColor,
+            ),
           ),
         ),
-      ),
+      ],
       expandedHeight: 360,
       flexibleSpace: Scrollbar(
         thumbVisibility: true,
-        child: PageView(
-          children: [
-            Image.network(sight.imagePath, fit: BoxFit.cover),
-            Image.network(sight.imagePath, fit: BoxFit.cover),
-            Image.network(sight.imagePath, fit: BoxFit.cover),
-          ],
+        child: Container(
+          decoration: BoxDecoration(
+            color: themeProvider.appTheme.backgroundColor,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              PageView(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(sight.imagePath, fit: BoxFit.cover),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(sight.imagePath, fit: BoxFit.cover),
+                  ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Image.network(sight.imagePath, fit: BoxFit.cover),
+                  ),
+                ],
+              ),
+              Positioned(
+                top: 12,
+                child: SvgPicture.asset(
+                  AppAssets.minimize,
+                  color: AppColors.white,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -102,15 +137,19 @@ class _BodyWithTexts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(sight.details * 55, style: AppTypography.smallBlueDeep),
-          ),
-        ],
+    return Container(
+      color: themeProvider.appTheme.backgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child:
+                  Text(sight.details * 33, style: AppTypography.smallBlueDeep),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -124,117 +163,120 @@ class _BottomWithButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        children: [
-          OutlinedButton(
-            onPressed: () {
-              print("Route button on card pressed");
-            },
-            style: OutlinedButton.styleFrom(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(12),
+    return Container(
+      color: themeProvider.appTheme.backgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Column(
+          children: [
+            OutlinedButton(
+              onPressed: () {
+                print("Route button on card pressed");
+              },
+              style: OutlinedButton.styleFrom(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(12),
+                  ),
                 ),
+                backgroundColor: themeProvider.appTheme.routeButtonColor,
+                minimumSize: const Size(328, 48),
+                alignment: Alignment.center,
               ),
-              backgroundColor: themeProvider.appTheme.routeButtonColor,
-              minimumSize: const Size(328, 48),
-              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    AppAssets.route,
+                    height: 20,
+                    width: 20,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    AppStrings.buildRoute.toUpperCase(),
+                    style: AppTypography.button,
+                  )
+                ],
+              ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            const SizedBox(
+              height: 24,
+            ),
+            const Divider(
+              thickness: 2,
+            ),
+            Row(
               children: [
-                SvgPicture.asset(
-                  AppAssets.route,
-                  height: 20,
-                  width: 20,
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      print("Calendar button pressed");
+                    },
+                    style: const ButtonStyle(
+                      minimumSize: MaterialStatePropertyAll(Size(0, 40)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          AppAssets.calendar,
+                          width: 22,
+                          height: 19,
+                          color: themeProvider
+                              .appTheme.bottomNavBarSelectedItemColor,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          AppStrings.addToCalendar,
+                          style: AppTypography.small.copyWith(
+                            color: themeProvider
+                                .appTheme.bottomNavBarSelectedItemColor,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-                const SizedBox(
-                  width: 10,
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      print("Like button pressed");
+                    },
+                    style: const ButtonStyle(
+                      minimumSize: MaterialStatePropertyAll(Size(0, 40)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          AppAssets.heart,
+                          width: 20,
+                          height: 20,
+                          color: themeProvider
+                              .appTheme.bottomNavBarSelectedItemColor,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          AppStrings.inFavorite,
+                          style: AppTypography.small.copyWith(
+                            color: themeProvider
+                                .appTheme.bottomNavBarSelectedItemColor,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
                 ),
-                Text(
-                  AppStrings.buildRoute.toUpperCase(),
-                  style: AppTypography.button,
-                )
               ],
             ),
-          ),
-          const SizedBox(
-            height: 24,
-          ),
-          const Divider(
-            thickness: 2,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: TextButton(
-                  onPressed: () {
-                    print("Calendar button pressed");
-                  },
-                  style: const ButtonStyle(
-                    minimumSize: MaterialStatePropertyAll(Size(0, 40)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(
-                        AppAssets.calendar,
-                        width: 22,
-                        height: 19,
-                        color: themeProvider
-                            .appTheme.bottomNavBarSelectedItemColor,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        AppStrings.addToCalendar,
-                        style: AppTypography.small.copyWith(
-                          color: themeProvider
-                              .appTheme.bottomNavBarSelectedItemColor,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              Expanded(
-                child: TextButton(
-                  onPressed: () {
-                    print("Like button pressed");
-                  },
-                  style: const ButtonStyle(
-                    minimumSize: MaterialStatePropertyAll(Size(0, 40)),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SvgPicture.asset(
-                        AppAssets.heart,
-                        width: 20,
-                        height: 20,
-                        color: themeProvider
-                            .appTheme.bottomNavBarSelectedItemColor,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        AppStrings.inFavorite,
-                        style: AppTypography.small.copyWith(
-                          color: themeProvider
-                              .appTheme.bottomNavBarSelectedItemColor,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -247,11 +289,11 @@ class _DetailsScreenPersistantHeaderDelegate
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Container(
-        alignment: Alignment.centerLeft,
-        color: themeProvider.appTheme.backgroundColor,
+    return Container(
+      alignment: Alignment.centerLeft,
+      color: themeProvider.appTheme.backgroundColor,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

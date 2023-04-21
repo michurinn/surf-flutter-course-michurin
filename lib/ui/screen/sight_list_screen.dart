@@ -227,9 +227,28 @@ class _ListOfPlacesState extends State<ListOfPlaces> {
                   ),
                   child: SightCard(
                     sight: places[index],
-                    onTap: () => Navigator.of(context).pushNamed(
-                        SightDetails.routeName,
-                        arguments: places[index]),
+                    onTap: () => showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                        isScrollControlled: true,
+                        useSafeArea: true,
+                        context: context,
+                        builder: (context) => DraggableScrollableSheet(
+                              expand: false,
+                              snap: true,
+                              maxChildSize: 0.95,
+                              minChildSize: 0.9,
+                              initialChildSize: 0.95,
+                              builder: (context, scrollController) =>
+                                  SightDetails(
+                                sight: places[index],
+                                scrollController: scrollController,
+                              ),
+                            )),
                   ),
                 ),
                 const SizedBox(height: 20),

@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/main.dart';
 import 'package:places/mocks.dart';
@@ -142,9 +143,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _TopImagesList(
-                (() => setState(
-                      () {},
-                    )),
+                (() => _AddPictureShowDialog(context)),
               ),
               Form(
                 key: _keyForm,
@@ -389,6 +388,171 @@ class _AddSightScreenState extends State<AddSightScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  // Диалог для кнопки Добавить фото
+  Future<dynamic> _AddPictureShowDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.only(left: 16, right: 16, bottom: 8),
+          alignment: Alignment.bottomCenter,
+          children: <Widget>[
+            // Пункт Камера
+            SimpleDialogOption(
+              onPressed: () => print("Add with camers pressed..."), // Mock
+              padding: const EdgeInsets.all(0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: themeProvider.appTheme.backgroundColor,
+                  border:
+                      Border.all(color: themeProvider.appTheme.backgroundColor),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                  ),
+                ),
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 19.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 19.0),
+                        child: Row(children: [
+                          SvgPicture.asset(UploadPictureWay.withCamera.icon),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 13.0),
+                            child: Text(
+                              UploadPictureWay.withCamera.label,
+                              style: AppTypography.formLabel,
+                            ),
+                          )
+                        ]),
+                      ),
+                      const Divider(
+                        height: 5,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Пункт Фотография
+            SimpleDialogOption(
+              onPressed: () => print("Add with gallery pressed..."), // Mock
+              padding: const EdgeInsets.all(0),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: themeProvider.appTheme.backgroundColor,
+                    border: Border.all(
+                        color: themeProvider.appTheme.backgroundColor)),
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 19.0),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 19.0),
+                        child: Row(children: [
+                          SvgPicture.asset(UploadPictureWay.withGallery.icon),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 13.0),
+                            child: Text(
+                              UploadPictureWay.withGallery.label,
+                              style: AppTypography.formLabel,
+                            ),
+                          )
+                        ]),
+                      ),
+                      const Divider(
+                        height: 5,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Пункт Файл
+            SimpleDialogOption(
+              onPressed: () => print("Add with FileManager pressed..."), // Mock
+              padding: const EdgeInsets.all(0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: themeProvider.appTheme.backgroundColor,
+                  border:
+                      Border.all(color: themeProvider.appTheme.backgroundColor),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(12),
+                    bottomRight: Radius.circular(12),
+                  ),
+                ),
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 19.0),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 19.0),
+                        child: Row(children: [
+                          SvgPicture.asset(
+                              UploadPictureWay.withFileManager.icon),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 13.0),
+                            child: Text(
+                              UploadPictureWay.withFileManager.label,
+                              style: AppTypography.formLabel,
+                            ),
+                          )
+                        ]),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Кнопка Отмена
+            SimpleDialogOption(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: OutlinedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: OutlinedButton.styleFrom(
+                      side: const BorderSide(
+                          width: 0.0, color: Colors.transparent),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12),
+                        ),
+                      ),
+                      backgroundColor: themeProvider.appTheme.cardColor,
+                      minimumSize: const Size.fromHeight(48),
+                      alignment: Alignment.center,
+                      fixedSize:
+                          Size.fromWidth(MediaQuery.of(context).size.width)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        AppStrings.cancel.toUpperCase(),
+                        style: AppTypography.button.copyWith(
+                            color: themeProvider.appTheme.routeButtonColor),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ]),
     );
   }
 

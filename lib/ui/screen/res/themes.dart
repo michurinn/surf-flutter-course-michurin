@@ -45,6 +45,9 @@ final darkTheme = ThemeData(
     unselectedIconTheme: IconThemeData(color: AppColors.white),
     selectedIconTheme: IconThemeData(color: AppColors.white),
   ),
+  bottomSheetTheme: const BottomSheetThemeData(
+    backgroundColor: Colors.transparent
+  )
 );
 
 final lightTheme = ThemeData(
@@ -89,6 +92,9 @@ final lightTheme = ThemeData(
     unselectedIconTheme: IconThemeData(color: AppColors.whiteSecondary),
     selectedIconTheme: IconThemeData(color: AppColors.whiteSecondary),
   ),
+  bottomSheetTheme: const BottomSheetThemeData(
+    backgroundColor: Colors.transparent
+  )
 );
 
 abstract class BaseTheme {

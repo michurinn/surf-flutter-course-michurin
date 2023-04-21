@@ -1,4 +1,6 @@
 // Тексаотвые константы
+import 'package:places/res/app_assets.dart';
+
 class AppStrings {
   static const sight1workTime = "Закрыто до 20:00";
   static const sight2workTime = "Открыто до 1:00";
@@ -64,6 +66,30 @@ class AppStrings {
   static const clearHistore = "Очистить историю";
   static const nothingFinded = "Ничего не найдено";
   static const tryToChangeSearchParams = "Попробуйте изменить параметры поиска";
+
+  static const camera = "Камера";
+  static const picture = "Фотография";
+  static const fromFile = "Файл";
+}
+
+// Выбор способа добавления фото
+enum UploadPictureWay {
+  withCamera(
+    AppStrings.camera,
+    AppAssets.camera,
+  ),
+  withGallery(
+    AppStrings.picture,
+    AppAssets.picture,
+  ),
+  withFileManager(
+    AppStrings.fromFile,
+    AppAssets.file,
+  );
+
+  const UploadPictureWay(this.label, this.icon);
+  final String label;
+  final String icon;
 }
 
 // Возможные категории

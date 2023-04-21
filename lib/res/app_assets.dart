@@ -15,4 +15,9 @@ class AppAssets {
   static const onboardingBackPack = 'assets/onboarding2.svg';
   static const onboardingFinger = 'assets/onboarding3.svg';
   static const splashAvatar = 'assets/icons/onboarding_logo.svg';
+  static const cancel = 'assets/icons/cancel.svg';
+  static const minimize = 'assets/icons/minimize.svg';
+  static const camera = 'assets/icons/camera.svg';
+  static const picture = 'assets/icons/picture.svg';
+  static const file = 'assets/icons/file.svg';
 }
