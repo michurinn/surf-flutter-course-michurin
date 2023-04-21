@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/main.dart';
-import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
@@ -11,6 +9,7 @@ import 'package:places/ui/screen/widgets/search_bar.dart';
 
 class SightSearchScreen extends StatefulWidget {
   const SightSearchScreen({super.key, required this.filteredPlaces});
+  static const routeName = 'sight_search_screen';
 
   final List<Sight> filteredPlaces;
 
@@ -68,45 +67,6 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.list_alt),
-            activeIcon: SvgPicture.asset(
-              AppAssets.listFilled,
-              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
-            ),
-            label: 'List of Places',
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.map_outlined),
-            activeIcon: SvgPicture.asset(
-              AppAssets.mapFilled,
-              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
-            ),
-            label: 'Map',
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              AppAssets.like,
-              color: themeProvider.appTheme.bottomNavBarUnselectedItemColor,
-            ),
-            activeIcon: SvgPicture.asset(
-              AppAssets.likeFilled,
-              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
-            ),
-            label: 'Favorite places',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            activeIcon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
       ),
     );
   }
@@ -199,13 +159,8 @@ class _ListItem extends StatelessWidget {
     return InkWell(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => SightDetails(
-              sight: sight,
-            ),
-          ),
-        );
+        Navigator.of(context)
+            .pushNamed(SightDetails.routeName, arguments: sight);
       },
       child: Column(
         children: [

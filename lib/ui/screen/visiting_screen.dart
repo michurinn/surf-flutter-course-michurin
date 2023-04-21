@@ -13,6 +13,7 @@ import 'package:places/ui/screen/favorite_card.dart';
 // Екран Хочу посетить/Посещённые
 class VisitingScreen extends StatefulWidget {
   const VisitingScreen({super.key});
+  static const routeName = 'visiting_screen';
 
   @override
   State<VisitingScreen> createState() => _VisitingScreenState();
@@ -44,46 +45,6 @@ class _VisitingScreenState extends State<VisitingScreen> {
                     _FavoriteSightMocks(),
                   ],
                 ),
-              ),
-            ],
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            currentIndex: 2,
-            type: BottomNavigationBarType.fixed,
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-            items: [
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.list_alt),
-                activeIcon: SvgPicture.asset(
-                  AppAssets.listFilled,
-                  color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
-                ),
-                label: 'List of Places',
-              ),
-              BottomNavigationBarItem(
-                icon: const Icon(Icons.map_outlined),
-                activeIcon: SvgPicture.asset(
-                  AppAssets.mapFilled,
-                  color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
-                ),
-                label: 'Map',
-              ),
-              BottomNavigationBarItem(
-                icon: SvgPicture.asset(
-                  AppAssets.like,
-                  color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
-                ),
-                activeIcon: SvgPicture.asset(
-                  AppAssets.likeFilled,
-                  color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
-                ),
-                label: 'Favorite places',
-              ),
-              const BottomNavigationBarItem(
-                icon: Icon(Icons.settings_outlined),
-                activeIcon: Icon(Icons.settings),
-                label: 'Settings',
               ),
             ],
           ),

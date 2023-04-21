@@ -10,6 +10,8 @@ import 'package:places/res/app_typography.dart';
 
 class SightDetails extends StatelessWidget {
   SightDetails({Key? key, required this.sight}) : super(key: key);
+  static const routeName = 'sight_details_screen';
+
   final Sight sight;
   final ScrollController _scrollController = ScrollController();
   @override
@@ -44,9 +46,7 @@ class SightDetails extends StatelessWidget {
 
 // Картинка места и кнопка Назад для sight_details
 class _HeadWithImage extends StatelessWidget {
-  const _HeadWithImage(
-      {Key? key, required this.sight})
-      : super(key: key);
+  const _HeadWithImage({Key? key, required this.sight}) : super(key: key);
 
   final Sight sight;
 

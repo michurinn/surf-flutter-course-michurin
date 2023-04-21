@@ -18,6 +18,7 @@ var mocksPictures = mocksImages;
 // Екран Добавления нового места
 class AddSightScreen extends StatefulWidget {
   const AddSightScreen({super.key});
+  static const routeName = 'add_sight_screen';
 
   @override
   State<AddSightScreen> createState() => _AddSightScreenState();
@@ -585,11 +586,7 @@ class _TypeFormField extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
-            .push(
-          MaterialPageRoute(
-            builder: (context) => const CategoriesScreen(),
-          ),
-        )
+            .pushNamed(CategoriesScreen.routeName)
             .then((value) {
           // Заполним Филд выбранным значением
           (value == null || value == '' || value == false)

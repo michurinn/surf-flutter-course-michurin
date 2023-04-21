@@ -8,6 +8,7 @@ import 'package:places/res/app_typography.dart';
 // Екран выбора категории места
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
+  static const routeName = 'categories_screen';
 
   @override
   State<CategoriesScreen> createState() => _CategoriesScreenState();

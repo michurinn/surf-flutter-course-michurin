@@ -1,11 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/main.dart';
 import 'package:places/mocks.dart';
-import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
@@ -18,6 +16,7 @@ import 'package:places/ui/screen/widgets/search_bar.dart';
 // Екран списка мест
 class SightListScreen extends StatefulWidget {
   const SightListScreen({Key? key}) : super(key: key);
+  static const routeName = 'sight_list_screen';
 
   @override
   State<SightListScreen> createState() => _SightListScreenState();
@@ -104,45 +103,6 @@ class _SightListScreenState extends State<SightListScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.list_alt),
-            activeIcon: SvgPicture.asset(
-              AppAssets.listFilled,
-              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
-            ),
-            label: 'List of Places',
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.map_outlined),
-            activeIcon: SvgPicture.asset(
-              AppAssets.mapFilled,
-              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
-            ),
-            label: 'Map',
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              AppAssets.like,
-              color: themeProvider.appTheme.bottomNavBarUnselectedItemColor,
-            ),
-            activeIcon: SvgPicture.asset(
-              AppAssets.likeFilled,
-              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
-            ),
-            label: 'Favorite places',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            activeIcon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
-      ),
     );
   }
 }
@@ -170,12 +130,8 @@ class _AppBarSearchWidget extends StatelessWidget
             // При тапе на виджет поиска переход на страницу поиска,
             // а при тапе именно на иконку Icons.tune_rounded - переход на екран фильтров
             GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                    builder: (context) => SightSearchScreen(
-                          filteredPlaces: places,
-                        )),
-              ),
+              onTap: () => Navigator.of(context)
+                  .pushNamed(SightSearchScreen.routeName, arguments: places),
               child: const SearchBar(
                 isEnabled: false,
                 isFocused: false,
@@ -188,14 +144,14 @@ class _AppBarSearchWidget extends StatelessWidget
                     color: themeProvider.appTheme.filterButtonColor),
                 onPressed: () {
                   Navigator.of(context)
-                      .push(
-                    MaterialPageRoute(
-                        builder: (context) => const FilterScreen()),
+                      .pushNamed(
+                    FilterScreen.routeName,
                   )
                       .then((value) {
                     //Теперь покажем только отфильтрованные места
-                    if (value == null) return;
-                    repaint(value);
+                    if (value is List<Sight>) {
+                      repaint(value);
+                    }
                   });
                 },
               ),
@@ -245,7 +201,6 @@ class _ListOfPlacesState extends State<ListOfPlaces> {
         return DragTarget(
           onAccept: (data) {
             ValueKey<String> rawData = data as ValueKey<String>;
-    
             setState(() {
               places.insert(
                 places.indexOf(places[index]),
@@ -270,18 +225,12 @@ class _ListOfPlacesState extends State<ListOfPlaces> {
                       child: SightCard(sight: places[index]),
                     ),
                   ),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.deferToChild,
-                      onTap: () {
-                        Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => SightDetails(
-                                sight: places[index],
-                              ),
-                            ),
-                          );
-                      },
-                      child: SightCard(sight: places[index])),
+                  child: SightCard(
+                    sight: places[index],
+                    onTap: () => Navigator.of(context).pushNamed(
+                        SightDetails.routeName,
+                        arguments: places[index]),
+                  ),
                 ),
                 const SizedBox(height: 20),
               ],
@@ -302,13 +251,7 @@ class _AddButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: () {
-        Navigator.of(context)
-            .push(
-          MaterialPageRoute(
-            builder: (context) => const AddSightScreen(),
-          ),
-        )
-            .then(
+        Navigator.of(context).pushNamed(AddSightScreen.routeName).then(
           (value) {
             if (value == true) {
               onNewPlaceCreated();

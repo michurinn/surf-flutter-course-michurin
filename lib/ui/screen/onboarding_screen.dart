@@ -5,6 +5,7 @@ import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
+import 'package:places/ui/screen/home_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
 
 //Содержимое PageView онбординга
@@ -13,6 +14,7 @@ const childrensOfPageview = [_PageFirst(), _PageSecond(), _PageThird()];
 //Екран онбординга
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
+  static const routeName = 'onboarding_screen';
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -164,11 +166,8 @@ class _AppBar extends StatelessWidget {
         Visibility(
           visible: skipButtonVisible,
           child: TextButton(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const SightListScreen(),
-              ),
-            ),
+            onPressed: () => Navigator.of(context)
+                .pushReplacementNamed(HomeScreen.routeName),
             child: Padding(
               padding: const EdgeInsets.only(right: 10.0),
               child: Text(
@@ -197,13 +196,8 @@ class _OnStartButton extends StatelessWidget {
     return Visibility(
       visible: isVisible,
       child: OutlinedButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const SightListScreen(),
-            ),
-          );
-        },
+        onPressed: () => Navigator.of(context)
+                .pushReplacementNamed(SightListScreen.routeName),
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.all(0.0),
           side: const BorderSide(width: 0.0, color: Colors.transparent),
@@ -247,7 +241,10 @@ class _PageFirst extends StatelessWidget {
       children: [
         Column(
           children: [
-            SvgPicture.asset(AppAssets.onboardingRouter, color: themeProvider.appTheme.appTitle,),
+            SvgPicture.asset(
+              AppAssets.onboardingRouter,
+              color: themeProvider.appTheme.appTitle,
+            ),
             const SizedBox(
               height: 42,
             ),
@@ -284,7 +281,10 @@ class _PageSecond extends StatelessWidget {
       children: [
         Column(
           children: [
-            SvgPicture.asset(AppAssets.onboardingBackPack, color: themeProvider.appTheme.appTitle,),
+            SvgPicture.asset(
+              AppAssets.onboardingBackPack,
+              color: themeProvider.appTheme.appTitle,
+            ),
             const SizedBox(
               height: 42,
             ),
@@ -321,7 +321,10 @@ class _PageThird extends StatelessWidget {
       children: [
         Column(
           children: [
-            SvgPicture.asset(AppAssets.onboardingFinger, color: themeProvider.appTheme.appTitle,),
+            SvgPicture.asset(
+              AppAssets.onboardingFinger,
+              color: themeProvider.appTheme.appTitle,
+            ),
             const SizedBox(
               height: 42,
             ),
