@@ -392,6 +392,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   }
 
   // Диалог для кнопки Добавить фото
+  // ignore: non_constant_identifier_names
   Future<dynamic> _AddPictureShowDialog(BuildContext context) {
     return showDialog(
       context: context,

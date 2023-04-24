@@ -39,8 +39,7 @@ class FavoriteSight extends StatelessWidget {
                           image: Image.network(
                             sight.imagePath,
                             fit: BoxFit.fitWidth,
-                            loadingBuilder: (BuildContext context,
-                                Widget child,
+                            loadingBuilder: (BuildContext context, Widget child,
                                 ImageChunkEvent? loadingProgress) {
                               if (loadingProgress == null) {
                                 return child;
@@ -49,8 +48,7 @@ class FavoriteSight extends StatelessWidget {
                                 child: CircularProgressIndicator(
                                   value: loadingProgress.expectedTotalBytes !=
                                           null
-                                      ? loadingProgress
-                                              .cumulativeBytesLoaded /
+                                      ? loadingProgress.cumulativeBytesLoaded /
                                           loadingProgress.expectedTotalBytes!
                                       : null,
                                 ),
@@ -79,8 +77,19 @@ class FavoriteSight extends StatelessWidget {
                                 iconSize: 22,
                                 icon: SvgPicture.asset(AppAssets.calendar,
                                     color: themeProvider.appTheme.iconColor),
-                                onPressed: () {
-                                  print("Calendar on card pressed");
+                                onPressed: () async {
+                                  DateTime? date = await showDatePicker(
+                                    confirmText: 'Запланировать',
+                                    cancelText: 'Позже',
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime.now(),
+                                    lastDate: DateTime.now().add(
+                                      const Duration(days: 365),
+                                    ),
+                                  );
+                                  //В рамках задания не используем дату, только выведем на екран для проверки
+                                  print(date);
                                 },
                               ),
                         IconButton(
