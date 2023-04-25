@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -80,11 +82,22 @@ class FavoriteSight extends StatelessWidget {
                                 icon: SvgPicture.asset(AppAssets.calendar,
                                     color: themeProvider.appTheme.iconColor),
                                 onPressed: () async {
-                                  DateTime? date = await showCupertinoDialog(
-                                    context: context,
-                                    builder: (context) =>
-                                        const _CupertinoDatePickerBody(),
-                                  );
+                                  DateTime? date = Platform.isAndroid
+                                      ? await showDatePicker(
+                                          confirmText: 'Запланировать',
+                                          cancelText: 'Позже',
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime.now(),
+                                          lastDate: DateTime.now().add(
+                                            const Duration(days: 365),
+                                          ),
+                                        )
+                                      : await showCupertinoDialog(
+                                          context: context,
+                                          builder: (context) =>
+                                              const _CupertinoDatePickerBody(),
+                                        );
                                   //На данном етапе просто выведем на екран дату
                                   print(date);
                                 },
