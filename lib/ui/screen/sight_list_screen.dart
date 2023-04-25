@@ -47,26 +47,44 @@ class _SightListScreenState extends State<SightListScreen> {
               CustomScrollView(
                 slivers: [
                   SliverPersistentHeader(
-                    delegate: _SightListScreenPersistantHeaderDelegate(
-                      places: places,
-                      repaint: (value) {
-                        setState(() {
-                          places = value;
-                        });
-                      },
-                    ),
+                    delegate: MediaQuery.of(context).orientation ==
+                            Orientation.portrait
+                        ? _SightListScreenPersistantHeaderDelegatePortrait(
+                            places: places,
+                            repaint: (value) {
+                              setState(() {
+                                places = value;
+                              });
+                            },
+                          )
+                        : _SightListScreenPersistantHeaderDelegateLandScape(
+                            places: places,
+                            repaint: (value) {
+                              setState(() {
+                                places = value;
+                              });
+                            },
+                            onNewPlaceCreated: () {
+                              setState(() {
+                                //Покажем обновлённый список
+                              });
+                            },
+                          ),
                     pinned: true,
                   ),
                   SliverList(
                     delegate: SliverChildListDelegate([
-                      const SizedBox(
-                        height: 20,
-                      ),
                       OverscrollGlowAbsorver(
-                        child: ListOfPlaces(
-                          places: places,
-                          scrollController: _scrollController,
-                        ),
+                        child: MediaQuery.of(context).orientation ==
+                                Orientation.portrait
+                            ? ListOfPlacesVertical(
+                                places: places,
+                                scrollController: _scrollController,
+                              )
+                            : ListOfPlacesHorizontal(
+                                places: places,
+                                scrollController: _scrollController,
+                              ),
                       ),
                       const SizedBox(
                         height: 50,
@@ -78,6 +96,10 @@ class _SightListScreenState extends State<SightListScreen> {
               Positioned(
                 bottom: 25,
                 child: _AddButton(
+                  portraitOrientation:
+                      MediaQuery.of(context).orientation == Orientation.portrait
+                          ? true
+                          : false,
                   onNewPlaceCreated: (() {
                     setState(
                       // Покажем обновлённый список
@@ -109,21 +131,22 @@ class _SightListScreenState extends State<SightListScreen> {
 
 class _AppBarSearchWidget extends StatelessWidget
     implements PreferredSizeWidget {
-  const _AppBarSearchWidget({
-    Key? key,
-    required this.places,
-    required this.repaint,
-  }) : super(key: key);
+  const _AppBarSearchWidget(
+      {Key? key,
+      required this.places,
+      required this.repaint,
+      this.tiny = false})
+      : super(key: key);
 
   final List<Sight> places;
   final Function(List<Sight> value) repaint;
-
+  final bool tiny;
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: const Size.fromHeight(40),
+      preferredSize: Size.fromHeight(tiny ? 30 : 40),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        padding: EdgeInsets.symmetric(vertical: tiny ? .0 : 5.0),
         child: Stack(
           alignment: Alignment.centerRight,
           children: [
@@ -132,10 +155,18 @@ class _AppBarSearchWidget extends StatelessWidget
             GestureDetector(
               onTap: () => Navigator.of(context)
                   .pushNamed(SightSearchScreen.routeName, arguments: places),
-              child: const SearchBar(
-                isEnabled: false,
-                isFocused: false,
-              ),
+              child: tiny
+                  ? const SizedBox(
+                      height: 30,
+                      child: SearchBar(
+                        isEnabled: false,
+                        isFocused: false,
+                      ),
+                    )
+                  : const SearchBar(
+                      isEnabled: false,
+                      isFocused: false,
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.only(right: 10),
@@ -163,11 +194,12 @@ class _AppBarSearchWidget extends StatelessWidget
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(50);
+  Size get preferredSize => Size.fromHeight(tiny ? 30 : 40);
 }
 
-class ListOfPlaces extends StatefulWidget {
-  const ListOfPlaces({
+//Содержимое (места), если ориентация горизонтальная
+class ListOfPlacesHorizontal extends StatefulWidget {
+  const ListOfPlacesHorizontal({
     Key? key,
     required this.places,
     required this.scrollController,
@@ -176,10 +208,105 @@ class ListOfPlaces extends StatefulWidget {
   final List<Sight> places;
   final ScrollController scrollController;
   @override
-  State<ListOfPlaces> createState() => _ListOfPlacesState();
+  State<ListOfPlacesHorizontal> createState() => _ListOfPlacesHorizontalState();
 }
 
-class _ListOfPlacesState extends State<ListOfPlaces> {
+class _ListOfPlacesHorizontalState extends State<ListOfPlacesHorizontal> {
+  late List<Sight> places;
+
+  @override
+  void initState() {
+    super.initState();
+    places = widget.places;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      controller: widget.scrollController,
+      shrinkWrap: true,
+      physics: Platform.isAndroid
+          ? const ClampingScrollPhysics()
+          : const BouncingScrollPhysics(),
+      crossAxisCount: 2,
+      childAspectRatio: 3 / 2,
+      children: places
+          .expand(
+            (element) => [
+              DragTarget(
+                onAccept: (data) {
+                  ValueKey<String> rawData = data as ValueKey<String>;
+                  setState(() {
+                    places.insert(
+                      places.indexOf(element),
+                      places.removeAt(
+                        places.indexWhere(
+                          (element) => element.name == rawData.value.toString(),
+                        ),
+                      ),
+                    );
+                  });
+                },
+                builder: (context, candidateData, rejectedData) {
+                  return LongPressDraggable(
+                    data: ValueKey<String>(element.name),
+                    feedback: Opacity(
+                      opacity: 0.8,
+                      child: SizedBox(
+                          width: 400 * 0.8,
+                          height: 300 * 0.8,
+                          child: SightCard(sight: element)),
+                    ),
+                    child: SightCard(
+                      sight: element,
+                      onTap: () => showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                        isScrollControlled: true,
+                        useSafeArea: true,
+                        context: context,
+                        builder: (context) => DraggableScrollableSheet(
+                          expand: false,
+                          snap: true,
+                          maxChildSize: 0.95,
+                          minChildSize: 0.9,
+                          initialChildSize: 0.95,
+                          builder: (context, scrollController) => SightDetails(
+                            sight: element,
+                            scrollController: scrollController,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              )
+            ],
+          )
+          .toList(),
+    );
+  }
+}
+
+//Содержимое (места), если ориентация вертикальная
+class ListOfPlacesVertical extends StatefulWidget {
+  const ListOfPlacesVertical({
+    Key? key,
+    required this.places,
+    required this.scrollController,
+  }) : super(key: key);
+
+  final List<Sight> places;
+  final ScrollController scrollController;
+  @override
+  State<ListOfPlacesVertical> createState() => _ListOfPlacesVerticalState();
+}
+
+class _ListOfPlacesVerticalState extends State<ListOfPlacesVertical> {
   late List<Sight> places;
 
   @override
@@ -264,8 +391,10 @@ class _ListOfPlacesState extends State<ListOfPlaces> {
 // Кнопка Добавить новое место
 class _AddButton extends StatelessWidget {
   final VoidCallback onNewPlaceCreated;
-
-  const _AddButton({required this.onNewPlaceCreated});
+  //Для LandScape orientation вид изменится
+  final bool portraitOrientation;
+  const _AddButton(
+      {required this.onNewPlaceCreated, this.portraitOrientation = true});
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
@@ -289,7 +418,9 @@ class _AddButton extends StatelessWidget {
         padding: const EdgeInsets.all(0.0),
       ),
       child: Container(
-        constraints: const BoxConstraints(maxWidth: 300.0, minHeight: 50.0),
+        constraints: portraitOrientation
+            ? const BoxConstraints(maxWidth: 300.0, minHeight: 50.0)
+            : const BoxConstraints(maxWidth: 50.0, minHeight: 50.0),
         decoration: BoxDecoration(
           gradient:
               LinearGradient(colors: themeProvider.appTheme.newPlaceButton),
@@ -302,14 +433,16 @@ class _AddButton extends StatelessWidget {
           children: [
             Icon(Icons.plus_one,
                 size: 20, color: themeProvider.appTheme.addFormActiveLabel),
-            const SizedBox(
-              width: 10,
-            ),
-            Text(
-              AppStrings.create.toUpperCase(),
-              style: AppTypography.button
-                  .copyWith(color: themeProvider.appTheme.addFormActiveLabel),
-            )
+            if (portraitOrientation)
+              const SizedBox(
+                width: 10,
+              ),
+            if (portraitOrientation)
+              Text(
+                AppStrings.create.toUpperCase(),
+                style: AppTypography.button
+                    .copyWith(color: themeProvider.appTheme.addFormActiveLabel),
+              )
           ],
         ),
       ),
@@ -335,12 +468,14 @@ class OverscrollGlowAbsorver extends StatelessWidget {
   }
 }
 
-class _SightListScreenPersistantHeaderDelegate
+//Аппбар, если ориентация вертикальная
+class _SightListScreenPersistantHeaderDelegatePortrait
     extends SliverPersistentHeaderDelegate {
-  const _SightListScreenPersistantHeaderDelegate(
+  const _SightListScreenPersistantHeaderDelegatePortrait(
       {required this.places, required this.repaint});
   final List<Sight> places;
   final Function(List<Sight> value) repaint;
+
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
@@ -383,6 +518,62 @@ class _SightListScreenPersistantHeaderDelegate
 
   @override
   double get minExtent => 80;
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return true;
+  }
+}
+//Аппбар, если ориентация горизонтальная
+
+class _SightListScreenPersistantHeaderDelegateLandScape
+    extends SliverPersistentHeaderDelegate {
+  const _SightListScreenPersistantHeaderDelegateLandScape(
+      {required this.places,
+      required this.repaint,
+      required this.onNewPlaceCreated});
+  final List<Sight> places;
+  final Function(List<Sight> value) repaint;
+  final VoidCallback onNewPlaceCreated;
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: themeProvider.appTheme.backgroundColor,
+      child: Stack(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  AppStrings.listOfInterestingPlases
+                      .replaceFirst(RegExp(r'\n'), ' '),
+                  style: AppTypography.subtitle
+                      .copyWith(color: themeProvider.appTheme.appTitle),
+                ),
+              ),
+              if (shrinkOffset == 0)
+                _AppBarSearchWidget(
+                  tiny: true,
+                  places: places,
+                  repaint: (value) {
+                    repaint(value);
+                  },
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  double get maxExtent => 90;
+
+  @override
+  double get minExtent => 40;
 
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
