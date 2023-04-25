@@ -1,10 +1,12 @@
 // ignore_for_file: avoid_print
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
+import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 
 // Карточка для Хочу посетить в Избранном
@@ -78,17 +80,12 @@ class FavoriteSight extends StatelessWidget {
                                 icon: SvgPicture.asset(AppAssets.calendar,
                                     color: themeProvider.appTheme.iconColor),
                                 onPressed: () async {
-                                  DateTime? date = await showDatePicker(
-                                    confirmText: 'Запланировать',
-                                    cancelText: 'Позже',
+                                  DateTime? date = await showCupertinoDialog(
                                     context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime.now(),
-                                    lastDate: DateTime.now().add(
-                                      const Duration(days: 365),
-                                    ),
+                                    builder: (context) =>
+                                        const _CupertinoDatePickerBody(),
                                   );
-                                  //В рамках задания не используем дату, только выведем на екран для проверки
+                                  //На данном етапе просто выведем на екран дату
                                   print(date);
                                 },
                               ),
@@ -139,6 +136,71 @@ class FavoriteSight extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CupertinoDatePickerBody extends StatelessWidget {
+  const _CupertinoDatePickerBody({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    DateTime plannedDate = DateTime.now().add(const Duration(days: 1));
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 28.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: themeProvider.appTheme.backgroundColor,
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+          ),
+          width: MediaQuery.of(context).size.width,
+          height: 350,
+          child: Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                height: 300,
+                child: CupertinoDatePicker(
+                  initialDateTime: plannedDate,
+                  minimumDate: DateTime.now(),
+                  mode: CupertinoDatePickerMode.dateAndTime,
+                  onDateTimeChanged: (DateTime value) {
+                    plannedDate = value;
+                  },
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(plannedDate);
+                    },
+                    child: Text(
+                      AppStrings.addToCalendar,
+                      style: AppTypography.button.copyWith(
+                          color: themeProvider.appTheme.filterButtonColor),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      AppStrings.cancel,
+                      style: AppTypography.button.copyWith(
+                          color: themeProvider.appTheme.filterButtonColor),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
