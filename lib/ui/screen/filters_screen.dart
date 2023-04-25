@@ -135,19 +135,16 @@ class _FilterScreenState extends State<FilterScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 265,
-                  child: _GridView(
-                    itemsList: SightType.values
-                        .map(
-                          (e) => _itemGridView(
-                            onPressed: () => setState(() {}),
-                            sightType: e,
-                            markerController: controller,
-                          ),
-                        )
-                        .toList(),
-                  ),
+                _GridView(
+                  itemsList: SightType.values
+                      .map(
+                        (e) => _itemGridView(
+                          onPressed: () => setState(() {}),
+                          sightType: e,
+                          markerController: controller,
+                        ),
+                      )
+                      .toList(),
                 ),
                 const SizedBox(
                   height: 56,
@@ -231,12 +228,29 @@ class _GridView extends StatefulWidget {
 class __GridViewState extends State<_GridView> {
   @override
   Widget build(BuildContext context) {
-    return GridView(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-      ),
-      children: widget.itemsList,
-    );
+    //Для маленьких екранов
+    final bool isSmallScreen = MediaQuery.of(context).size.width < 400 &&
+        MediaQuery.of(context).size.height <= 800;
+    return isSmallScreen
+        ? SizedBox(
+            height: 105,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: widget.itemsList
+                  .expand((element) =>
+                      [const SizedBox.square(dimension: 20), element])
+                  .toList(),
+            ),
+          )
+        : SizedBox(
+            height: 265,
+            child: GridView(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+              ),
+              children: widget.itemsList,
+            ),
+          );
   }
 }
 
