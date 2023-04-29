@@ -4,7 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/data/model/place.dart';
 import 'package:places/main.dart';
 import 'package:places/mocks.dart';
 import 'package:places/res/app_assets.dart';
@@ -25,7 +25,7 @@ class FilterScreen extends StatefulWidget {
 class _FilterScreenState extends State<FilterScreen> {
   double _endValue = 9; // Конечное значение слайдера по умолчанию
   double _startValue = 2; // Начальное значение слайдера по умолчанию
-  List<Sight>? results;
+  List<Place>? results;
 
   late final StreamController<bool> controller;
   @override
@@ -60,7 +60,7 @@ class _FilterScreenState extends State<FilterScreen> {
     // Результат фильтрации менятеся при каждом применении/отмене фильтра
     results = mocks.where(
       (element) {
-        return (filter.avaibleTypes.contains(element.type) &&
+        return (filter.avaibleTypes.contains(element.placeType) &&
             filter.arePointInRange(element, mockCoordinates,
                 filter.distanceFrom, filter.distanceTo));
       },

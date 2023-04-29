@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/data/model/place.dart';
 import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_strings.dart';
@@ -15,7 +15,7 @@ import 'package:places/res/app_typography.dart';
 class FavoriteSight extends StatelessWidget {
   const FavoriteSight({Key? key, required this.sight, required this.isFinished})
       : super(key: key);
-  final Sight sight;
+  final Place sight;
   final bool isFinished;
 
   @override
@@ -41,7 +41,7 @@ class FavoriteSight extends StatelessWidget {
                       image: DecorationImage(
                           fit: BoxFit.fitWidth,
                           image: Image.network(
-                            sight.imagePath,
+                            sight.urls[0],
                             fit: BoxFit.fitWidth,
                             loadingBuilder: (BuildContext context, Widget child,
                                 ImageChunkEvent? loadingProgress) {
@@ -118,7 +118,7 @@ class FavoriteSight extends StatelessWidget {
                     left: 16,
                     top: 16,
                     child: Text(
-                      sight.type,
+                      sight.placeType.toString(),
                       style: AppTypography.smallBoldwhite,
                     ),
                   ),
@@ -143,7 +143,7 @@ class FavoriteSight extends StatelessWidget {
                               style: AppTypography.smallGreen,
                               textAlign: TextAlign.start),
                     ),
-                    Text(sight.details, style: AppTypography.small),
+                    Text(sight.description, style: AppTypography.small),
                   ],
                 ),
               ),

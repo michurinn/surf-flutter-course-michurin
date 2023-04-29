@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/data/model/place.dart';
 import 'package:places/main.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
@@ -11,7 +11,7 @@ class SightSearchScreen extends StatefulWidget {
   const SightSearchScreen({super.key, required this.filteredPlaces});
   static const routeName = 'sight_search_screen';
 
-  final List<Sight> filteredPlaces;
+  final List<Place> filteredPlaces;
 
   @override
   State<SightSearchScreen> createState() => _SightSearchScreenState();
@@ -20,7 +20,7 @@ class SightSearchScreen extends StatefulWidget {
 class _SightSearchScreenState extends State<SightSearchScreen> {
   late TextEditingController? controller;
   bool showHistory = true;
-  List<Sight>? results;
+  List<Place>? results;
 
   late final GlobalKey<SearchBarState> _keySearchBar;
 
@@ -89,7 +89,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
         },
       );
   // Показывает заглушку либо результаты поиска
-  Widget _searchBody(List<Sight>? resultsList) {
+  Widget _searchBody(List<Place>? resultsList) {
     return (resultsList == null || resultsList.isEmpty)
         ? const Padding(
             padding: EdgeInsets.symmetric(vertical: 180.0),
@@ -107,7 +107,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   }
 
   _findSight(String str, {bool saveInHistory = true}) {
-    List<Sight> res = widget.filteredPlaces
+    List<Place> res = widget.filteredPlaces
         .where(
           (element) => element.name.toUpperCase().contains(
                 str.toUpperCase().trim(),
@@ -131,7 +131,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   _reFindSight(String str) {
     _keySearchBar.currentState!
         .fillControllerWithValue(str); // Повторный поиск - тоже поиск )
-    List<Sight> res = widget.filteredPlaces
+    List<Place> res = widget.filteredPlaces
         .where(
           (element) => element.name.toUpperCase().contains(
                 str.toUpperCase().trim(),
@@ -152,7 +152,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
 
 class _ListItem extends StatelessWidget {
   const _ListItem({required this.sight});
-  final Sight sight;
+  final Place sight;
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +174,7 @@ class _ListItem extends StatelessWidget {
                   image: DecorationImage(
                       fit: BoxFit.cover,
                       image: Image.network(
-                        sight.imagePath,
+                        sight.urls[0],
                         fit: BoxFit.fitWidth,
                         loadingBuilder: (
                           BuildContext context,
@@ -214,7 +214,7 @@ class _ListItem extends StatelessWidget {
                     height: 8,
                   ),
                   Text(
-                    sight.type,
+                    sight.placeType.toString(),
                     style: AppTypography.smallGreen
                         .copyWith(color: AppColors.whiteSecondary2),
                   ),

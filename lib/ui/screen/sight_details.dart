@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/data/model/place.dart';
 import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
@@ -15,7 +15,7 @@ class SightDetails extends StatelessWidget {
       : super(key: key);
   static const routeName = 'sight_details_screen';
 
-  final Sight sight;
+  final Place sight;
   final ScrollController scrollController;
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class SightDetails extends StatelessWidget {
 class _HeadWithImage extends StatelessWidget {
   const _HeadWithImage({Key? key, required this.sight}) : super(key: key);
 
-  final Sight sight;
+  final Place sight;
 
   @override
   Widget build(BuildContext context) {
@@ -99,15 +99,15 @@ class _HeadWithImage extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: Image.network(sight.imagePath, fit: BoxFit.cover),
+                    child: Image.network(sight.urls[0], fit: BoxFit.cover),
                   ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: Image.network(sight.imagePath, fit: BoxFit.cover),
+                    child: Image.network(sight.urls[0], fit: BoxFit.cover),
                   ),
                   ClipRRect(
                     borderRadius: BorderRadius.circular(20),
-                    child: Image.network(sight.imagePath, fit: BoxFit.cover),
+                    child: Image.network(sight.urls[0], fit: BoxFit.cover),
                   ),
                 ],
               ),
@@ -133,7 +133,7 @@ class _BodyWithTexts extends StatelessWidget {
     required this.sight,
   }) : super(key: key);
 
-  final Sight sight;
+  final Place sight;
 
   @override
   Widget build(BuildContext context) {
@@ -145,8 +145,8 @@ class _BodyWithTexts extends StatelessWidget {
           children: [
             Align(
               alignment: Alignment.centerLeft,
-              child:
-                  Text(sight.details * 33, style: AppTypography.smallBlueDeep),
+              child: Text(sight.description * 33,
+                  style: AppTypography.smallBlueDeep),
             ),
           ],
         ),
@@ -284,7 +284,7 @@ class _BottomWithButtons extends StatelessWidget {
 
 class _DetailsScreenPersistantHeaderDelegate
     extends SliverPersistentHeaderDelegate {
-  final Sight sight;
+  final Place sight;
   const _DetailsScreenPersistantHeaderDelegate({required this.sight});
   @override
   Widget build(
@@ -305,12 +305,12 @@ class _DetailsScreenPersistantHeaderDelegate
             ),
             Row(
               children: [
-                Text(sight.type, style: AppTypography.smallBoldBlue),
+                Text(sight.placeType.toString(), style: AppTypography.smallBoldBlue),
                 const SizedBox(
                   width: 16,
                 ),
-                Text(
-                  sight.workTime,
+                const Text(
+                  'WORK TIME MOCK',
                   style: AppTypography.small,
                 ),
               ],
