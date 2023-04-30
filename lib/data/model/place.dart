@@ -9,7 +9,7 @@ class Place extends Equatable {
   final double lng; // Долгота
   final String description;
   final String placeType;
-  final List<String> urls;
+  final List<dynamic> urls;
 
   const Place({
     required this.id,
@@ -37,7 +37,7 @@ class Place extends Equatable {
   List<Object> get props => [name, lat, lng, description, placeType, id, urls];
 }
 
-Place placeFromMap(Map<String, dynamic> map) {
+Place placeFromMap(Map<dynamic, dynamic> map) {
   return Place(
       id: map['id'],
       name: map['name'],
@@ -45,5 +45,5 @@ Place placeFromMap(Map<String, dynamic> map) {
       lng: map['lng'],
       description: map['description'],
       placeType: map['placeType'],
-      urls: map['urls']);
+      urls: map['urls'] ??[]);
 }

@@ -1,7 +1,11 @@
+// ignore_for_file: body_might_complete_normally_nullable
+
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/data/model/place_dto.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
 import 'package:places/data/repository/place_repository_interface.dart';
 import 'package:places/http_client_interface.dart';
@@ -12,23 +16,29 @@ class PlaceRepository implements IPlaceRepository {
 
   PlaceRepository({required this.httpClient});
   @override
-  Future<void> addPlace(Place place) async {
+  Future<Place?> addPlace(Place place) async {
     try {
-      Response<String> response = await httpClient.dio.post(
+      Completer<Place> completer = Completer();
+      final response = await httpClient.dio.post(
         '/place',
         data: jsonEncode(
           place.toMap(),
         ),
       );
+      completer.complete(placeFromMap(response.data));
+      return completer.future;
     } on Exception catch (e) {
       print('Exception $e in addPlace');
     }
   }
 
   @override
-  Future<void> getPlacesList() async {
+  Future<List<Place>?> getPlacesList() async {
     try {
-      await httpClient.dio.get('/place');
+      final response = await httpClient.dio.get('/place');
+      List result = response.data;
+      result = result.expand((e) => [placeFromMap((e))]).toList();
+      return result as List<Place>?;
     } on Exception catch (e) {
       print('Exception $e in getPlacesList');
     }
@@ -44,29 +54,41 @@ class PlaceRepository implements IPlaceRepository {
   }
 
   @override
-  Future<void> getFilteredPlaces(final PlacesFilterRequestDto filter) async {
+  Future<List<PlaceDto>?> getFilteredPlaces(
+      final PlacesFilterRequestDto filter) async {
     try {
-      await httpClient.dio
+      Completer<List<PlaceDto>> completer = Completer();
+
+      final response = await httpClient.dio
           .post('/filtered_places', data: jsonEncode(filter.toMap()));
+      List result = response.data;
+      result = result.expand((e) => [placeFromMap((e))]).toList();
+      completer.complete(result as List<PlaceDto>?);
+      return completer.future;
     } on Exception catch (e) {
       print('Exception $e in getFilteredPlaces');
     }
   }
 
   @override
-  Future<void> getPlaceByID(final int id) async {
+  Future<Place?> getPlaceByID(final int id) async {
     try {
-      await httpClient.dio.get('/place/$id');
+      Completer<Place> completer = Completer();
+      final Response<dynamic> responce = await httpClient.dio.get('/place/$id');
+      completer.complete(placeFromMap(responce.data));
+      return completer.future;
     } on Exception catch (e) {
       print('Exception $e in getPlaceByID');
     }
   }
 
   @override
-  Future<void> uploadFile(final String bytes) async {
+  Future<String?> uploadFile(final String bytes) async {
     try {
       httpClient.dio.options.contentType = 'multipart/form-data';
-      httpClient.dio.post('/upload_file', data: bytes);
+      final Response response =
+          await httpClient.dio.post('/upload_file', data: bytes);
+      return response.data;
     } on Exception catch (e) {
       print('Exception $e in uploadFile');
     } finally {
@@ -75,16 +97,20 @@ class PlaceRepository implements IPlaceRepository {
   }
 
   @override
-  Future<void> updatePlaceByID(final Place place) async {
+  Future<Place?> updatePlaceByID(final Place place) async {
     try {
+      Completer<Place> completer = Completer();
       Map<String, dynamic> request = place.toMap();
+      // Невозможно изменить id на сервере
       request.remove('id');
-      await httpClient.dio.put(
+      final Response response = await httpClient.dio.put(
         '/place/${place.id}',
         data: jsonEncode(
           request,
         ),
       );
+      completer.complete(placeFromMap(response.data));
+      return completer.future;
     } on Exception catch (e) {
       print('Exception $e in updatePlaceByID');
     }
