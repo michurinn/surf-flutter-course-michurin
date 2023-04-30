@@ -7,7 +7,8 @@ import 'package:places/res/app_typography.dart';
 
 // Карточка для показа места
 class SightCard extends StatelessWidget {
-  const SightCard({Key? key, required this.sight, this.onTap}) : super(key: key);
+  const SightCard({Key? key, required this.sight, this.onTap})
+      : super(key: key);
   final VoidCallback? onTap;
   final Place sight;
   @override
@@ -40,13 +41,13 @@ class SightCard extends StatelessWidget {
                             image: Image.network(
                               sight.urls[0],
                               fit: BoxFit.fitWidth,
-                              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                              frameBuilder: (context, child, frame,
+                                  wasSynchronouslyLoaded) {
                                 if (wasSynchronouslyLoaded) return child;
                                 return CircularProgressIndicator(
-                                    strokeWidth: 6.0,
-                                    value: frame == null? 0 : frame.toDouble(),
-                                  );
-
+                                  strokeWidth: 6.0,
+                                  value: frame == null ? 0 : frame.toDouble(),
+                                );
                               },
                               loadingBuilder: (
                                 BuildContext context,
@@ -109,10 +110,6 @@ class SightCard extends StatelessWidget {
                           style: AppTypography.simpleText,
                         ),
                         const SizedBox.shrink(),
-                        Text(
-                          sight.description,
-                          style: AppTypography.small,
-                        ),
                       ],
                     ),
                   ),

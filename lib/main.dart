@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/repository/place_repository.dart';
+import 'package:places/dio_client.dart';
 import 'package:places/domain/filter.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/theme_provider.dart';
@@ -17,7 +20,11 @@ import 'package:provider/provider.dart';
 
 final themeProvider = ThemeProvider();
 final filter = Filter();
-
+final PlaceInteractor placeInteractor = PlaceInteractor(
+  PlaceRepository(
+    httpClient: DioClient(),
+  ),
+);
 void main() {
   runApp(
     ChangeNotifierProvider<ThemeProvider>(

@@ -21,7 +21,7 @@ class Place extends Equatable {
     required this.urls,
   });
 
-  Map<String, dynamic>  toMap() {
+  Map<String, dynamic> toMap() {
     return {
       'name': name,
       'id': id,
@@ -45,5 +45,5 @@ Place placeFromMap(Map<dynamic, dynamic> map) {
       lng: map['lng'],
       description: map['description'],
       placeType: map['placeType'],
-      urls: map['urls'] ??[]);
+      urls: map['urls'] ?? []);
 }

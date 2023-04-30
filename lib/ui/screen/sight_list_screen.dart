@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/main.dart';
-import 'package:places/mocks.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
@@ -25,14 +24,24 @@ class SightListScreen extends StatefulWidget {
 class _SightListScreenState extends State<SightListScreen> {
   // Храним здесь список, который будем отображать с учётом фильтров и поиска,
   // изменения из екранов поиска передаём через callback .then(...) навигатора
-  late List<Place> places;
+  late List<Place>? places;
   final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
-    // По умолчанию
-    places = mocks;
+    places = [];
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() async {
+    await placeInteractor.getPlaces().then((value) {
+      setState(() {
+          places = value;
+        });
+    });
+
+    super.didChangeDependencies();
   }
 
   @override
@@ -138,7 +147,7 @@ class _AppBarSearchWidget extends StatelessWidget
       this.tiny = false})
       : super(key: key);
 
-  final List<Place> places;
+  final List<Place>? places;
   final Function(List<Place> value) repaint;
   final bool tiny;
   @override
@@ -205,7 +214,7 @@ class ListOfPlacesHorizontal extends StatefulWidget {
     required this.scrollController,
   }) : super(key: key);
 
-  final List<Place> places;
+  final List<Place>? places;
   final ScrollController scrollController;
   @override
   State<ListOfPlacesHorizontal> createState() => _ListOfPlacesHorizontalState();
@@ -217,7 +226,13 @@ class _ListOfPlacesHorizontalState extends State<ListOfPlacesHorizontal> {
   @override
   void initState() {
     super.initState();
-    places = widget.places;
+    places = widget.places ?? [];
+  }
+
+  @override
+  void didUpdateWidget(covariant ListOfPlacesHorizontal oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    places = widget.places ?? [];
   }
 
   @override
@@ -270,7 +285,7 @@ class _ListOfPlacesHorizontalState extends State<ListOfPlacesHorizontal> {
                         useSafeArea: true,
                         context: context,
                         builder: (context) => DraggableScrollableSheet(
-                          expand: false,
+                          expand: true,
                           snap: true,
                           maxChildSize: 0.95,
                           minChildSize: 0.9,
@@ -300,7 +315,7 @@ class ListOfPlacesVertical extends StatefulWidget {
     required this.scrollController,
   }) : super(key: key);
 
-  final List<Place> places;
+  final List<Place>? places;
   final ScrollController scrollController;
   @override
   State<ListOfPlacesVertical> createState() => _ListOfPlacesVerticalState();
@@ -312,7 +327,13 @@ class _ListOfPlacesVerticalState extends State<ListOfPlacesVertical> {
   @override
   void initState() {
     super.initState();
-    places = widget.places;
+    places = widget.places ?? [];
+  }
+
+  @override
+  void didUpdateWidget(covariant ListOfPlacesVertical oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    places = widget.places ?? [];
   }
 
   @override
@@ -473,7 +494,7 @@ class _SightListScreenPersistantHeaderDelegatePortrait
     extends SliverPersistentHeaderDelegate {
   const _SightListScreenPersistantHeaderDelegatePortrait(
       {required this.places, required this.repaint});
-  final List<Place> places;
+  final List<Place>? places;
   final Function(List<Place> value) repaint;
 
   @override
@@ -532,7 +553,7 @@ class _SightListScreenPersistantHeaderDelegateLandScape
       {required this.places,
       required this.repaint,
       required this.onNewPlaceCreated});
-  final List<Place> places;
+  final List<Place>? places;
   final Function(List<Place> value) repaint;
   final VoidCallback onNewPlaceCreated;
   @override

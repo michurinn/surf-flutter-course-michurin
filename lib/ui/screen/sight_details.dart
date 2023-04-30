@@ -10,9 +10,11 @@ import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 
 class SightDetails extends StatelessWidget {
-  const SightDetails(
-      {Key? key, required this.sight, required this.scrollController})
-      : super(key: key);
+  const SightDetails({
+    Key? key,
+    required this.sight,
+    required this.scrollController,
+  }) : super(key: key);
   static const routeName = 'sight_details_screen';
 
   final Place sight;
@@ -21,29 +23,30 @@ class SightDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: CustomScrollView(
-        controller: scrollController,
-        slivers: [
-          _HeadWithImage(
-            sight: sight,
-          ),
-          SliverPersistentHeader(
-              pinned: true,
-              floating: true,
-              delegate: _DetailsScreenPersistantHeaderDelegate(
-                sight: sight,
-              )),
-          SliverList(
-            delegate: SliverChildListDelegate([
-              _BodyWithTexts(sight: sight),
-              Container(
-                color: themeProvider.appTheme.backgroundColor,
-                height: 24,
-              ),
-              const _BottomWithButtons(),
-            ]),
-          ),
-        ],
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: [
+            _HeadWithImage(
+              sight: sight,
+            ),
+            SliverPersistentHeader(
+                pinned: true,
+                floating: true,
+                delegate: _DetailsScreenPersistantHeaderDelegate(
+                  sight: sight,
+                )),
+            SliverList(
+              delegate: SliverChildListDelegate.fixed([
+                _BodyWithTexts(sight: sight),
+                const Flexible(child: Spacer(),),
+                const Spacer(),
+                const _BottomWithButtons(),
+              ]),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -96,21 +99,16 @@ class _HeadWithImage extends StatelessWidget {
             alignment: Alignment.topCenter,
             children: [
               PageView(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.network(sight.urls[0], fit: BoxFit.cover),
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.network(sight.urls[0], fit: BoxFit.cover),
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: Image.network(sight.urls[0], fit: BoxFit.cover),
-                  ),
-                ],
-              ),
+                  children: sight.urls
+                      .expand(
+                        (element) => <Widget>[
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.network(element, fit: BoxFit.cover),
+                          )
+                        ],
+                      )
+                      .toList()),
               Positioned(
                 top: 12,
                 child: SvgPicture.asset(
@@ -127,7 +125,7 @@ class _HeadWithImage extends StatelessWidget {
 }
 
 // Тексты Название места и пр. для sight_details
-class _BodyWithTexts extends StatelessWidget {
+class _BodyWithTexts extends StatefulWidget {
   const _BodyWithTexts({
     Key? key,
     required this.sight,
@@ -136,19 +134,36 @@ class _BodyWithTexts extends StatelessWidget {
   final Place sight;
 
   @override
+  State<_BodyWithTexts> createState() => _BodyWithTextsState();
+}
+
+class _BodyWithTextsState extends State<_BodyWithTexts> {
+  @override
   Widget build(BuildContext context) {
     return Container(
       color: themeProvider.appTheme.backgroundColor,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(sight.description * 33,
-                  style: AppTypography.smallBlueDeep),
-            ),
-          ],
+        padding: const EdgeInsets.all(16.0),
+        child: FutureBuilder(
+          future: placeInteractor.getPlaceDetails(widget.sight.id),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+              case ConnectionState.waiting:
+                return const Center(
+                    child: CircularProgressIndicator.adaptive());
+              default:
+                return Column(
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(snapshot.data ?? '',
+                          style: AppTypography.smallBlueDeep),
+                    ),
+                  ],
+                );
+            }
+          },
         ),
       ),
     );
@@ -305,7 +320,8 @@ class _DetailsScreenPersistantHeaderDelegate
             ),
             Row(
               children: [
-                Text(sight.placeType.toString(), style: AppTypography.smallBoldBlue),
+                Text(sight.placeType.toString(),
+                    style: AppTypography.smallBoldBlue),
                 const SizedBox(
                   width: 16,
                 ),
