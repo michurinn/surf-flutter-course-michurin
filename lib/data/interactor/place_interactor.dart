@@ -20,17 +20,17 @@ class PlaceInteractor {
   }
 
   void addToVisitingPlaces(final Place place) {
-    visitedPlaces.add(place);
+    _visitedPlaces.add(place);
   }
 
-  List<Place>? get getVisitPlaces => visitedPlaces;
-
+  List<Place> get visitedPlaces => _visitedPlaces;
+  List<Place> get favoritePlaces => _favoritePlaces;
   void addToFavorites(final Place place) {
-    favoritePlaces.add(place);
+    _favoritePlaces.add(place);
   }
 
   bool removeFromFavorites(final Place place) {
-    return favoritePlaces.remove(place);
+    return _favoritePlaces.remove(place);
   }
 
   // Возвращает деталку места
@@ -40,14 +40,14 @@ class PlaceInteractor {
   }
 
   //Список избранных мест , отфильтрованный по расстоянию
-  List<Place>? getFavoritePlaces(final double lat, final double lng) {
-    final result = favoritePlaces;
+  List<Place> getFavoritePlacesSortedByDistance() {
+    final result = _favoritePlaces;
     result.sort((a, b) => compareDistanses(a, b, mockCoordinates));
     return result;
   }
 
   //Список мест на расстоянии radius, отфильтрованный по расстоянию
-  Future<List<Place>?> getPlaces(
+  Future<List<Place>> getPlaces(
       {final double? radius, final String? category}) async {
     final List<Place> response = await placeRepository.getPlacesList();
 
@@ -59,6 +59,6 @@ class PlaceInteractor {
     return response;
   }
 
-  final List<Place> favoritePlaces = [];
-  final List<Place> visitedPlaces = [];
+  final List<Place> _favoritePlaces = [];
+  final List<Place> _visitedPlaces = [];
 }

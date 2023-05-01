@@ -3,14 +3,41 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
+import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_typography.dart';
 
 // Карточка для показа места
-class SightCard extends StatelessWidget {
-  const SightCard({Key? key, required this.sight, this.onTap})
+class SightCard extends StatefulWidget {
+  const SightCard(
+      {Key? key,
+      required this.sight,
+      this.onTap,
+      this.onHeartTap,
+      required this.isFavorite})
       : super(key: key);
   final VoidCallback? onTap;
+  final VoidCallback? onHeartTap;
+  final bool isFavorite;
   final Place sight;
+
+  @override
+  State<SightCard> createState() => _SightCardState();
+}
+
+class _SightCardState extends State<SightCard> {
+  late bool isFavorite;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    isFavorite = widget.isFavorite;
+  }
+
+  @override
+  void didUpdateWidget(covariant SightCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    isFavorite = widget.isFavorite;
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -39,7 +66,7 @@ class SightCard extends StatelessWidget {
                         image: DecorationImage(
                             fit: BoxFit.fitWidth,
                             image: Image.network(
-                              sight.urls[0],
+                              widget.sight.urls[0],
                               fit: BoxFit.fitWidth,
                               frameBuilder: (context, child, frame,
                                   wasSynchronouslyLoaded) {
@@ -69,9 +96,15 @@ class SightCard extends StatelessWidget {
                                   ),
                                 );
                               },
+                              errorBuilder: (context, error, stackTrace) {
+                                print("Error is here)) $error");
+                                return Center(
+                                child: Container(width: 100,height: 120,color: Colors.amber,)
+                              );
+                              },
                             ).image),
                       ),
-                      child: InkWell(onTap: onTap),
+                      child: InkWell(onTap: widget.onTap),
                     ),
                     Positioned(
                       right: 10,
@@ -79,17 +112,22 @@ class SightCard extends StatelessWidget {
                       child: IconButton(
                         iconSize: 20.0,
                         icon: SvgPicture.asset(
-                          AppAssets.heart,
+                          isFavorite ? AppAssets.likeFilled : AppAssets.like,
                           color: themeProvider.appTheme.iconColor,
                         ),
-                        onPressed: () {},
+                        onPressed: () => {
+                          widget.onHeartTap!(),
+                          setState(() {
+                            isFavorite = !isFavorite;
+                          })
+                        },
                       ),
                     ),
                     Positioned(
                       left: 16,
                       top: 16,
                       child: Text(
-                        sight.placeType.toString(),
+                        widget.sight.placeType.toString(),
                         style: AppTypography.smallBoldwhite,
                       ),
                     ),
@@ -98,7 +136,7 @@ class SightCard extends StatelessWidget {
               ),
               Expanded(
                 child: InkWell(
-                  onTap: onTap,
+                  onTap: widget.onTap,
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -106,7 +144,7 @@ class SightCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          sight.name,
+                          widget.sight.name,
                           style: AppTypography.simpleText,
                         ),
                         const SizedBox.shrink(),

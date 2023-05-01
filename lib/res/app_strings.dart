@@ -31,6 +31,7 @@ class AppStrings {
   static const buildRoute = "Построить маршрут";
   static const addToCalendar = "Запланировать";
   static const inFavorite = "В избранное";
+  static const inFavoriteAlready = "В избранном";
 
   static const distance = "Расстояние";
   static const categories = "Категории";

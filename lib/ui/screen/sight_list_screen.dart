@@ -5,6 +5,7 @@ import 'package:places/data/model/place.dart';
 import 'package:places/main.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
+import 'package:places/ui/dialogs/sight_details_bottom_sheet.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/sight_card.dart';
@@ -24,7 +25,7 @@ class SightListScreen extends StatefulWidget {
 class _SightListScreenState extends State<SightListScreen> {
   // Храним здесь список, который будем отображать с учётом фильтров и поиска,
   // изменения из екранов поиска передаём через callback .then(...) навигатора
-  late List<Place>? places;
+  late List<Place> places;
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -37,8 +38,8 @@ class _SightListScreenState extends State<SightListScreen> {
   void didChangeDependencies() async {
     await placeInteractor.getPlaces().then((value) {
       setState(() {
-          places = value;
-        });
+        places = value;
+      });
     });
 
     super.didChangeDependencies();
@@ -109,7 +110,8 @@ class _SightListScreenState extends State<SightListScreen> {
                       MediaQuery.of(context).orientation == Orientation.portrait
                           ? true
                           : false,
-                  onNewPlaceCreated: (() {
+                  onNewPlaceCreated: ((Place newPlace) async {
+                    await placeInteractor.addNewPlace(newPlace);
                     setState(
                       // Покажем обновлённый список
                       () {},
@@ -117,7 +119,8 @@ class _SightListScreenState extends State<SightListScreen> {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
                         behavior: SnackBarBehavior.floating,
                         duration: const Duration(milliseconds: 500),
                         content: const Text(
@@ -214,7 +217,7 @@ class ListOfPlacesHorizontal extends StatefulWidget {
     required this.scrollController,
   }) : super(key: key);
 
-  final List<Place>? places;
+  final List<Place> places;
   final ScrollController scrollController;
   @override
   State<ListOfPlacesHorizontal> createState() => _ListOfPlacesHorizontalState();
@@ -226,13 +229,13 @@ class _ListOfPlacesHorizontalState extends State<ListOfPlacesHorizontal> {
   @override
   void initState() {
     super.initState();
-    places = widget.places ?? [];
+    places = widget.places;
   }
 
   @override
   void didUpdateWidget(covariant ListOfPlacesHorizontal oldWidget) {
     super.didUpdateWidget(oldWidget);
-    places = widget.places ?? [];
+    places = widget.places;
   }
 
   @override
@@ -268,34 +271,24 @@ class _ListOfPlacesHorizontalState extends State<ListOfPlacesHorizontal> {
                     feedback: Opacity(
                       opacity: 0.8,
                       child: SizedBox(
-                          width: 400 * 0.8,
-                          height: 300 * 0.8,
-                          child: SightCard(sight: element)),
-                    ),
-                    child: SightCard(
-                      sight: element,
-                      onTap: () => showModalBottomSheet(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
-                        ),
-                        isScrollControlled: true,
-                        useSafeArea: true,
-                        context: context,
-                        builder: (context) => DraggableScrollableSheet(
-                          expand: true,
-                          snap: true,
-                          maxChildSize: 0.95,
-                          minChildSize: 0.9,
-                          initialChildSize: 0.95,
-                          builder: (context, scrollController) => SightDetails(
-                            sight: element,
-                            scrollController: scrollController,
-                          ),
+                        width: 400 * 0.8,
+                        height: 300 * 0.8,
+                        child: SightCard(
+                          sight: element,
+                          isFavorite:
+                              placeInteractor.favoritePlaces.contains(element),
                         ),
                       ),
+                    ),
+                    child: SightCard(
+                      onHeartTap: () =>
+                          placeInteractor.favoritePlaces.contains(element)
+                              ? placeInteractor.removeFromFavorites(element)
+                              : placeInteractor.addToFavorites(element),
+                      isFavorite:
+                          placeInteractor.favoritePlaces.contains(element),
+                      sight: element,
+                      onTap: () => showDetailsBottomSheet(context, element),
                     ),
                   );
                 },
@@ -370,33 +363,43 @@ class _ListOfPlacesVerticalState extends State<ListOfPlacesVertical> {
                     opacity: 0.8,
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,
-                      child: SightCard(sight: places[index]),
+                      child: SightCard(
+                        sight: places[index],
+                        isFavorite: placeInteractor.favoritePlaces
+                            .contains(places[index]),
+                      ),
                     ),
                   ),
                   child: SightCard(
                     sight: places[index],
                     onTap: () => showModalBottomSheet(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
                         ),
-                        isScrollControlled: true,
-                        useSafeArea: true,
-                        context: context,
-                        builder: (context) => DraggableScrollableSheet(
-                              expand: false,
-                              snap: true,
-                              maxChildSize: 0.95,
-                              minChildSize: 0.9,
-                              initialChildSize: 0.95,
-                              builder: (context, scrollController) =>
-                                  SightDetails(
-                                sight: places[index],
-                                scrollController: scrollController,
-                              ),
-                            )),
+                      ),
+                      isScrollControlled: true,
+                      useSafeArea: true,
+                      context: context,
+                      builder: (context) => DraggableScrollableSheet(
+                        expand: false,
+                        snap: true,
+                        maxChildSize: 0.95,
+                        minChildSize: 0.9,
+                        initialChildSize: 0.95,
+                        builder: (context, scrollController) => SightDetails(
+                          sight: places[index],
+                          scrollController: scrollController,
+                        ),
+                      ),
+                    ),
+                    isFavorite:
+                        placeInteractor.favoritePlaces.contains(places[index]),
+                    onHeartTap: () =>
+                        placeInteractor.favoritePlaces.contains(places[index])
+                            ? placeInteractor.removeFromFavorites(places[index])
+                            : placeInteractor.addToFavorites(places[index]),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -411,7 +414,7 @@ class _ListOfPlacesVerticalState extends State<ListOfPlacesVertical> {
 
 // Кнопка Добавить новое место
 class _AddButton extends StatelessWidget {
-  final VoidCallback onNewPlaceCreated;
+  final Function(Place t) onNewPlaceCreated;
   //Для LandScape orientation вид изменится
   final bool portraitOrientation;
   const _AddButton(
@@ -422,8 +425,8 @@ class _AddButton extends StatelessWidget {
       onPressed: () {
         Navigator.of(context).pushNamed(AddSightScreen.routeName).then(
           (value) {
-            if (value == true) {
-              onNewPlaceCreated();
+            if (value is Place) {
+              onNewPlaceCreated(value);
             }
           },
         );
@@ -534,7 +537,6 @@ class _SightListScreenPersistantHeaderDelegatePortrait
     );
   }
 
-  @override
   double get maxExtent => 155;
 
   @override

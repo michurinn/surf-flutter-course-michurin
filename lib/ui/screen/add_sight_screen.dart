@@ -562,7 +562,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
     } else {
       if (_keyForm.currentState!.validate()) {
         Place newItem = Place(
-          id: 4,
+          id: 404,
           name: nameController!.text,
           description: descriptionController!.text,
           urls:
@@ -571,9 +571,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
           lng: double.parse(heightController!.text),
           placeType: 'cafe',
         );
-        mocks.contains(newItem) ? null : mocks.add(newItem);
-
-        Navigator.of(context).pop(true);
+        Navigator.of(context).pop(newItem);
       }
     }
   }

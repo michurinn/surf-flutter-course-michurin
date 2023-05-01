@@ -40,9 +40,16 @@ class SightDetails extends StatelessWidget {
             SliverList(
               delegate: SliverChildListDelegate.fixed([
                 _BodyWithTexts(sight: sight),
-                const Flexible(child: Spacer(),),
+                const Flexible(
+                  child: Spacer(),
+                ),
                 const Spacer(),
-                const _BottomWithButtons(),
+                _BottomWithButtons(
+                    isFavorite: placeInteractor.favoritePlaces.contains(sight),
+                    onFavoriteTap: () =>
+                        placeInteractor.favoritePlaces.contains(sight)
+                            ? placeInteractor.removeFromFavorites(sight)
+                            : placeInteractor.addToFavorites(sight)),
               ]),
             ),
           ],
@@ -171,10 +178,26 @@ class _BodyWithTextsState extends State<_BodyWithTexts> {
 }
 
 // Кнопки Построить маршрут,запланировать, В избранное для sight_details
-class _BottomWithButtons extends StatelessWidget {
+class _BottomWithButtons extends StatefulWidget {
   const _BottomWithButtons({
     Key? key,
+    this.onFavoriteTap,
+    required this.isFavorite,
   }) : super(key: key);
+  final VoidCallback? onFavoriteTap;
+  final bool isFavorite;
+
+  @override
+  State<_BottomWithButtons> createState() => _BottomWithButtonsState();
+}
+
+class _BottomWithButtonsState extends State<_BottomWithButtons> {
+  late bool isFavorite;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    isFavorite = widget.isFavorite;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -259,7 +282,10 @@ class _BottomWithButtons extends StatelessWidget {
                 Expanded(
                   child: TextButton(
                     onPressed: () {
-                      print("Like button pressed");
+                      widget.onFavoriteTap!();
+                      setState(() {
+                        isFavorite = !isFavorite;
+                      });
                     },
                     style: const ButtonStyle(
                       minimumSize: MaterialStatePropertyAll(Size(0, 40)),
@@ -268,7 +294,7 @@ class _BottomWithButtons extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         SvgPicture.asset(
-                          AppAssets.heart,
+                          isFavorite ? AppAssets.likeFilled : AppAssets.like,
                           width: 20,
                           height: 20,
                           color: themeProvider
@@ -278,7 +304,9 @@ class _BottomWithButtons extends StatelessWidget {
                           width: 10,
                         ),
                         Text(
-                          AppStrings.inFavorite,
+                          isFavorite
+                              ? AppStrings.inFavoriteAlready
+                              : AppStrings.inFavorite,
                           style: AppTypography.small.copyWith(
                             color: themeProvider
                                 .appTheme.bottomNavBarSelectedItemColor,

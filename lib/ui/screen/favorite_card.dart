@@ -13,11 +13,15 @@ import 'package:places/res/app_typography.dart';
 
 // Карточка для Хочу посетить в Избранном
 class FavoriteSight extends StatelessWidget {
-  const FavoriteSight({Key? key, required this.sight, required this.isFinished})
+  const FavoriteSight(
+      {Key? key,
+      required this.sight,
+      required this.isFinished,
+      this.onClosePressed})
       : super(key: key);
   final Place sight;
   final bool isFinished;
-
+  final VoidCallback? onClosePressed;
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
@@ -107,9 +111,7 @@ class FavoriteSight extends StatelessWidget {
                           padding: const EdgeInsets.all(0),
                           icon: Icon(Icons.close,
                               color: themeProvider.appTheme.iconColor),
-                          onPressed: () {
-                            print("Close on card pressed");
-                          },
+                          onPressed: onClosePressed
                         )
                       ],
                     ),
@@ -143,7 +145,6 @@ class FavoriteSight extends StatelessWidget {
                               style: AppTypography.smallGreen,
                               textAlign: TextAlign.start),
                     ),
-                    Text(sight.description, style: AppTypography.small),
                   ],
                 ),
               ),

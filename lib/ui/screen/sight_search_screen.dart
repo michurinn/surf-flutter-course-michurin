@@ -4,6 +4,7 @@ import 'package:places/main.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
+import 'package:places/ui/dialogs/sight_details_bottom_sheet.dart';
 import 'package:places/ui/screen/sight_details.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 
@@ -159,8 +160,7 @@ class _ListItem extends StatelessWidget {
     return InkWell(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
-        Navigator.of(context)
-            .pushNamed(SightDetails.routeName, arguments: sight);
+        showDetailsBottomSheet(context, sight);
       },
       child: Column(
         children: [
