@@ -16,7 +16,7 @@ class PlaceRepository implements IPlaceRepository {
 
   PlaceRepository({required this.httpClient});
   @override
-  Future<Place?> addPlace(Place place) async {
+  Future<Place> addPlace(Place place) async {
     try {
       Completer<Place> completer = Completer();
       final response = await httpClient.dio.post(
@@ -25,79 +25,143 @@ class PlaceRepository implements IPlaceRepository {
           place.toMap(),
         ),
       );
-      completer.complete(placeFromMap(response.data));
+      if (response.statusCode == 200) {
+        completer.complete(placeFromMap(response.data));
+      } else if (response.statusCode == 400) {
+        throw Exception('400: Invalid request');
+      } else if (response.statusCode == 409) {
+        throw Exception('409: Object already exist');
+      } else {
+        throw Exception();
+      }
+
       return completer.future;
     } on Exception catch (e) {
       print('Exception $e in addPlace');
+      rethrow;
     }
   }
 
   @override
-  Future<List<Place>?> getPlacesList() async {
+  Future<List<Place>> getPlacesList() async {
     try {
+      Completer<List<Place>> completer = Completer();
       final response = await httpClient.dio.get('/place');
-      List result = response.data;
-      result = result.expand((e) => [placeFromMap((e))]).toList();
-      return result as List<Place>?;
+      if (response.statusCode == 200) {
+        List result = response.data;
+        result = result.expand((e) => [placeFromMap((e))]).toList();
+        completer.complete(result as List<Place>);
+      } else if (response.statusCode == 400) {
+        throw Exception('400: Invalid request');
+      } else if (response.statusCode == 409) {
+        throw Exception('409: Object already exist');
+      } else {
+        throw Exception();
+      }
+
+      return completer.future;
     } on Exception catch (e) {
       print('Exception $e in getPlacesList');
+      rethrow;
     }
   }
 
   @override
   Future<void> deletePlaceByID(final int id) async {
     try {
-      await httpClient.dio.delete('/place/$id');
+      Response response = await httpClient.dio.delete('/place/$id');
+      if (response.statusCode == 200) {
+        return;
+      } else if (response.statusCode == 404) {
+        throw Exception('404: Object not found');
+      } else {
+        throw Exception();
+      }
     } on Exception catch (e) {
       print('Exception $e in deletePlaceByID');
     }
   }
 
   @override
-  Future<List<PlaceDto>?> getFilteredPlaces(
+  Future<List<PlaceDto>> getFilteredPlaces(
       final PlacesFilterRequestDto filter) async {
     try {
       Completer<List<PlaceDto>> completer = Completer();
 
-      final response = await httpClient.dio
-          .post('/filtered_places', data: jsonEncode(filter.toMap()));
-      List result = response.data;
-      result = result.expand((e) => [placeFromMap((e))]).toList();
-      completer.complete(result as List<PlaceDto>?);
+      final response = await httpClient.dio.post(
+        '/filtered_places',
+        data: jsonEncode(
+          filter.toMap(),
+        ),
+      );
+      if (response.statusCode == 200) {
+        List result = response.data;
+        result = result
+            .expand((e) => [
+                  placeFromMap((e)),
+                ])
+            .toList();
+        completer.complete(result as List<PlaceDto>?);
+      } else {
+        throw Exception();
+      }
       return completer.future;
     } on Exception catch (e) {
       print('Exception $e in getFilteredPlaces');
+      rethrow;
     }
   }
 
   @override
-  Future<Place?> getPlaceByID(final int id) async {
+  Future<Place> getPlaceByID(final int id) async {
     try {
       Completer<Place> completer = Completer();
-      final Response<dynamic> responce = await httpClient.dio.get('/place/$id');
-      completer.complete(placeFromMap(responce.data));
+      final Response<dynamic> response = await httpClient.dio.get('/place/$id');
+      if (response.statusCode == 200) {
+        completer.complete(
+          placeFromMap(response.data),
+        );
+      } else if (response.statusCode == 400) {
+        throw Exception('400: Invalid request');
+      } else {
+        throw Exception();
+      }
+
       return completer.future;
     } on Exception catch (e) {
       print('Exception $e in getPlaceByID');
+      rethrow;
     }
   }
 
   @override
-  Future<String?> uploadFile(final String bytes) async {
+  Future<List<String>> uploadFile(final String bytes) async {
     try {
       httpClient.dio.options.contentType = 'multipart/form-data';
       final Response response =
           await httpClient.dio.post('/upload_file', data: bytes);
-      return response.data;
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else if (response.statusCode == 201) {
+        if (response.headers['location'] == null) {
+          throw Exception();
+        } else {
+          return response.headers['location'] as List<String>;
+        }
+      } else {
+        throw Exception();
+      }
     } on Exception catch (e) {
       print('Exception $e in uploadFile');
+      rethrow;
     } finally {
       httpClient.dio.options.contentType = 'application/json';
     }
   }
 
   @override
-  Future<Place?> updatePlaceByID(final Place place) async {
+  Future<Place> updatePlaceByID(final Place place) async {
     try {
       Completer<Place> completer = Completer();
       Map<String, dynamic> request = place.toMap();
@@ -109,10 +173,24 @@ class PlaceRepository implements IPlaceRepository {
           request,
         ),
       );
-      completer.complete(placeFromMap(response.data));
+      if (response.statusCode == 200) {
+        completer.complete(
+          placeFromMap(response.data),
+        );
+      } else if (response.statusCode == 404) {
+        throw Exception('404: No object found');
+      } else if (response.statusCode == 404) {
+        throw Exception('409: Object already exist');
+      } else if (response.statusCode == 400) {
+        throw Exception('400: Invalid request');
+      } else {
+        throw Exception();
+      }
+
       return completer.future;
     } on Exception catch (e) {
       print('Exception $e in updatePlaceByID');
+      rethrow;
     }
   }
 }
