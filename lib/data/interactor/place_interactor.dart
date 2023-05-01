@@ -35,12 +35,8 @@ class PlaceInteractor {
 
   // Возвращает деталку места
   Future<String?> getPlaceDetails(final int id) async {
-    final Place? place = await placeRepository.getPlaceByID(id);
-    if (place == null) {
-      return '';
-    } else {
-      return place.description;
-    }
+    final Place place = await placeRepository.getPlaceByID(id);
+    return place.description;
   }
 
   //Список избранных мест , отфильтрованный по расстоянию
@@ -53,18 +49,14 @@ class PlaceInteractor {
   //Список мест на расстоянии radius, отфильтрованный по расстоянию
   Future<List<Place>?> getPlaces(
       {final double? radius, final String? category}) async {
-    final List<Place>? response = await placeRepository.getPlacesList();
-    
-    if (response == null) {
-      return null;
-    } else {
-      response.removeWhere((element) => !checkIsInsideRadius(
-          element, mockCoordinates, radius ?? double.infinity));
-      response.removeWhere((element) =>
-          category == null ? false : element.placeType == category);
-      response.sort((a, b) => compareDistanses(a, b, mockCoordinates));
-      return response;
-    }
+    final List<Place> response = await placeRepository.getPlacesList();
+
+    response.removeWhere((element) => !checkIsInsideRadius(
+        element, mockCoordinates, radius ?? double.infinity));
+    response.removeWhere(
+        (element) => category == null ? false : element.placeType == category);
+    response.sort((a, b) => compareDistanses(a, b, mockCoordinates));
+    return response;
   }
 
   final List<Place> favoritePlaces = [];
