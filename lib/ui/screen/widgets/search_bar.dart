@@ -80,7 +80,7 @@ class SearchBarState extends State<SearchBar> {
       controller: controller,
       cursorWidth: 1,
       cursorHeight: 24,
-      cursorColor: themeProvider.appTheme.cursorColor,
+      cursorColor: themeInteractor.appTheme.cursorColor,
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.never,
         prefixIcon:
@@ -90,15 +90,15 @@ class SearchBarState extends State<SearchBar> {
             : InkWell(
                 child: Icon(
                   Icons.cancel,
-                  color: themeProvider.appTheme.badgeColors[0],
+                  color: themeInteractor.appTheme.badgeColors[0],
                   size: 18,
                 ),
                 onTap: () {
                   clear();
                 },
               ),
-        suffixIconColor: themeProvider.appTheme.filterButtonColor,
-        fillColor: themeProvider.appTheme.cardColor,
+        suffixIconColor: themeInteractor.appTheme.filterButtonColor,
+        fillColor: themeInteractor.appTheme.cardColor,
         filled: true,
         label: const Text(AppStrings.search),
         labelStyle:

@@ -79,7 +79,7 @@ class SightCard extends StatelessWidget {
                         iconSize: 20.0,
                         icon: SvgPicture.asset(
                           AppAssets.heart,
-                          color: themeProvider.appTheme.iconColor,
+                          color: themeInteractor.appTheme.iconColor,
                         ),
                         onPressed: () {},
                       ),
