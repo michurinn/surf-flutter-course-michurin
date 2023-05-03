@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:places/data/model/place_dto.dart';
 
 // Класс места, содержит информацию об интересном месте
 
@@ -21,7 +22,28 @@ class Place extends Equatable {
     required this.urls,
   });
 
-  Map<String, dynamic>  toMap() {
+  factory Place.fromPlaceDTO(PlaceDto placeDto) {
+    return Place(
+        description: placeDto.description,
+        id: placeDto.id,
+        lat: placeDto.lat,
+        lng: placeDto.lng,
+        name: placeDto.name,
+        placeType: placeDto.placeType,
+        urls: placeDto.urls);
+  }
+  factory Place.fromMap(Map<dynamic, dynamic> map) {
+    return Place(
+        id: map['id'],
+        name: map['name'],
+        lat: map['lat'],
+        lng: map['lng'],
+        description: map['description'],
+        placeType: map['placeType'],
+        urls: map['urls'] ?? []);
+  }
+
+  Map<String, dynamic> toMap() {
     return {
       'name': name,
       'id': id,
@@ -35,15 +57,4 @@ class Place extends Equatable {
 
   @override
   List<Object> get props => [name, lat, lng, description, placeType, id, urls];
-}
-
-Place placeFromMap(Map<dynamic, dynamic> map) {
-  return Place(
-      id: map['id'],
-      name: map['name'],
-      lat: map['lat'],
-      lng: map['lng'],
-      description: map['description'],
-      placeType: map['placeType'],
-      urls: map['urls'] ??[]);
 }
