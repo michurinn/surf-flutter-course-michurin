@@ -3,7 +3,7 @@ import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/repository/place_repository.dart';
 import 'package:places/dio_client.dart';
-import 'package:places/data/model/place.dart';
+import 'package:places/domain/place.dart';
 import 'package:places/theme_provider.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
 import 'package:places/ui/screen/categories_screen.dart';
@@ -19,7 +19,6 @@ import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
 
 final themeProvider = ThemeProvider();
-//final filter = Filter();
 final PlaceInteractor placeInteractor = PlaceInteractor(
   PlaceRepository(
     httpClient: DioClient(),

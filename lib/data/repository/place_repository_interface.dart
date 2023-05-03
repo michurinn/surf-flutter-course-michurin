@@ -1,4 +1,4 @@
-import 'package:places/data/model/place.dart';
+import 'package:places/domain/place.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
 
 abstract class IPlaceRepository {
