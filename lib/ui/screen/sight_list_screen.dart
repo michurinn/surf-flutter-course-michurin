@@ -116,7 +116,8 @@ class _SightListScreenState extends State<SightListScreen> {
                       // Покажем обновлённый список
                       () {},
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    if(mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
@@ -130,6 +131,7 @@ class _SightListScreenState extends State<SightListScreen> {
                         ),
                       ),
                     );
+                    }
                   }),
                 ),
               ),
@@ -537,6 +539,7 @@ class _SightListScreenPersistantHeaderDelegatePortrait
     );
   }
 
+  @override
   double get maxExtent => 155;
 
   @override

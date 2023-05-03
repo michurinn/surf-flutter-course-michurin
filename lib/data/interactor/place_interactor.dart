@@ -6,6 +6,7 @@ import 'package:places/utils/distance_measure.dart';
 class PlaceInteractor {
   static final PlaceInteractor _instance = PlaceInteractor._internal();
 
+  // ignore: non_constant_identifier_names
   factory PlaceInteractor(IPlaceRepository IplaceRepository) {
     placeRepository = IplaceRepository;
     return _instance;

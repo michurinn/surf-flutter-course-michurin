@@ -157,9 +157,7 @@ class FavoriteSight extends StatelessWidget {
 }
 
 class _CupertinoDatePickerBody extends StatelessWidget {
-  const _CupertinoDatePickerBody({
-    super.key,
-  });
+  const _CupertinoDatePickerBody();
 
   @override
   Widget build(BuildContext context) {
