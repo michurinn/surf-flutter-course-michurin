@@ -1,5 +1,4 @@
-import 'package:places/data/model/place.dart';
-import 'package:places/data/model/place_dto.dart';
+import 'package:places/domain/place.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
 
 abstract class IPlaceRepository {
@@ -21,5 +20,5 @@ abstract class IPlaceRepository {
   // Ответ в виде списка типа PlaceDto.
   // Если в запросе были указаны координаты точки и радиус, то в ответе будет расстояние между точкой и местом.
 
-  Future<List<PlaceDto>> getFilteredPlaces(final PlacesFilterRequestDto filter);
+  Future<List<Place>> getFilteredPlaces(final PlacesFilterRequestDto filter);
 }

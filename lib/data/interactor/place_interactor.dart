@@ -1,4 +1,4 @@
-import 'package:places/data/model/place.dart';
+import 'package:places/domain/place.dart';
 import 'package:places/data/repository/place_repository_interface.dart';
 import 'package:places/mocks.dart';
 import 'package:places/utils/distance_measure.dart';

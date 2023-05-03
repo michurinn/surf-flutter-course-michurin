@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:places/data/model/place.dart';
+import 'package:places/domain/place.dart';
 
 // Измерить дистанцию от точки до точки
 double getDistanceBetweenCoordinates(checkPoint, centerPoint) {

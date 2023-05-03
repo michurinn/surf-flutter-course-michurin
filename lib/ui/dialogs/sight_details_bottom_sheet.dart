@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/data/model/place.dart';
+import 'package:places/domain/place.dart';
 import 'package:places/ui/screen/sight_details.dart';
 
 void showDetailsBottomSheet(BuildContext context, Place element) =>
