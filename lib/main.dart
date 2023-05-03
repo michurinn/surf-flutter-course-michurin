@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:places/domain/filter.dart';
-import 'package:places/data/model/place.dart';
+import 'package:places/domain/place.dart';
 import 'package:places/theme_provider.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
 import 'package:places/ui/screen/categories_screen.dart';

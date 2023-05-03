@@ -1,4 +1,4 @@
-import 'package:places/data/model/place.dart';
+import 'package:places/domain/place.dart';
 import 'package:places/res/app_strings.dart';
 
 //Заглушки с местами
