@@ -9,7 +9,7 @@ class PlaceDto {
   final double? distance;
   final String description;
   final String placeType;
-  final List<String> urls;
+  final List<dynamic> urls;
 
   const PlaceDto({
     required this.id,
@@ -21,4 +21,15 @@ class PlaceDto {
     required this.placeType,
     required this.urls,
   });
+
+  factory PlaceDto.fromMap(Map<String, dynamic> map) {
+    return PlaceDto(
+        id: map['id'],
+        name: map['name'],
+        lat: map['lat'],
+        lng: map['lng'],
+        description: map['description'],
+        placeType: map['placeType'],
+        urls: map['urls'] ?? []);
+  }
 }

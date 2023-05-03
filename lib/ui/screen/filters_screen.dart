@@ -1,12 +1,9 @@
 // ignore_for_file: avoid_print, camel_case_types
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/main.dart';
-import 'package:places/mocks.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
@@ -25,19 +22,20 @@ class FilterScreen extends StatefulWidget {
 class _FilterScreenState extends State<FilterScreen> {
   double _endValue = 9; // Конечное значение слайдера по умолчанию
   double _startValue = 2; // Начальное значение слайдера по умолчанию
-  List<Place>? results;
+  List<Place> results = searchInteractor.filteredPlaces;
 
-  late final StreamController<bool> controller;
   @override
-  initState() {
-    controller = StreamController<bool>.broadcast();
-    super.initState();
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    results = await searchInteractor.searchByFilter() ?? [];
   }
 
   @override
-  dispose() {
-    controller.close();
-    super.dispose();
+  void initState() {
+    super.initState();
+    searchInteractor.setFilter(
+        radius:
+            _endValue*2000); // Радиус поиска и верхняя граница слайдера совпадают по определнию
   }
 
   // Отсчёт начинаетс от 100 м, затем в км
@@ -57,14 +55,6 @@ class _FilterScreenState extends State<FilterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Результат фильтрации менятеся при каждом применении/отмене фильтра
-    results = mocks.where(
-      (element) {
-        return (filter.avaibleTypes.contains(element.placeType) &&
-            filter.arePointInRange(element, mockCoordinates,
-                filter.distanceFrom, filter.distanceTo));
-      },
-    ).toList();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -94,10 +84,10 @@ class _FilterScreenState extends State<FilterScreen> {
             padding: const EdgeInsets.only(right: 16.0),
             child: TextButton(
               onPressed: () {
+                searchInteractor.resetFilter();
                 setState(() {
                   _endValue = 9;
                   _startValue = 2;
-                  controller.sink.add(false);
                 });
               },
               style: const ButtonStyle(
@@ -138,11 +128,25 @@ class _FilterScreenState extends State<FilterScreen> {
                 _GridView(
                   itemsList: SightType.values
                       .map(
-                        (e) => _itemGridView(
-                          onPressed: () => setState(() {}),
+                        (e) {
+                          print(e.name.toString());
+                          print(searchInteractor.favoriteCategories.contains(e.name));
+                          return _itemGridView(
+                          isChecked: searchInteractor.favoriteCategories
+                                  .contains(e.name)
+                              ? true
+                              : false,
+                          onPressed: () async {
+                            searchInteractor.setOrUnsetCategory(e.name);
+                            final filteredResults =
+                                await searchInteractor.searchByFilter() ?? [];
+                            setState(() {
+                              results = filteredResults;
+                            });
+                          },
                           sightType: e,
-                          markerController: controller,
-                        ),
+                        );
+                        },
                       )
                       .toList(),
                 ),
@@ -173,11 +177,18 @@ class _FilterScreenState extends State<FilterScreen> {
                     divisions: 10,
                     inactiveColor: AppColors.inactiveBlack,
                     values: RangeValues(_startValue, _endValue),
-                    onChanged: (values) {
-                      filter.setDistanses(values.start, values.end);
+                    onChanged: (value) => setState(() {
+                      _startValue = value.start;
+                      _endValue = value.end;
+                    }),
+                    onChangeEnd: (_) async {
+                      searchInteractor.setFilter(
+                        radius: _endValue * 2000, // in kilometers
+                      );
+                      final filteredResults =
+                          await searchInteractor.searchByFilter() ?? [];
                       setState(() {
-                        _startValue = values.start;
-                        _endValue = values.end;
+                        results = filteredResults;
                       });
                     },
                     min: 0,
@@ -203,7 +214,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Показать (${results!.length})".toUpperCase(),
+                      "Показать (${results.length})".toUpperCase(),
                       style: AppTypography.button,
                     )
                   ],
@@ -256,47 +267,43 @@ class __GridViewState extends State<_GridView> {
 
 // Тип места
 class _itemGridView extends StatefulWidget {
-  final VoidCallback? onPressed;
+  final VoidCallback onPressed;
   final SightType sightType;
-  final StreamController<bool> markerController;
-  const _itemGridView(
-      {required this.sightType,
-      this.onPressed,
-      required this.markerController});
+  final bool isChecked;
+  const _itemGridView({
+    required this.sightType,
+    required this.onPressed,
+    required this.isChecked,
+  });
 
   @override
   State<_itemGridView> createState() => __itemGridViewState();
 }
 
 class __itemGridViewState extends State<_itemGridView> {
-  bool isChecked = false;
-  // ignore: unused_field
-  late final StreamSubscription<bool> _subscription;
+  late bool isChecked;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    isChecked = widget.isChecked;
+    print("didChangeDependencies");
+  }
 
   @override
-  void initState() {
-    // Если уходим из екрана Фильтра, настройки сохраняются
-    filter.avaibleTypes.contains(widget.sightType.type)
-        ? isChecked = true
-        : null;
-    _subscription = widget.markerController.stream.listen((bool data) {
-      if (!mounted) return;
-      setState(() {
-        isChecked = false;
-      });
-    });
-    super.initState();
+  void didUpdateWidget(covariant _itemGridView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    isChecked = widget.isChecked;
+    print("didUpdateWidget ${widget.isChecked}");
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        filter.addOrRemoveFilter(widget.sightType.type);
-        setState(() {
-          isChecked = !isChecked;
-        });
-        widget.onPressed!();
+      onTap: () {print("onTap");
+        // setState(() {
+        //   isChecked = !isChecked;
+        // });
+        widget.onPressed();
       },
       child: Column(
         children: [

@@ -65,7 +65,8 @@ class _SightCardState extends State<SightCard> {
                         image: DecorationImage(
                             fit: BoxFit.fitWidth,
                             image: Image.network(
-                              widget.sight.urls[0],
+                              //Пока покажем заглушку
+                              'https://www.mdpi.com/humans/humans-02-00017/article_deploy/html/images/humans-02-00017-g002.png',
                               fit: BoxFit.fitWidth,
                               frameBuilder: (context, child, frame,
                                   wasSynchronouslyLoaded) {
@@ -96,10 +97,12 @@ class _SightCardState extends State<SightCard> {
                                 );
                               },
                               errorBuilder: (context, error, stackTrace) {
-                                print("Error is here)) $error");
                                 return Center(
-                                child: Container(width: 100,height: 120,color: Colors.amber,)
-                              );
+                                    child: Container(
+                                  width: 100,
+                                  height: 120,
+                                  color: Colors.amber,
+                                ));
                               },
                             ).image),
                       ),

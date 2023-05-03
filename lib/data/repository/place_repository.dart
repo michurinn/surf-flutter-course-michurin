@@ -26,7 +26,7 @@ class PlaceRepository implements IPlaceRepository {
         ),
       );
       if (response.statusCode == 200) {
-        completer.complete(placeFromMap(response.data));
+        completer.complete(Place.fromMap(response.data));
       } else if (response.statusCode == 400) {
         throw Exception('400: Invalid request');
       } else if (response.statusCode == 409) {
@@ -49,7 +49,7 @@ class PlaceRepository implements IPlaceRepository {
       final response = await httpClient.dio.get('/place');
       if (response.statusCode == 200) {
         List result = response.data;
-        result = result.expand((e) => [placeFromMap((e))]).toList();
+        result = result.expand((e) => [Place.fromMap((e))]).toList();
         completer.complete(result as List<Place>);
       } else if (response.statusCode == 400) {
         throw Exception('400: Invalid request');
@@ -83,10 +83,10 @@ class PlaceRepository implements IPlaceRepository {
   }
 
   @override
-  Future<List<PlaceDto>> getFilteredPlaces(
+  Future<List<Place>> getFilteredPlaces(
       final PlacesFilterRequestDto filter) async {
     try {
-      Completer<List<PlaceDto>> completer = Completer();
+      Completer<List<Place>> completer = Completer();
 
       final response = await httpClient.dio.post(
         '/filtered_places',
@@ -98,10 +98,10 @@ class PlaceRepository implements IPlaceRepository {
         List result = response.data;
         result = result
             .expand((e) => [
-                  placeFromMap((e)),
+                  Place.fromPlaceDTO(PlaceDto.fromMap(e)),
                 ])
             .toList();
-        completer.complete(result as List<PlaceDto>?);
+        completer.complete(result as List<Place>?);
       } else {
         throw Exception();
       }
@@ -119,7 +119,7 @@ class PlaceRepository implements IPlaceRepository {
       final Response<dynamic> response = await httpClient.dio.get('/place/$id');
       if (response.statusCode == 200) {
         completer.complete(
-          placeFromMap(response.data),
+          Place.fromMap(response.data),
         );
       } else if (response.statusCode == 400) {
         throw Exception('400: Invalid request');
@@ -175,7 +175,7 @@ class PlaceRepository implements IPlaceRepository {
       );
       if (response.statusCode == 200) {
         completer.complete(
-          placeFromMap(response.data),
+          Place.fromMap(response.data),
         );
       } else if (response.statusCode == 404) {
         throw Exception('404: No object found');
