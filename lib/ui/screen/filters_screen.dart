@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, camel_case_types
+// ignore_for_file: camel_case_types
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -129,8 +129,6 @@ class _FilterScreenState extends State<FilterScreen> {
                   itemsList: SightType.values
                       .map(
                         (e) {
-                          print(e.name.toString());
-                          print(searchInteractor.favoriteCategories.contains(e.name));
                           return _itemGridView(
                           isChecked: searchInteractor.favoriteCategories
                                   .contains(e.name)
@@ -286,25 +284,18 @@ class __itemGridViewState extends State<_itemGridView> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     isChecked = widget.isChecked;
-    print("didChangeDependencies");
   }
 
   @override
   void didUpdateWidget(covariant _itemGridView oldWidget) {
     super.didUpdateWidget(oldWidget);
     isChecked = widget.isChecked;
-    print("didUpdateWidget ${widget.isChecked}");
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {print("onTap");
-        // setState(() {
-        //   isChecked = !isChecked;
-        // });
-        widget.onPressed();
-      },
+      onTap: widget.onPressed,
       child: Column(
         children: [
           Stack(
