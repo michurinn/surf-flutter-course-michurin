@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/domain/place.dart';
 import 'package:places/main.dart';
-import 'package:places/mocks.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
@@ -20,6 +20,10 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
+  final List<Place> favoritePlaces =
+      placeInteractor.getFavoritePlacesSortedByDistance();
+  final List<Place> visitedPlaces = placeInteractor.visitedPlaces;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -31,18 +35,18 @@ class _VisitingScreenState extends State<VisitingScreen> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
-                  children: const [
-                    SizedBox(height: 30),
-                    _FavoriteSightMocks(),
+                  children: [
+                    const SizedBox(height: 30),
+                    _FavoriteSightMocks(favoritePlaces: favoritePlaces),
                   ],
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
-                  children: const [
-                    SizedBox(height: 30),
-                    _FavoriteSightMocks(),
+                  children: [
+                    const SizedBox(height: 30),
+                    _FavoriteSightMocks(favoritePlaces: visitedPlaces),
                   ],
                 ),
               ),
@@ -55,8 +59,9 @@ class _VisitingScreenState extends State<VisitingScreen> {
 class _FavoriteSightMocks extends StatefulWidget {
   const _FavoriteSightMocks({
     Key? key,
+    required this.favoritePlaces,
   }) : super(key: key);
-
+  final List<Place> favoritePlaces;
   @override
   State<_FavoriteSightMocks> createState() => _FavoriteSightMocksState();
 }
@@ -70,7 +75,7 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
               ? const ClampingScrollPhysics()
               : const BouncingScrollPhysics(),
           shrinkWrap: true,
-          itemCount: mocks.length,
+          itemCount: widget.favoritePlaces.length,
           itemBuilder: (context, index) {
             return Stack(
               children: [
@@ -80,7 +85,7 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                     child: Container(
                       alignment: Alignment.centerRight,
                       decoration: BoxDecoration(
-                        color: themeProvider.appTheme.errorColor,
+                        color: themeInteractor.appTheme.errorColor,
                         borderRadius: const BorderRadius.all(
                           Radius.circular(10),
                         ),
@@ -100,7 +105,7 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                               height: 10,
                             ),
                             Text(
-                              "Удалить",
+                              AppStrings.delete,
                               style: AppTypography.small
                                   .copyWith(color: AppColors.white),
                             ),
@@ -111,10 +116,11 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                   ),
                 ),
                 Dismissible(
-                  key: ValueKey<int>(mocks[index].hashCode),
+                  key: ValueKey<int>(widget.favoritePlaces[index].hashCode),
                   direction: DismissDirection.endToStart,
                   onDismissed: (direction) {
-                    mocks.remove(mocks[index]);
+                    placeInteractor
+                        .removeFromFavorites(widget.favoritePlaces[index]);
                     setState(() {});
                   },
                   child: DragTarget(
@@ -122,10 +128,11 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                       ValueKey<String> rawData = data as ValueKey<String>;
 
                       setState(() {
-                        mocks.insert(
-                          mocks.indexOf(mocks[index]),
-                          mocks.removeAt(
-                            mocks.indexWhere(
+                        placeInteractor.favoritePlaces.insert(
+                          placeInteractor.favoritePlaces
+                              .indexOf(placeInteractor.favoritePlaces[index]),
+                          placeInteractor.favoritePlaces.removeAt(
+                            placeInteractor.favoritePlaces.indexWhere(
                               (element) =>
                                   element.name == rawData.value.toString(),
                             ),
@@ -137,21 +144,32 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                       return Column(
                         children: [
                           LongPressDraggable(
-                            data: ValueKey<String>(mocks[index].name),
+                            data: ValueKey<String>(
+                                widget.favoritePlaces[index].name),
                             axis: Axis.vertical,
                             feedback: Opacity(
                               opacity: 0.8,
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: FavoriteSight(
-                                  sight: mocks[index],
+                                  sight: widget.favoritePlaces[index],
                                   isFinished: false,
+                                  onClosePressed: () =>
+                                      placeInteractor.removeFromFavorites(
+                                          widget.favoritePlaces[index]),
                                 ),
                               ),
                             ),
                             child: FavoriteSight(
-                              sight: mocks[index],
+                              sight: widget.favoritePlaces[index],
                               isFinished: false,
+                              onClosePressed: () {
+                                placeInteractor.removeFromFavorites(
+                                      widget.favoritePlaces[index]);
+                                      setState(() {
+                                        
+                                      });
+                              },
                             ),
                           ),
                           const SizedBox(
@@ -184,7 +202,7 @@ class _FavoriteAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Material(
-            color: themeProvider.appTheme.cardColor,
+            color: themeInteractor.appTheme.cardColor,
             borderRadius: const BorderRadius.all(Radius.circular(40.0)),
             child: TabBar(
               splashBorderRadius: const BorderRadius.all(Radius.circular(40.0)),

@@ -4,7 +4,7 @@ import 'package:places/main.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
-import 'package:places/ui/screen/sight_details.dart';
+import 'package:places/ui/dialogs/sight_details_bottom_sheet.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 
 class SightSearchScreen extends StatefulWidget {
@@ -20,7 +20,7 @@ class SightSearchScreen extends StatefulWidget {
 class _SightSearchScreenState extends State<SightSearchScreen> {
   late TextEditingController? controller;
   bool showHistory = true;
-  List<Place>? results;
+  List<Place> results = [];
 
   late final GlobalKey<SearchBarState> _keySearchBar;
 
@@ -77,11 +77,12 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
         },
       );
 
-  _clearHistory() => setState(
-        () {
-          history.clear();
-        },
-      );
+  _clearHistory() {
+    searchInteractor.history.clear();
+    setState(
+      () {},
+    );
+  }
 
   _showHistory() => setState(
         () {
@@ -89,14 +90,14 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
         },
       );
   // Показывает заглушку либо результаты поиска
-  Widget _searchBody(List<Place>? resultsList) {
-    return (resultsList == null || resultsList.isEmpty)
+  Widget _searchBody(List<Place> resultsList) {
+    return (resultsList.isEmpty)
         ? const Padding(
             padding: EdgeInsets.symmetric(vertical: 180.0),
             child: _CantFindIt(),
           )
         : Column(
-            children: results!
+            children: resultsList
                 .expand(
                   (element) => [
                     _ListItem(sight: element),
@@ -106,44 +107,29 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
           );
   }
 
-  _findSight(String str, {bool saveInHistory = true}) {
-    List<Place> res = widget.filteredPlaces
-        .where(
-          (element) => element.name.toUpperCase().contains(
-                str.toUpperCase().trim(),
-              ),
-        ) // Поиск без учёта регистра и пробелов
-        .toList();
+  _findSight(String name, {bool saveInHistory = true}) async {
+    List<Place>? response = await searchInteractor.searchByName(name);
 
     if (saveInHistory) {
-      if (!history.contains(str)) {
-        history.insert(0, str); // Добавляем в начало списка
-      }
+      searchInteractor.addToHistory(name);
     }
     setState(
       () {
-        results = res;
+        results = response;
         showHistory = false;
       },
     );
   }
 
-  _reFindSight(String str) {
+  _reFindSight(String name) async {
     _keySearchBar.currentState!
-        .fillControllerWithValue(str); // Повторный поиск - тоже поиск )
-    List<Place> res = widget.filteredPlaces
-        .where(
-          (element) => element.name.toUpperCase().contains(
-                str.toUpperCase().trim(),
-              ),
-        ) // Поиск без учёта регистра и пробелов
-        .toList();
-    history.remove(str);
-    history.insert(0, str); // Добавляем в начало списка
+        .fillControllerWithValue(name); // Повторный поиск - тоже поиск )
+    List<Place>? response = await searchInteractor.searchByName(name);
+    searchInteractor.addToHistory(name);
 
     setState(
       () {
-        results = res;
+        results = response;
         showHistory = false;
       },
     );
@@ -159,8 +145,7 @@ class _ListItem extends StatelessWidget {
     return InkWell(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
-        Navigator.of(context)
-            .pushNamed(SightDetails.routeName, arguments: sight);
+        showDetailsBottomSheet(context, sight);
       },
       child: Column(
         children: [
@@ -206,8 +191,9 @@ class _ListItem extends StatelessWidget {
                 children: [
                   Text(
                     sight.name,
+                    overflow: TextOverflow.ellipsis,
                     style: AppTypography.formLabel.copyWith(
-                        color: themeProvider
+                        color: themeInteractor
                             .appTheme.bottomNavBarSelectedItemColor),
                   ),
                   const SizedBox(
@@ -244,8 +230,8 @@ class _PreviuousSearchList extends StatefulWidget {
 class __PreviuousSearchListState extends State<_PreviuousSearchList> {
   @override
   Widget build(BuildContext context) {
-    if (history.isEmpty) {
-      return Container();
+    if (searchInteractor.history.isEmpty) {
+      return const SizedBox.shrink();
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,14 +242,14 @@ class __PreviuousSearchListState extends State<_PreviuousSearchList> {
               AppTypography.superSmall.copyWith(color: AppColors.inactiveBlack),
         ),
         Column(
-          children: history
+          children: searchInteractor.history
               .expand(
                 (element) => [
                   HistoryItem(
                     whenSelected: widget.thenHistoryItemSelected,
                     text: element,
                     delete: () {
-                      history.remove(element);
+                      searchInteractor.removeFromHistory(element);
                       setState(
                         () {},
                       );
@@ -283,7 +269,7 @@ class __PreviuousSearchListState extends State<_PreviuousSearchList> {
             },
             child: Text(AppStrings.clearHistore,
                 style: AppTypography.simpleText
-                    .copyWith(color: themeProvider.appTheme.filterButtonColor)))
+                    .copyWith(color: themeInteractor.appTheme.filterButtonColor)))
       ],
     );
   }
@@ -344,8 +330,6 @@ class HistoryItem extends StatelessWidget {
     );
   }
 }
-
-List<String> history = ["WarnerBros studio"]; // Моковые данные для истории
 
 // Заглушка Ничего не найдено
 class _CantFindIt extends StatelessWidget {

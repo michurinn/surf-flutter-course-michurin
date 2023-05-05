@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen>
             icon: const Icon(Icons.list_alt),
             activeIcon: SvgPicture.asset(
               AppAssets.listFilled,
-              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
+              color: themeInteractor.appTheme.bottomNavBarSelectedItemColor,
             ),
             label: 'List of Places',
           ),
@@ -60,18 +60,18 @@ class _HomeScreenState extends State<HomeScreen>
             icon: const Icon(Icons.map_outlined),
             activeIcon: SvgPicture.asset(
               AppAssets.mapFilled,
-              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
+              color: themeInteractor.appTheme.bottomNavBarSelectedItemColor,
             ),
             label: 'Map',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               AppAssets.like,
-              color: themeProvider.appTheme.bottomNavBarUnselectedItemColor,
+              color: themeInteractor.appTheme.bottomNavBarUnselectedItemColor,
             ),
             activeIcon: SvgPicture.asset(
               AppAssets.likeFilled,
-              color: themeProvider.appTheme.bottomNavBarSelectedItemColor,
+              color: themeInteractor.appTheme.bottomNavBarSelectedItemColor,
             ),
             label: 'Favorite places',
           ),

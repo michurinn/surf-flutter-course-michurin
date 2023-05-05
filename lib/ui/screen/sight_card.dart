@@ -6,10 +6,37 @@ import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_typography.dart';
 
 // Карточка для показа места
-class SightCard extends StatelessWidget {
-  const SightCard({Key? key, required this.sight, this.onTap}) : super(key: key);
+class SightCard extends StatefulWidget {
+  const SightCard(
+      {Key? key,
+      required this.sight,
+      this.onTap,
+      this.onHeartTap,
+      required this.isFavorite})
+      : super(key: key);
   final VoidCallback? onTap;
+  final VoidCallback? onHeartTap;
+  final bool isFavorite;
   final Place sight;
+
+  @override
+  State<SightCard> createState() => _SightCardState();
+}
+
+class _SightCardState extends State<SightCard> {
+  late bool isFavorite;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    isFavorite = widget.isFavorite;
+  }
+
+  @override
+  void didUpdateWidget(covariant SightCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    isFavorite = widget.isFavorite;
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -38,15 +65,16 @@ class SightCard extends StatelessWidget {
                         image: DecorationImage(
                             fit: BoxFit.fitWidth,
                             image: Image.network(
-                              sight.urls[0],
+                              //Пока покажем заглушку
+                              'https://www.mdpi.com/humans/humans-02-00017/article_deploy/html/images/humans-02-00017-g002.png',
                               fit: BoxFit.fitWidth,
-                              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                              frameBuilder: (context, child, frame,
+                                  wasSynchronouslyLoaded) {
                                 if (wasSynchronouslyLoaded) return child;
                                 return CircularProgressIndicator(
-                                    strokeWidth: 6.0,
-                                    value: frame == null? 0 : frame.toDouble(),
-                                  );
-
+                                  strokeWidth: 6.0,
+                                  value: frame == null ? 0 : frame.toDouble(),
+                                );
                               },
                               loadingBuilder: (
                                 BuildContext context,
@@ -68,9 +96,17 @@ class SightCard extends StatelessWidget {
                                   ),
                                 );
                               },
+                              errorBuilder: (context, error, stackTrace) {
+                                return Center(
+                                    child: Container(
+                                  width: 100,
+                                  height: 120,
+                                  color: Colors.amber,
+                                ));
+                              },
                             ).image),
                       ),
-                      child: InkWell(onTap: onTap),
+                      child: InkWell(onTap: widget.onTap),
                     ),
                     Positioned(
                       right: 10,
@@ -78,17 +114,22 @@ class SightCard extends StatelessWidget {
                       child: IconButton(
                         iconSize: 20.0,
                         icon: SvgPicture.asset(
-                          AppAssets.heart,
-                          color: themeProvider.appTheme.iconColor,
+                          isFavorite ? AppAssets.likeFilled : AppAssets.like,
+                          color: themeInteractor.appTheme.iconColor,
                         ),
-                        onPressed: () {},
+                        onPressed: () => {
+                          widget.onHeartTap!(),
+                          setState(() {
+                            isFavorite = !isFavorite;
+                          })
+                        },
                       ),
                     ),
                     Positioned(
                       left: 16,
                       top: 16,
                       child: Text(
-                        sight.placeType.toString(),
+                        widget.sight.placeType.toString(),
                         style: AppTypography.smallBoldwhite,
                       ),
                     ),
@@ -97,7 +138,7 @@ class SightCard extends StatelessWidget {
               ),
               Expanded(
                 child: InkWell(
-                  onTap: onTap,
+                  onTap: widget.onTap,
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -105,14 +146,10 @@ class SightCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          sight.name,
+                          widget.sight.name,
                           style: AppTypography.simpleText,
                         ),
                         const SizedBox.shrink(),
-                        Text(
-                          sight.description,
-                          style: AppTypography.small,
-                        ),
                       ],
                     ),
                   ),

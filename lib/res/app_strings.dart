@@ -31,6 +31,7 @@ class AppStrings {
   static const buildRoute = "Построить маршрут";
   static const addToCalendar = "Запланировать";
   static const inFavorite = "В избранное";
+  static const inFavoriteAlready = "В избранном";
 
   static const distance = "Расстояние";
   static const categories = "Категории";
@@ -91,7 +92,7 @@ enum UploadPictureWay {
   final String label;
   final String icon;
 }
-
+//temple, monument, park, theatre, museum, hotel, restaurant, cafe, other
 // Возможные категории
 enum SightType {
   cafe(
@@ -106,7 +107,7 @@ enum SightType {
     AppStrings.park,
     'assets/icons/park.svg',
   ),
-  superPlace(
+  other(
     AppStrings.uniquePlace,
     'assets/icons/unique_place.svg',
   ),

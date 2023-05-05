@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:places/domain/place.dart';
 import 'package:places/main.dart';
-import 'package:places/mocks.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
+import 'package:places/ui/dialogs/sight_details_bottom_sheet.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/sight_card.dart';
@@ -30,9 +30,23 @@ class _SightListScreenState extends State<SightListScreen> {
 
   @override
   void initState() {
-    // По умолчанию
-    places = mocks;
+    places = [];
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    // Покажем результаты с фильтром, если установлен фильтр
+    if (searchInteractor.filteredPlaces.isNotEmpty) {
+      places = searchInteractor.filteredPlaces;
+    } else {
+      await placeInteractor.getPlaces().then((value) {
+        setState(() {
+          places = value;
+        });
+      });
+    }
   }
 
   @override
@@ -51,23 +65,59 @@ class _SightListScreenState extends State<SightListScreen> {
                             Orientation.portrait
                         ? _SightListScreenPersistantHeaderDelegatePortrait(
                             places: places,
-                            repaint: (value) {
-                              setState(() {
-                                places = value;
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(
+                                FilterScreen.routeName,
+                              )
+                                  .then((value) async {
+                                // Покажем результаты с фильтром, если установлен фильтр
+                                if (searchInteractor
+                                    .filteredPlaces.isNotEmpty) {
+                                  places = searchInteractor.filteredPlaces;
+                                  setState(() {
+                                    places = places;
+                                  });
+                                } else {
+                                  await placeInteractor
+                                      .getPlaces()
+                                      .then((value) {
+                                    setState(() {
+                                      places = value;
+                                    });
+                                  });
+                                }
                               });
                             },
                           )
                         : _SightListScreenPersistantHeaderDelegateLandScape(
                             places: places,
-                            repaint: (value) {
-                              setState(() {
-                                places = value;
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(
+                                FilterScreen.routeName,
+                              )
+                                  .then((value) async {
+                                // Покажем результаты с фильтром, если установлен фильтр
+                                if (searchInteractor
+                                    .filteredPlaces.isNotEmpty) {
+                                  places = searchInteractor.filteredPlaces;
+                                  setState(() {
+                                    places = places;
+                                  });
+                                } else {
+                                  await placeInteractor
+                                      .getPlaces()
+                                      .then((value) {
+                                    setState(() {
+                                      places = value;
+                                    });
+                                  });
+                                }
                               });
                             },
                             onNewPlaceCreated: () {
-                              setState(() {
-                                //Покажем обновлённый список
-                              });
+                              setState(() {}); //Покажем обновлённый список
                             },
                           ),
                     pinned: true,
@@ -100,24 +150,28 @@ class _SightListScreenState extends State<SightListScreen> {
                       MediaQuery.of(context).orientation == Orientation.portrait
                           ? true
                           : false,
-                  onNewPlaceCreated: (() {
+                  onNewPlaceCreated: ((Place newPlace) async {
+                    await placeInteractor.addNewPlace(newPlace);
                     setState(
                       // Покажем обновлённый список
                       () {},
                     );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                        behavior: SnackBarBehavior.floating,
-                        duration: const Duration(milliseconds: 500),
-                        content: const Text(
-                          AppStrings.newPlaceAdded,
-                          style: AppTypography.simpleText,
-                          textAlign: TextAlign.center,
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                          duration: const Duration(milliseconds: 500),
+                          content: const Text(
+                            AppStrings.newPlaceAdded,
+                            style: AppTypography.simpleText,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   }),
                 ),
               ),
@@ -134,12 +188,12 @@ class _AppBarSearchWidget extends StatelessWidget
   const _AppBarSearchWidget(
       {Key? key,
       required this.places,
-      required this.repaint,
+      required this.onPressed,
       this.tiny = false})
       : super(key: key);
 
-  final List<Place> places;
-  final Function(List<Place> value) repaint;
+  final List<Place>? places;
+  final VoidCallback onPressed;
   final bool tiny;
   @override
   Widget build(BuildContext context) {
@@ -172,19 +226,8 @@ class _AppBarSearchWidget extends StatelessWidget
               padding: const EdgeInsets.only(right: 10),
               child: IconButton(
                 icon: Icon(Icons.tune_rounded,
-                    color: themeProvider.appTheme.filterButtonColor),
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(
-                    FilterScreen.routeName,
-                  )
-                      .then((value) {
-                    //Теперь покажем только отфильтрованные места
-                    if (value is List<Place>) {
-                      repaint(value);
-                    }
-                  });
-                },
+                    color: themeInteractor.appTheme.filterButtonColor),
+                onPressed: onPressed,
               ),
             )
           ],
@@ -221,6 +264,12 @@ class _ListOfPlacesHorizontalState extends State<ListOfPlacesHorizontal> {
   }
 
   @override
+  void didUpdateWidget(covariant ListOfPlacesHorizontal oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    places = widget.places;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GridView.count(
       controller: widget.scrollController,
@@ -253,34 +302,24 @@ class _ListOfPlacesHorizontalState extends State<ListOfPlacesHorizontal> {
                     feedback: Opacity(
                       opacity: 0.8,
                       child: SizedBox(
-                          width: 400 * 0.8,
-                          height: 300 * 0.8,
-                          child: SightCard(sight: element)),
-                    ),
-                    child: SightCard(
-                      sight: element,
-                      onTap: () => showModalBottomSheet(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
-                        ),
-                        isScrollControlled: true,
-                        useSafeArea: true,
-                        context: context,
-                        builder: (context) => DraggableScrollableSheet(
-                          expand: false,
-                          snap: true,
-                          maxChildSize: 0.95,
-                          minChildSize: 0.9,
-                          initialChildSize: 0.95,
-                          builder: (context, scrollController) => SightDetails(
-                            sight: element,
-                            scrollController: scrollController,
-                          ),
+                        width: 400 * 0.8,
+                        height: 300 * 0.8,
+                        child: SightCard(
+                          sight: element,
+                          isFavorite:
+                              placeInteractor.favoritePlaces.contains(element),
                         ),
                       ),
+                    ),
+                    child: SightCard(
+                      onHeartTap: () =>
+                          placeInteractor.favoritePlaces.contains(element)
+                              ? placeInteractor.removeFromFavorites(element)
+                              : placeInteractor.addToFavorites(element),
+                      isFavorite:
+                          placeInteractor.favoritePlaces.contains(element),
+                      sight: element,
+                      onTap: () => showDetailsBottomSheet(context, element),
                     ),
                   );
                 },
@@ -300,7 +339,7 @@ class ListOfPlacesVertical extends StatefulWidget {
     required this.scrollController,
   }) : super(key: key);
 
-  final List<Place> places;
+  final List<Place>? places;
   final ScrollController scrollController;
   @override
   State<ListOfPlacesVertical> createState() => _ListOfPlacesVerticalState();
@@ -312,7 +351,13 @@ class _ListOfPlacesVerticalState extends State<ListOfPlacesVertical> {
   @override
   void initState() {
     super.initState();
-    places = widget.places;
+    places = widget.places ?? [];
+  }
+
+  @override
+  void didUpdateWidget(covariant ListOfPlacesVertical oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    places = widget.places ?? [];
   }
 
   @override
@@ -349,33 +394,43 @@ class _ListOfPlacesVerticalState extends State<ListOfPlacesVertical> {
                     opacity: 0.8,
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,
-                      child: SightCard(sight: places[index]),
+                      child: SightCard(
+                        sight: places[index],
+                        isFavorite: placeInteractor.favoritePlaces
+                            .contains(places[index]),
+                      ),
                     ),
                   ),
                   child: SightCard(
                     sight: places[index],
                     onTap: () => showModalBottomSheet(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
                         ),
-                        isScrollControlled: true,
-                        useSafeArea: true,
-                        context: context,
-                        builder: (context) => DraggableScrollableSheet(
-                              expand: false,
-                              snap: true,
-                              maxChildSize: 0.95,
-                              minChildSize: 0.9,
-                              initialChildSize: 0.95,
-                              builder: (context, scrollController) =>
-                                  SightDetails(
-                                sight: places[index],
-                                scrollController: scrollController,
-                              ),
-                            )),
+                      ),
+                      isScrollControlled: true,
+                      useSafeArea: true,
+                      context: context,
+                      builder: (context) => DraggableScrollableSheet(
+                        expand: false,
+                        snap: true,
+                        maxChildSize: 0.95,
+                        minChildSize: 0.9,
+                        initialChildSize: 0.95,
+                        builder: (context, scrollController) => SightDetails(
+                          sight: places[index],
+                          scrollController: scrollController,
+                        ),
+                      ),
+                    ),
+                    isFavorite:
+                        placeInteractor.favoritePlaces.contains(places[index]),
+                    onHeartTap: () =>
+                        placeInteractor.favoritePlaces.contains(places[index])
+                            ? placeInteractor.removeFromFavorites(places[index])
+                            : placeInteractor.addToFavorites(places[index]),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -390,7 +445,7 @@ class _ListOfPlacesVerticalState extends State<ListOfPlacesVertical> {
 
 // Кнопка Добавить новое место
 class _AddButton extends StatelessWidget {
-  final VoidCallback onNewPlaceCreated;
+  final Function(Place t) onNewPlaceCreated;
   //Для LandScape orientation вид изменится
   final bool portraitOrientation;
   const _AddButton(
@@ -401,8 +456,8 @@ class _AddButton extends StatelessWidget {
       onPressed: () {
         Navigator.of(context).pushNamed(AddSightScreen.routeName).then(
           (value) {
-            if (value == true) {
-              onNewPlaceCreated();
+            if (value is Place) {
+              onNewPlaceCreated(value);
             }
           },
         );
@@ -423,7 +478,7 @@ class _AddButton extends StatelessWidget {
             : const BoxConstraints(maxWidth: 50.0, minHeight: 50.0),
         decoration: BoxDecoration(
           gradient:
-              LinearGradient(colors: themeProvider.appTheme.newPlaceButton),
+              LinearGradient(colors: themeInteractor.appTheme.newPlaceButton),
           borderRadius: const BorderRadius.all(
             Radius.circular(24.0),
           ),
@@ -432,7 +487,7 @@ class _AddButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.plus_one,
-                size: 20, color: themeProvider.appTheme.addFormActiveLabel),
+                size: 20, color: themeInteractor.appTheme.addFormActiveLabel),
             if (portraitOrientation)
               const SizedBox(
                 width: 10,
@@ -441,7 +496,7 @@ class _AddButton extends StatelessWidget {
               Text(
                 AppStrings.create.toUpperCase(),
                 style: AppTypography.button
-                    .copyWith(color: themeProvider.appTheme.addFormActiveLabel),
+                    .copyWith(color: themeInteractor.appTheme.addFormActiveLabel),
               )
           ],
         ),
@@ -472,15 +527,15 @@ class OverscrollGlowAbsorver extends StatelessWidget {
 class _SightListScreenPersistantHeaderDelegatePortrait
     extends SliverPersistentHeaderDelegate {
   const _SightListScreenPersistantHeaderDelegatePortrait(
-      {required this.places, required this.repaint});
-  final List<Place> places;
-  final Function(List<Place> value) repaint;
+      {required this.places, required this.onPressed});
+  final List<Place>? places;
+  final VoidCallback onPressed;
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: themeProvider.appTheme.backgroundColor,
+      color: themeInteractor.appTheme.backgroundColor,
       child: Column(
         crossAxisAlignment: shrinkOffset < 100
             ? CrossAxisAlignment.start
@@ -490,7 +545,7 @@ class _SightListScreenPersistantHeaderDelegatePortrait
               ? Text(
                   AppStrings.listOfInterestingPlases,
                   style: AppTypography.largeTitle
-                      .copyWith(color: themeProvider.appTheme.appTitle),
+                      .copyWith(color: themeInteractor.appTheme.appTitle),
                 )
               : Padding(
                   padding: const EdgeInsets.symmetric(vertical: 28.0),
@@ -498,15 +553,13 @@ class _SightListScreenPersistantHeaderDelegatePortrait
                     AppStrings.listOfInterestingPlases
                         .replaceFirst(RegExp(r'\n'), ' '),
                     style: AppTypography.subtitle
-                        .copyWith(color: themeProvider.appTheme.appTitle),
+                        .copyWith(color: themeInteractor.appTheme.appTitle),
                   ),
                 ),
           if (shrinkOffset == 0)
             _AppBarSearchWidget(
               places: places,
-              repaint: (value) {
-                repaint(value);
-              },
+              onPressed: onPressed,
             ),
         ],
       ),
@@ -530,16 +583,16 @@ class _SightListScreenPersistantHeaderDelegateLandScape
     extends SliverPersistentHeaderDelegate {
   const _SightListScreenPersistantHeaderDelegateLandScape(
       {required this.places,
-      required this.repaint,
+      required this.onPressed,
       required this.onNewPlaceCreated});
-  final List<Place> places;
-  final Function(List<Place> value) repaint;
+  final List<Place>? places;
+  final VoidCallback onPressed;
   final VoidCallback onNewPlaceCreated;
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: themeProvider.appTheme.backgroundColor,
+      color: themeInteractor.appTheme.backgroundColor,
       child: Stack(
         children: [
           Column(
@@ -551,16 +604,14 @@ class _SightListScreenPersistantHeaderDelegateLandScape
                   AppStrings.listOfInterestingPlases
                       .replaceFirst(RegExp(r'\n'), ' '),
                   style: AppTypography.subtitle
-                      .copyWith(color: themeProvider.appTheme.appTitle),
+                      .copyWith(color: themeInteractor.appTheme.appTitle),
                 ),
               ),
               if (shrinkOffset == 0)
                 _AppBarSearchWidget(
                   tiny: true,
                   places: places,
-                  repaint: (value) {
-                    repaint(value);
-                  },
+                  onPressed: onPressed,
                 ),
             ],
           ),

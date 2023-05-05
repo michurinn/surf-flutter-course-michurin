@@ -1,6 +1,7 @@
-// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member, avoid_print
 
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -132,259 +133,271 @@ class _AddSightScreenState extends State<AddSightScreen> {
             child: Text(
               AppStrings.cancel,
               style: AppTypography.simpleText
-                  .copyWith(color: themeProvider.appTheme.appLeading),
+                  .copyWith(color: themeInteractor.appTheme.appLeading),
             ),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _TopImagesList(
-                (() => _AddPictureShowDialog(context)),
-              ),
-              Form(
-                key: _keyForm,
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 24.0),
-                        child: Text(
-                          AppStrings.category.toUpperCase(),
-                          style: AppTypography.superSmall.copyWith(
-                              color:
-                                  themeProvider.appTheme.addFormInactiveLabel),
-                        ),
-                      ),
-                      _TypeFormField(
-                          validate: _validate,
-                          controller: controller,
-                          onChanged: (string) {
-                            _checkEmptyFields();
-                          },
-                          focusNode: fn1),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 24, bottom: 12),
-                        child: Text(
-                          AppStrings.name.toUpperCase(),
-                          style: AppTypography.superSmall.copyWith(
-                              color:
-                                  themeProvider.appTheme.addFormInactiveLabel),
-                        ),
-                      ),
-                      TextFormField(
-                        onTap: () => FocusScope.of(context).requestFocus(fn1),
-                        focusNode: fn1,
-                        controller: nameController,
-                        validator: _validate,
-                        onEditingComplete: () {
-                          _checkEmptyFields();
-                          fn1.unfocus();
-                          fn2.requestFocus();
-                        },
-                        textCapitalization: TextCapitalization.sentences,
-                        style: AppTypography.formLabel.copyWith(
-                            color: themeProvider.appTheme.cursorColor),
-                        cursorWidth: 1,
-                        cursorHeight: 24,
-                        cursorColor: themeProvider.appTheme.cursorColor,
-                        decoration: _inputDecoration(
-                            label: AppStrings.name,
-                            clear: () => nameController?.clear(),
-                            showSuffix: _nameFieldShowSuffix),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 24),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 150,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 12),
-                                    child: Text(
-                                      AppStrings.width.toUpperCase(),
-                                      style: AppTypography.superSmall.copyWith(
-                                          color: themeProvider
-                                              .appTheme.addFormInactiveLabel),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    fit: FlexFit.loose,
-                                    child: TextFormField(
-                                      textAlignVertical: TextAlignVertical.top,
-                                      focusNode: fn2,
-                                      controller: widthController,
-                                      cursorWidth: 1,
-                                      cursorHeight: 24,
-                                      cursorColor:
-                                          themeProvider.appTheme.cursorColor,
-                                      onEditingComplete: () {
-                                        _checkEmptyFields();
-                                        fn2.unfocus();
-                                        fn3.requestFocus();
-                                      },
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
-                                      validator: _validateCoordinates,
-                                      keyboardType: TextInputType.number,
-                                      decoration: _inputDecoration(
-                                        label: AppStrings.width,
-                                        clear: () => widthController?.clear(),
-                                        showSuffix: _widthFieldShowSuffix,
-                                      ),
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                          RegExp('[0-9.]'),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              width: 150,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(bottom: 12),
-                                    child: Text(
-                                      AppStrings.height.toUpperCase(),
-                                      style: AppTypography.superSmall.copyWith(
-                                          color: themeProvider
-                                              .appTheme.addFormInactiveLabel),
-                                    ),
-                                  ),
-                                  Flexible(
-                                    fit: FlexFit.loose,
-                                    child: TextFormField(
-                                      focusNode: fn3,
-                                      controller: heightController,
-                                      cursorWidth: 1,
-                                      cursorHeight: 24,
-                                      cursorColor:
-                                          themeProvider.appTheme.cursorColor,
-                                      onEditingComplete: () {
-                                        _checkEmptyFields();
-                                        fn3.unfocus();
-                                        fn4.requestFocus();
-                                      },
-                                      autovalidateMode:
-                                          AutovalidateMode.onUserInteraction,
-                                      validator: _validateCoordinates,
-                                      keyboardType: TextInputType.number,
-                                      decoration: _inputDecoration(
-                                        label: AppStrings.height,
-                                        clear: () => heightController?.clear(),
-                                        showSuffix: _heightFieldShowSuffix,
-                                      ),
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp('[0-9.]')),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 15.0),
-                        child: TextButton(
-                          onPressed: () {},
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _TopImagesList(
+                  (() => _AddPictureShowDialog(context)),
+                ),
+                Form(
+                  key: _keyForm,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 24.0),
                           child: Text(
-                            AppStrings.putOnMap,
-                            style: AppTypography.simpleText.copyWith(
-                                color: themeProvider.appTheme.clearButtonColor),
+                            AppStrings.category.toUpperCase(),
+                            style: AppTypography.superSmall.copyWith(
+                                color: themeProvider
+                                    .appTheme.addFormInactiveLabel),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 37.0),
-                        child: Text(
-                          AppStrings.description.toUpperCase(),
-                          style: AppTypography.superSmall.copyWith(
-                              color:
-                                  themeProvider.appTheme.addFormInactiveLabel),
+                        _TypeFormField(
+                            validate: _validate,
+                            controller: controller,
+                            onChanged: (string) {
+                              _checkEmptyFields();
+                            },
+                            focusNode: fn1),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 24, bottom: 12),
+                          child: Text(
+                            AppStrings.name.toUpperCase(),
+                            style: AppTypography.superSmall.copyWith(
+                                color: themeProvider
+                                    .appTheme.addFormInactiveLabel),
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 12.0),
-                        child: TextFormField(
-                          focusNode: fn4,
+                        TextFormField(
+                          onTap: () => FocusScope.of(context).requestFocus(fn1),
+                          focusNode: fn1,
+                          controller: nameController,
                           validator: _validate,
-                          controller: descriptionController,
                           onEditingComplete: () {
                             _checkEmptyFields();
-                            fn4.unfocus();
+                            fn1.unfocus();
+                            fn2.requestFocus();
                           },
-                          keyboardType: TextInputType.text,
                           textCapitalization: TextCapitalization.sentences,
                           style: AppTypography.formLabel.copyWith(
-                              color: themeProvider.appTheme.cursorColor),
+                              color: themeInteractor.appTheme.cursorColor),
                           cursorWidth: 1,
                           cursorHeight: 24,
-                          cursorColor: themeProvider.appTheme.cursorColor,
+                          cursorColor: themeInteractor.appTheme.cursorColor,
                           minLines: 3,
                           maxLines: 8,
                           textAlignVertical: TextAlignVertical.top,
                           decoration: _inputDecoration(
-                            label: AppStrings.inputText,
-                            clear: (() => descriptionController?.clear()),
-                            showSuffix: _descriptionFieldShowSuffix,
+                              label: AppStrings.name,
+                              clear: () => nameController?.clear(),
+                              showSuffix: _nameFieldShowSuffix),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 24),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: 150,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 12),
+                                      child: Text(
+                                        AppStrings.width.toUpperCase(),
+                                        style: AppTypography.superSmall
+                                            .copyWith(
+                                                color: themeProvider.appTheme
+                                                    .addFormInactiveLabel),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      fit: FlexFit.loose,
+                                      child: TextFormField(
+                                        textAlignVertical:
+                                            TextAlignVertical.top,
+                                        focusNode: fn2,
+                                        controller: widthController,
+                                        cursorWidth: 1,
+                                        cursorHeight: 24,
+                                        cursorColor:
+                                            themeProvider.appTheme.cursorColor,
+                                        onEditingComplete: () {
+                                          _checkEmptyFields();
+                                          fn2.unfocus();
+                                          fn3.requestFocus();
+                                        },
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
+                                        validator: _validateCoordinates,
+                                        keyboardType: TextInputType.number,
+                                        decoration: _inputDecoration(
+                                          label: AppStrings.width,
+                                          clear: () => widthController?.clear(),
+                                          showSuffix: _widthFieldShowSuffix,
+                                        ),
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp('[0-9.]'),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: 150,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 12),
+                                      child: Text(
+                                        AppStrings.height.toUpperCase(),
+                                        style: AppTypography.superSmall
+                                            .copyWith(
+                                                color: themeProvider.appTheme
+                                                    .addFormInactiveLabel),
+                                      ),
+                                    ),
+                                    Flexible(
+                                      fit: FlexFit.loose,
+                                      child: TextFormField(
+                                        focusNode: fn3,
+                                        controller: heightController,
+                                        cursorWidth: 1,
+                                        cursorHeight: 24,
+                                        cursorColor:
+                                            themeProvider.appTheme.cursorColor,
+                                        onEditingComplete: () {
+                                          _checkEmptyFields();
+                                          fn3.unfocus();
+                                          fn4.requestFocus();
+                                        },
+                                        autovalidateMode:
+                                            AutovalidateMode.onUserInteraction,
+                                        validator: _validateCoordinates,
+                                        keyboardType: TextInputType.number,
+                                        decoration: _inputDecoration(
+                                          label: AppStrings.height,
+                                          clear: () =>
+                                              heightController?.clear(),
+                                          showSuffix: _heightFieldShowSuffix,
+                                        ),
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp('[0-9.]')),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              AppStrings.putOnMap,
+                              style: AppTypography.simpleText.copyWith(
+                                  color:
+                                      themeProvider.appTheme.clearButtonColor),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 37.0),
+                          child: Text(
+                            AppStrings.description.toUpperCase(),
+                            style: AppTypography.superSmall.copyWith(
+                                color: themeProvider
+                                    .appTheme.addFormInactiveLabel),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12.0),
+                          child: TextFormField(
+                            focusNode: fn4,
+                            validator: _validate,
+                            controller: descriptionController,
+                            onEditingComplete: () {
+                              _checkEmptyFields();
+                              fn4.unfocus();
+                            },
+                            keyboardType: TextInputType.text,
+                            textCapitalization: TextCapitalization.sentences,
+                            style: AppTypography.formLabel.copyWith(
+                                color: themeProvider.appTheme.cursorColor),
+                            cursorWidth: 1,
+                            cursorHeight: 24,
+                            cursorColor: themeProvider.appTheme.cursorColor,
+                            minLines: 3,
+                            maxLines: 8,
+                            textAlignVertical: TextAlignVertical.top,
+                            decoration: _inputDecoration(
+                              label: AppStrings.inputText,
+                              clear: (() => descriptionController?.clear()),
+                              showSuffix: _descriptionFieldShowSuffix,
+                            ),
+                          ),
+                        ),
+                      ]),
+                ),
+                SizedBox(
+                  height: heightVisible > 0 ? 0 : height / 6,
+                ), // Когда показана вирутальная клавиатура
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: OutlinedButton(
+                    onPressed: _saveButtonOnTap,
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(
+                          width: 0.0, color: Colors.transparent),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(12),
+                        ),
                       ),
-                    ]),
-              ),
-              SizedBox(
-                height: heightVisible > 0 ? 0 : height / 6,
-              ), // Когда показана вирутальная клавиатура
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: OutlinedButton(
-                  onPressed: _saveButtonOnTap,
-                  style: OutlinedButton.styleFrom(
-                    side:
-                        const BorderSide(width: 0.0, color: Colors.transparent),
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(12),
-                      ),
+                      backgroundColor: !_isButtonEnabled
+                          ? themeProvider.appTheme.cardColor
+                          : themeProvider.appTheme.routeButtonColor,
+                      minimumSize: const Size(328, 48),
+                      alignment: Alignment.center,
                     ),
-                    backgroundColor: !_isButtonEnabled
-                        ? themeProvider.appTheme.cardColor
-                        : themeProvider.appTheme.routeButtonColor,
-                    minimumSize: const Size(328, 48),
-                    alignment: Alignment.center,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        AppStrings.create.toUpperCase(),
-                        style: AppTypography.button.copyWith(
-                            color: !_isButtonEnabled
-                                ? themeProvider.appTheme.addFormInactiveLabel
-                                : themeProvider.appTheme.addFormActiveLabel),
-                      )
-                    ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          AppStrings.create.toUpperCase(),
+                          style: AppTypography.button.copyWith(
+                              color: !_isButtonEnabled
+                                  ? themeProvider.appTheme.addFormInactiveLabel
+                                  : themeProvider.appTheme.addFormActiveLabel),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -407,9 +420,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
               padding: const EdgeInsets.all(0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: themeProvider.appTheme.backgroundColor,
+                  color: themeInteractor.appTheme.backgroundColor,
                   border:
-                      Border.all(color: themeProvider.appTheme.backgroundColor),
+                      Border.all(color: themeInteractor.appTheme.backgroundColor),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(12),
                     topRight: Radius.circular(12),
@@ -449,9 +462,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
               padding: const EdgeInsets.all(0),
               child: Container(
                 decoration: BoxDecoration(
-                    color: themeProvider.appTheme.backgroundColor,
+                    color: themeInteractor.appTheme.backgroundColor,
                     border: Border.all(
-                        color: themeProvider.appTheme.backgroundColor)),
+                        color: themeInteractor.appTheme.backgroundColor)),
                 width: MediaQuery.of(context).size.width,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 19.0),
@@ -485,9 +498,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
               padding: const EdgeInsets.all(0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: themeProvider.appTheme.backgroundColor,
+                  color: themeInteractor.appTheme.backgroundColor,
                   border:
-                      Border.all(color: themeProvider.appTheme.backgroundColor),
+                      Border.all(color: themeInteractor.appTheme.backgroundColor),
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(12),
                     bottomRight: Radius.circular(12),
@@ -535,7 +548,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           Radius.circular(12),
                         ),
                       ),
-                      backgroundColor: themeProvider.appTheme.cardColor,
+                      backgroundColor: themeInteractor.appTheme.cardColor,
                       minimumSize: const Size.fromHeight(48),
                       alignment: Alignment.center,
                       fixedSize:
@@ -546,7 +559,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                       Text(
                         AppStrings.cancel.toUpperCase(),
                         style: AppTypography.button.copyWith(
-                            color: themeProvider.appTheme.routeButtonColor),
+                            color: themeInteractor.appTheme.routeButtonColor),
                       )
                     ],
                   ),
@@ -562,18 +575,17 @@ class _AddSightScreenState extends State<AddSightScreen> {
     } else {
       if (_keyForm.currentState!.validate()) {
         Place newItem = Place(
-          id: 4,
+          id: Random().nextInt(666), //Сейчас задайм случайный id
           name: nameController!.text,
           description: descriptionController!.text,
-          urls:
-              const ['https://content.foto.my.mail.ru/mail/nordprod7/boxitogorsk/h-7455.jpg'],
+          urls: const [
+            'https://content.foto.my.mail.ru/mail/nordprod7/boxitogorsk/h-7455.jpg' //Сейчас нет возможности выбрать фото
+          ],
           lat: double.parse(widthController!.text),
           lng: double.parse(heightController!.text),
           placeType: 'cafe',
         );
-        mocks.contains(newItem) ? null : mocks.add(newItem);
-
-        Navigator.of(context).pop(true);
+        Navigator.of(context).pop(newItem);
       }
     }
   }
@@ -684,7 +696,7 @@ InputDecoration _inputDecoration({
         ? InkWell(
             child: Icon(
               Icons.cancel,
-              color: themeProvider.appTheme.badgeColors[0],
+              color: themeInteractor.appTheme.badgeColors[0],
               size: 18,
             ),
             onTap: () {
@@ -718,17 +730,17 @@ InputDecoration _inputDecoration({
         Radius.circular(8),
       ),
       borderSide:
-          BorderSide(width: 2, color: themeProvider.appTheme.addFormBorder),
+          BorderSide(width: 2, color: themeInteractor.appTheme.addFormBorder),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: const BorderRadius.all(
         Radius.circular(8),
       ),
-      borderSide: BorderSide(color: themeProvider.appTheme.addFormBorder),
+      borderSide: BorderSide(color: themeInteractor.appTheme.addFormBorder),
     ),
     labelText: label,
     labelStyle: AppTypography.formLabel
-        .copyWith(color: themeProvider.appTheme.addFormInactiveLabel),
+        .copyWith(color: themeInteractor.appTheme.addFormInactiveLabel),
   );
 }
 
@@ -769,7 +781,7 @@ class _TypeFormField extends StatelessWidget {
         textInputAction: TextInputAction.none,
         textCapitalization: TextCapitalization.sentences,
         style: AppTypography.formLabel
-            .copyWith(color: themeProvider.appTheme.cursorColor),
+            .copyWith(color: themeInteractor.appTheme.cursorColor),
         showCursor: false,
         decoration: InputDecoration(
           errorBorder: OutlineInputBorder(
@@ -784,7 +796,7 @@ class _TypeFormField extends StatelessWidget {
           floatingLabelBehavior: FloatingLabelBehavior.never,
           suffixIcon: Icon(
             Icons.arrow_forward_ios_sharp,
-            color: themeProvider.appTheme.cursorColor,
+            color: themeInteractor.appTheme.cursorColor,
           ),
           isDense: true,
           border: const UnderlineInputBorder(),
@@ -844,20 +856,20 @@ Widget _addPictureButton(VoidCallback setStateInParent) => OutlinedButton(
       style: OutlinedButton.styleFrom(
         side: BorderSide(
             width: 2.0,
-            color: themeProvider.appTheme.clearButtonColor.withOpacity(0.48)),
+            color: themeInteractor.appTheme.clearButtonColor.withOpacity(0.48)),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(12),
           ),
         ),
-        backgroundColor: themeProvider.appTheme.backgroundColor,
+        backgroundColor: themeInteractor.appTheme.backgroundColor,
         fixedSize: const Size(72, 72),
         alignment: Alignment.center,
       ),
       child: Icon(
         Icons.add,
         size: 33,
-        color: themeProvider.appTheme.clearButtonColor,
+        color: themeInteractor.appTheme.clearButtonColor,
       ),
     );
 
@@ -905,7 +917,7 @@ class _PictureQuadCard extends StatelessWidget {
               },
               icon: Icon(
                 Icons.cancel,
-                color: themeProvider.appTheme.badgeColors[1],
+                color: themeInteractor.appTheme.badgeColors[1],
                 size: 22,
               ),
             ),
