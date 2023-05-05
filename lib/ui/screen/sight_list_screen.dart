@@ -36,13 +36,17 @@ class _SightListScreenState extends State<SightListScreen> {
 
   @override
   void didChangeDependencies() async {
-    await placeInteractor.getPlaces().then((value) {
-      setState(() {
-        places = value;
-      });
-    });
-
     super.didChangeDependencies();
+    // Покажем результаты с фильтром, если установлен фильтр
+    if (searchInteractor.filteredPlaces.isNotEmpty) {
+      places = searchInteractor.filteredPlaces;
+    } else {
+      await placeInteractor.getPlaces().then((value) {
+        setState(() {
+          places = value;
+        });
+      });
+    }
   }
 
   @override
@@ -61,23 +65,59 @@ class _SightListScreenState extends State<SightListScreen> {
                             Orientation.portrait
                         ? _SightListScreenPersistantHeaderDelegatePortrait(
                             places: places,
-                            repaint: (value) {
-                              setState(() {
-                                places = value;
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(
+                                FilterScreen.routeName,
+                              )
+                                  .then((value) async {
+                                // Покажем результаты с фильтром, если установлен фильтр
+                                if (searchInteractor
+                                    .filteredPlaces.isNotEmpty) {
+                                  places = searchInteractor.filteredPlaces;
+                                  setState(() {
+                                    places = places;
+                                  });
+                                } else {
+                                  await placeInteractor
+                                      .getPlaces()
+                                      .then((value) {
+                                    setState(() {
+                                      places = value;
+                                    });
+                                  });
+                                }
                               });
                             },
                           )
                         : _SightListScreenPersistantHeaderDelegateLandScape(
                             places: places,
-                            repaint: (value) {
-                              setState(() {
-                                places = value;
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(
+                                FilterScreen.routeName,
+                              )
+                                  .then((value) async {
+                                // Покажем результаты с фильтром, если установлен фильтр
+                                if (searchInteractor
+                                    .filteredPlaces.isNotEmpty) {
+                                  places = searchInteractor.filteredPlaces;
+                                  setState(() {
+                                    places = places;
+                                  });
+                                } else {
+                                  await placeInteractor
+                                      .getPlaces()
+                                      .then((value) {
+                                    setState(() {
+                                      places = value;
+                                    });
+                                  });
+                                }
                               });
                             },
                             onNewPlaceCreated: () {
-                              setState(() {
-                                //Покажем обновлённый список
-                              });
+                              setState(() {}); //Покажем обновлённый список
                             },
                           ),
                     pinned: true,
@@ -116,21 +156,21 @@ class _SightListScreenState extends State<SightListScreen> {
                       // Покажем обновлённый список
                       () {},
                     );
-                    if(mounted) {
+                    if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
+                        SnackBar(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                          duration: const Duration(milliseconds: 500),
+                          content: const Text(
+                            AppStrings.newPlaceAdded,
+                            style: AppTypography.simpleText,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        behavior: SnackBarBehavior.floating,
-                        duration: const Duration(milliseconds: 500),
-                        content: const Text(
-                          AppStrings.newPlaceAdded,
-                          style: AppTypography.simpleText,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    );
+                      );
                     }
                   }),
                 ),
@@ -148,12 +188,12 @@ class _AppBarSearchWidget extends StatelessWidget
   const _AppBarSearchWidget(
       {Key? key,
       required this.places,
-      required this.repaint,
+      required this.onPressed,
       this.tiny = false})
       : super(key: key);
 
   final List<Place>? places;
-  final Function(List<Place> value) repaint;
+  final VoidCallback onPressed;
   final bool tiny;
   @override
   Widget build(BuildContext context) {
@@ -187,18 +227,7 @@ class _AppBarSearchWidget extends StatelessWidget
               child: IconButton(
                 icon: Icon(Icons.tune_rounded,
                     color: themeProvider.appTheme.filterButtonColor),
-                onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(
-                    FilterScreen.routeName,
-                  )
-                      .then((value) {
-                    //Теперь покажем только отфильтрованные места
-                    if (value is List<Place>) {
-                      repaint(value);
-                    }
-                  });
-                },
+                onPressed: onPressed,
               ),
             )
           ],
@@ -498,9 +527,9 @@ class OverscrollGlowAbsorver extends StatelessWidget {
 class _SightListScreenPersistantHeaderDelegatePortrait
     extends SliverPersistentHeaderDelegate {
   const _SightListScreenPersistantHeaderDelegatePortrait(
-      {required this.places, required this.repaint});
+      {required this.places, required this.onPressed});
   final List<Place>? places;
-  final Function(List<Place> value) repaint;
+  final VoidCallback onPressed;
 
   @override
   Widget build(
@@ -530,9 +559,7 @@ class _SightListScreenPersistantHeaderDelegatePortrait
           if (shrinkOffset == 0)
             _AppBarSearchWidget(
               places: places,
-              repaint: (value) {
-                repaint(value);
-              },
+              onPressed: onPressed,
             ),
         ],
       ),
@@ -556,10 +583,10 @@ class _SightListScreenPersistantHeaderDelegateLandScape
     extends SliverPersistentHeaderDelegate {
   const _SightListScreenPersistantHeaderDelegateLandScape(
       {required this.places,
-      required this.repaint,
+      required this.onPressed,
       required this.onNewPlaceCreated});
   final List<Place>? places;
-  final Function(List<Place> value) repaint;
+  final VoidCallback onPressed;
   final VoidCallback onNewPlaceCreated;
   @override
   Widget build(
@@ -584,9 +611,7 @@ class _SightListScreenPersistantHeaderDelegateLandScape
                 _AppBarSearchWidget(
                   tiny: true,
                   places: places,
-                  repaint: (value) {
-                    repaint(value);
-                  },
+                  onPressed: onPressed,
                 ),
             ],
           ),
