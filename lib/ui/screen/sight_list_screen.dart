@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/domain/place.dart';
 import 'package:places/main.dart';
 import 'package:places/mocks.dart';
 import 'package:places/res/app_strings.dart';
@@ -25,7 +25,7 @@ class SightListScreen extends StatefulWidget {
 class _SightListScreenState extends State<SightListScreen> {
   // Храним здесь список, который будем отображать с учётом фильтров и поиска,
   // изменения из екранов поиска передаём через callback .then(...) навигатора
-  late List<Sight> places;
+  late List<Place> places;
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -138,8 +138,8 @@ class _AppBarSearchWidget extends StatelessWidget
       this.tiny = false})
       : super(key: key);
 
-  final List<Sight> places;
-  final Function(List<Sight> value) repaint;
+  final List<Place> places;
+  final Function(List<Place> value) repaint;
   final bool tiny;
   @override
   Widget build(BuildContext context) {
@@ -180,7 +180,7 @@ class _AppBarSearchWidget extends StatelessWidget
                   )
                       .then((value) {
                     //Теперь покажем только отфильтрованные места
-                    if (value is List<Sight>) {
+                    if (value is List<Place>) {
                       repaint(value);
                     }
                   });
@@ -205,14 +205,14 @@ class ListOfPlacesHorizontal extends StatefulWidget {
     required this.scrollController,
   }) : super(key: key);
 
-  final List<Sight> places;
+  final List<Place> places;
   final ScrollController scrollController;
   @override
   State<ListOfPlacesHorizontal> createState() => _ListOfPlacesHorizontalState();
 }
 
 class _ListOfPlacesHorizontalState extends State<ListOfPlacesHorizontal> {
-  late List<Sight> places;
+  late List<Place> places;
 
   @override
   void initState() {
@@ -300,14 +300,14 @@ class ListOfPlacesVertical extends StatefulWidget {
     required this.scrollController,
   }) : super(key: key);
 
-  final List<Sight> places;
+  final List<Place> places;
   final ScrollController scrollController;
   @override
   State<ListOfPlacesVertical> createState() => _ListOfPlacesVerticalState();
 }
 
 class _ListOfPlacesVerticalState extends State<ListOfPlacesVertical> {
-  late List<Sight> places;
+  late List<Place> places;
 
   @override
   void initState() {
@@ -473,8 +473,8 @@ class _SightListScreenPersistantHeaderDelegatePortrait
     extends SliverPersistentHeaderDelegate {
   const _SightListScreenPersistantHeaderDelegatePortrait(
       {required this.places, required this.repaint});
-  final List<Sight> places;
-  final Function(List<Sight> value) repaint;
+  final List<Place> places;
+  final Function(List<Place> value) repaint;
 
   @override
   Widget build(
@@ -532,8 +532,8 @@ class _SightListScreenPersistantHeaderDelegateLandScape
       {required this.places,
       required this.repaint,
       required this.onNewPlaceCreated});
-  final List<Sight> places;
-  final Function(List<Sight> value) repaint;
+  final List<Place> places;
+  final Function(List<Place> value) repaint;
   final VoidCallback onNewPlaceCreated;
   @override
   Widget build(

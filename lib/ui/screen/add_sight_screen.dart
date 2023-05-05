@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/domain/place.dart';
 import 'package:places/main.dart';
 import 'package:places/mocks.dart';
 import 'package:places/res/app_colors.dart';
@@ -561,15 +561,15 @@ class _AddSightScreenState extends State<AddSightScreen> {
     if (!_isButtonEnabled) {
     } else {
       if (_keyForm.currentState!.validate()) {
-        Sight newItem = Sight(
+        Place newItem = Place(
+          id: 4,
           name: nameController!.text,
-          details: descriptionController!.text,
-          imagePath:
-              'https://content.foto.my.mail.ru/mail/nordprod7/boxitogorsk/h-7455.jpg',
+          description: descriptionController!.text,
+          urls:
+              const ['https://content.foto.my.mail.ru/mail/nordprod7/boxitogorsk/h-7455.jpg'],
           lat: double.parse(widthController!.text),
-          lon: double.parse(heightController!.text),
-          type: '',
-          workTime: '',
+          lng: double.parse(heightController!.text),
+          placeType: 'cafe',
         );
         mocks.contains(newItem) ? null : mocks.add(newItem);
 

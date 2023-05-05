@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:places/domain/filter.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/domain/place.dart';
 import 'package:places/theme_provider.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
 import 'package:places/ui/screen/categories_screen.dart';
@@ -52,8 +52,8 @@ class App extends StatelessWidget {
             onGenerateRoute: (RouteSettings settings) {
               switch (settings.name) {
                 case SightSearchScreen.routeName:
-                  final List<Sight> filteredPlaces =
-                      settings.arguments as List<Sight>;
+                  final List<Place> filteredPlaces =
+                      settings.arguments as List<Place>;
                   return MaterialPageRoute(
                       settings: settings,
                       builder: (context) => SightSearchScreen(

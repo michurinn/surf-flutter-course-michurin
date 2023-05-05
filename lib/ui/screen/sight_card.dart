@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/domain/sight.dart';
+import 'package:places/domain/place.dart';
 import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_typography.dart';
@@ -9,7 +9,7 @@ import 'package:places/res/app_typography.dart';
 class SightCard extends StatelessWidget {
   const SightCard({Key? key, required this.sight, this.onTap}) : super(key: key);
   final VoidCallback? onTap;
-  final Sight sight;
+  final Place sight;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -38,7 +38,7 @@ class SightCard extends StatelessWidget {
                         image: DecorationImage(
                             fit: BoxFit.fitWidth,
                             image: Image.network(
-                              sight.imagePath,
+                              sight.urls[0],
                               fit: BoxFit.fitWidth,
                               frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                                 if (wasSynchronouslyLoaded) return child;
@@ -88,7 +88,7 @@ class SightCard extends StatelessWidget {
                       left: 16,
                       top: 16,
                       child: Text(
-                        sight.type,
+                        sight.placeType.toString(),
                         style: AppTypography.smallBoldwhite,
                       ),
                     ),
@@ -110,7 +110,7 @@ class SightCard extends StatelessWidget {
                         ),
                         const SizedBox.shrink(),
                         Text(
-                          sight.details,
+                          sight.description,
                           style: AppTypography.small,
                         ),
                       ],
