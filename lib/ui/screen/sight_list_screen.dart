@@ -172,7 +172,7 @@ class _AppBarSearchWidget extends StatelessWidget
               padding: const EdgeInsets.only(right: 10),
               child: IconButton(
                 icon: Icon(Icons.tune_rounded,
-                    color: themeProvider.appTheme.filterButtonColor),
+                    color: themeInteractor.appTheme.filterButtonColor),
                 onPressed: () {
                   Navigator.of(context)
                       .pushNamed(
@@ -423,7 +423,7 @@ class _AddButton extends StatelessWidget {
             : const BoxConstraints(maxWidth: 50.0, minHeight: 50.0),
         decoration: BoxDecoration(
           gradient:
-              LinearGradient(colors: themeProvider.appTheme.newPlaceButton),
+              LinearGradient(colors: themeInteractor.appTheme.newPlaceButton),
           borderRadius: const BorderRadius.all(
             Radius.circular(24.0),
           ),
@@ -432,7 +432,7 @@ class _AddButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.plus_one,
-                size: 20, color: themeProvider.appTheme.addFormActiveLabel),
+                size: 20, color: themeInteractor.appTheme.addFormActiveLabel),
             if (portraitOrientation)
               const SizedBox(
                 width: 10,
@@ -441,7 +441,7 @@ class _AddButton extends StatelessWidget {
               Text(
                 AppStrings.create.toUpperCase(),
                 style: AppTypography.button
-                    .copyWith(color: themeProvider.appTheme.addFormActiveLabel),
+                    .copyWith(color: themeInteractor.appTheme.addFormActiveLabel),
               )
           ],
         ),
@@ -480,7 +480,7 @@ class _SightListScreenPersistantHeaderDelegatePortrait
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: themeProvider.appTheme.backgroundColor,
+      color: themeInteractor.appTheme.backgroundColor,
       child: Column(
         crossAxisAlignment: shrinkOffset < 100
             ? CrossAxisAlignment.start
@@ -490,7 +490,7 @@ class _SightListScreenPersistantHeaderDelegatePortrait
               ? Text(
                   AppStrings.listOfInterestingPlases,
                   style: AppTypography.largeTitle
-                      .copyWith(color: themeProvider.appTheme.appTitle),
+                      .copyWith(color: themeInteractor.appTheme.appTitle),
                 )
               : Padding(
                   padding: const EdgeInsets.symmetric(vertical: 28.0),
@@ -498,7 +498,7 @@ class _SightListScreenPersistantHeaderDelegatePortrait
                     AppStrings.listOfInterestingPlases
                         .replaceFirst(RegExp(r'\n'), ' '),
                     style: AppTypography.subtitle
-                        .copyWith(color: themeProvider.appTheme.appTitle),
+                        .copyWith(color: themeInteractor.appTheme.appTitle),
                   ),
                 ),
           if (shrinkOffset == 0)
@@ -539,7 +539,7 @@ class _SightListScreenPersistantHeaderDelegateLandScape
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: themeProvider.appTheme.backgroundColor,
+      color: themeInteractor.appTheme.backgroundColor,
       child: Stack(
         children: [
           Column(
@@ -551,7 +551,7 @@ class _SightListScreenPersistantHeaderDelegateLandScape
                   AppStrings.listOfInterestingPlases
                       .replaceFirst(RegExp(r'\n'), ' '),
                   style: AppTypography.subtitle
-                      .copyWith(color: themeProvider.appTheme.appTitle),
+                      .copyWith(color: themeInteractor.appTheme.appTitle),
                 ),
               ),
               if (shrinkOffset == 0)

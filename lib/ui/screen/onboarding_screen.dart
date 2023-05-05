@@ -173,7 +173,7 @@ class _AppBar extends StatelessWidget {
               child: Text(
                 AppStrings.skip,
                 style: AppTypography.simpleText
-                    .copyWith(color: themeProvider.appTheme.routeButtonColor),
+                    .copyWith(color: themeInteractor.appTheme.routeButtonColor),
               ),
             ),
           ),
@@ -206,7 +206,7 @@ class _OnStartButton extends StatelessWidget {
               Radius.circular(12),
             ),
           ),
-          backgroundColor: themeProvider.appTheme.routeButtonColor,
+          backgroundColor: themeInteractor.appTheme.routeButtonColor,
           alignment: Alignment.center,
         ),
         child: ConstrainedBox(
@@ -218,7 +218,7 @@ class _OnStartButton extends StatelessWidget {
                 child: Text(
                   AppStrings.onStart.toUpperCase(),
                   style: AppTypography.button.copyWith(
-                      color: themeProvider.appTheme.addFormActiveLabel),
+                      color: themeInteractor.appTheme.addFormActiveLabel),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -243,7 +243,7 @@ class _PageFirst extends StatelessWidget {
           children: [
             SvgPicture.asset(
               AppAssets.onboardingRouter,
-              color: themeProvider.appTheme.appTitle,
+              color: themeInteractor.appTheme.appTitle,
             ),
             const SizedBox(
               height: 42,
@@ -251,7 +251,7 @@ class _PageFirst extends StatelessWidget {
             Text(
               OnboardingTexts.screen1.title,
               style: AppTypography.title
-                  .copyWith(color: themeProvider.appTheme.appTitle),
+                  .copyWith(color: themeInteractor.appTheme.appTitle),
               textAlign: TextAlign.center,
             ),
             const SizedBox(
@@ -260,7 +260,7 @@ class _PageFirst extends StatelessWidget {
             Text(
               OnboardingTexts.screen1.subTitle,
               style: AppTypography.small
-                  .copyWith(color: themeProvider.appTheme.onboardingSubtitle),
+                  .copyWith(color: themeInteractor.appTheme.onboardingSubtitle),
               textAlign: TextAlign.center,
             ),
           ],
@@ -283,7 +283,7 @@ class _PageSecond extends StatelessWidget {
           children: [
             SvgPicture.asset(
               AppAssets.onboardingBackPack,
-              color: themeProvider.appTheme.appTitle,
+              color: themeInteractor.appTheme.appTitle,
             ),
             const SizedBox(
               height: 42,
@@ -291,7 +291,7 @@ class _PageSecond extends StatelessWidget {
             Text(
               OnboardingTexts.screen2.title,
               style: AppTypography.title
-                  .copyWith(color: themeProvider.appTheme.appTitle),
+                  .copyWith(color: themeInteractor.appTheme.appTitle),
               textAlign: TextAlign.center,
             ),
             const SizedBox(
@@ -300,7 +300,7 @@ class _PageSecond extends StatelessWidget {
             Text(
               OnboardingTexts.screen2.subTitle,
               style: AppTypography.small
-                  .copyWith(color: themeProvider.appTheme.onboardingSubtitle),
+                  .copyWith(color: themeInteractor.appTheme.onboardingSubtitle),
               textAlign: TextAlign.center,
             ),
           ],
@@ -323,7 +323,7 @@ class _PageThird extends StatelessWidget {
           children: [
             SvgPicture.asset(
               AppAssets.onboardingFinger,
-              color: themeProvider.appTheme.appTitle,
+              color: themeInteractor.appTheme.appTitle,
             ),
             const SizedBox(
               height: 42,
@@ -331,7 +331,7 @@ class _PageThird extends StatelessWidget {
             Text(
               OnboardingTexts.screen3.title,
               style: AppTypography.title
-                  .copyWith(color: themeProvider.appTheme.appTitle),
+                  .copyWith(color: themeInteractor.appTheme.appTitle),
               textAlign: TextAlign.center,
             ),
             const SizedBox(
@@ -340,7 +340,7 @@ class _PageThird extends StatelessWidget {
             Text(
               OnboardingTexts.screen3.subTitle,
               style: AppTypography.small
-                  .copyWith(color: themeProvider.appTheme.onboardingSubtitle),
+                  .copyWith(color: themeInteractor.appTheme.onboardingSubtitle),
               textAlign: TextAlign.center,
             ),
           ],
@@ -361,7 +361,7 @@ class _CirclePoint extends StatelessWidget {
       width: 8,
       decoration: BoxDecoration(
           color: isActive
-              ? themeProvider.appTheme.routeButtonColor
+              ? themeInteractor.appTheme.routeButtonColor
               : AppColors.inactiveBlack,
           borderRadius: const BorderRadius.all(Radius.circular(12))),
     );

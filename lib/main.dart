@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/domain/filter.dart';
 import 'package:places/domain/place.dart';
 import 'package:places/theme_provider.dart';
@@ -15,7 +16,9 @@ import 'package:places/ui/screen/splash_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
 
-final themeProvider = ThemeProvider();
+final ThemeProvider themeProvider = ThemeProvider();
+final SettingsInteractor themeInteractor =
+    SettingsInteractor(themeProvider: themeProvider);
 final filter = Filter();
 
 void main() {

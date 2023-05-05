@@ -80,7 +80,7 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                     child: Container(
                       alignment: Alignment.centerRight,
                       decoration: BoxDecoration(
-                        color: themeProvider.appTheme.errorColor,
+                        color: themeInteractor.appTheme.errorColor,
                         borderRadius: const BorderRadius.all(
                           Radius.circular(10),
                         ),
@@ -184,7 +184,7 @@ class _FavoriteAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Material(
-            color: themeProvider.appTheme.cardColor,
+            color: themeInteractor.appTheme.cardColor,
             borderRadius: const BorderRadius.all(Radius.circular(40.0)),
             child: TabBar(
               splashBorderRadius: const BorderRadius.all(Radius.circular(40.0)),

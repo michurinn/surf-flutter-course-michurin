@@ -74,7 +74,7 @@ class _FilterScreenState extends State<FilterScreen> {
                 borderRadius: BorderRadius.all(Radius.circular(10))),
             side: BorderSide.none,
             padding: const EdgeInsets.all(0),
-            backgroundColor: themeProvider.appTheme.backgroundColor,
+            backgroundColor: themeInteractor.appTheme.backgroundColor,
             minimumSize: const Size(32, 32),
             maximumSize: const Size(32, 32),
             alignment: Alignment.center,
@@ -84,7 +84,7 @@ class _FilterScreenState extends State<FilterScreen> {
           },
           child: SvgPicture.asset(
             AppAssets.back,
-            color: themeProvider.appTheme.cardIconColor,
+            color: themeInteractor.appTheme.cardIconColor,
             width: 5,
             height: 10,
           ),
@@ -106,7 +106,7 @@ class _FilterScreenState extends State<FilterScreen> {
               child: Text(
                 AppStrings.clearIt,
                 style: AppTypography.simpleText.copyWith(
-                  color: themeProvider.appTheme.clearButtonColor,
+                  color: themeInteractor.appTheme.clearButtonColor,
                 ),
               ),
             ),
@@ -166,7 +166,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   data: SliderThemeData(
                     thumbColor: AppColors.white,
                     disabledThumbColor: AppColors.white,
-                    activeTrackColor: themeProvider.appTheme.routeButtonColor,
+                    activeTrackColor: themeInteractor.appTheme.routeButtonColor,
                     trackHeight: 2,
                   ),
                   child: RangeSlider(
@@ -195,7 +195,7 @@ class _FilterScreenState extends State<FilterScreen> {
                 style: OutlinedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(12))),
-                  backgroundColor: themeProvider.appTheme.routeButtonColor,
+                  backgroundColor: themeInteractor.appTheme.routeButtonColor,
                   minimumSize: const Size(328, 48),
                   alignment: Alignment.center,
                 ),
@@ -306,7 +306,7 @@ class __itemGridViewState extends State<_itemGridView> {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                    color: themeProvider.appTheme.clearButtonColor
+                    color: themeInteractor.appTheme.clearButtonColor
                         .withOpacity(0.16),
                     shape: BoxShape.circle),
                 child: SvgPicture.asset(
@@ -322,12 +322,12 @@ class __itemGridViewState extends State<_itemGridView> {
                     width: 16,
                     height: 16,
                     decoration: BoxDecoration(
-                        color: themeProvider.appTheme.badgeColors[0],
+                        color: themeInteractor.appTheme.badgeColors[0],
                         shape: BoxShape.circle),
                     child: Icon(
                       Icons.done,
                       size: 10,
-                      color: themeProvider.appTheme.badgeColors[1],
+                      color: themeInteractor.appTheme.badgeColors[1],
                     ),
                   ),
                 )
@@ -338,7 +338,7 @@ class __itemGridViewState extends State<_itemGridView> {
           ),
           Text(widget.sightType.type,
               style: AppTypography.superSmall.copyWith(
-                  color: themeProvider.appTheme.bottomNavBarSelectedItemColor)),
+                  color: themeInteractor.appTheme.bottomNavBarSelectedItemColor)),
         ],
       ),
     );

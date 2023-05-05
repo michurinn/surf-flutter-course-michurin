@@ -207,7 +207,7 @@ class _ListItem extends StatelessWidget {
                   Text(
                     sight.name,
                     style: AppTypography.formLabel.copyWith(
-                        color: themeProvider
+                        color: themeInteractor
                             .appTheme.bottomNavBarSelectedItemColor),
                   ),
                   const SizedBox(
@@ -283,7 +283,7 @@ class __PreviuousSearchListState extends State<_PreviuousSearchList> {
             },
             child: Text(AppStrings.clearHistore,
                 style: AppTypography.simpleText
-                    .copyWith(color: themeProvider.appTheme.filterButtonColor)))
+                    .copyWith(color: themeInteractor.appTheme.filterButtonColor)))
       ],
     );
   }

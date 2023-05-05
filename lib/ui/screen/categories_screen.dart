@@ -47,7 +47,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           },
           child: SvgPicture.asset(
             AppAssets.back,
-            color: themeProvider.appTheme.cardIconColor,
+            color: themeInteractor.appTheme.cardIconColor,
             width: 5,
             height: 10,
           ),
@@ -86,7 +86,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                               (states) =>
                                   const BorderSide(color: Colors.transparent),
                             ),
-                            checkColor: themeProvider.appTheme.routeButtonColor,
+                            checkColor: themeInteractor.appTheme.routeButtonColor,
                             value: checkedMap[element.type],
                             onChanged: (value) {
                               setState(
@@ -150,8 +150,8 @@ class __SaveButtonState extends State<_SaveButton> {
         ),
         // Кнопка меняет цвет если не активна
         backgroundColor: widget.isActive
-            ? themeProvider.appTheme.routeButtonColor
-            : themeProvider.appTheme.cardColor,
+            ? themeInteractor.appTheme.routeButtonColor
+            : themeInteractor.appTheme.cardColor,
         minimumSize: const Size(0, 48),
         alignment: Alignment.center,
       ),
@@ -162,8 +162,8 @@ class __SaveButtonState extends State<_SaveButton> {
             AppStrings.save.toUpperCase(),
             style: AppTypography.button.copyWith(
                 color: widget.isActive
-                    ? themeProvider.appTheme.addFormActiveLabel
-                    : themeProvider.appTheme.addFormInactiveLabel),
+                    ? themeInteractor.appTheme.addFormActiveLabel
+                    : themeInteractor.appTheme.addFormInactiveLabel),
           )
         ],
       ),
