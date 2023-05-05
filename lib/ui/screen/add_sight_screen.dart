@@ -157,7 +157,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           child: Text(
                             AppStrings.category.toUpperCase(),
                             style: AppTypography.superSmall.copyWith(
-                                color: themeProvider
+                                color: themeInteractor
                                     .appTheme.addFormInactiveLabel),
                           ),
                         ),
@@ -173,7 +173,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           child: Text(
                             AppStrings.name.toUpperCase(),
                             style: AppTypography.superSmall.copyWith(
-                                color: themeProvider
+                                color: themeInteractor
                                     .appTheme.addFormInactiveLabel),
                           ),
                         ),
@@ -219,7 +219,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                         AppStrings.width.toUpperCase(),
                                         style: AppTypography.superSmall
                                             .copyWith(
-                                                color: themeProvider.appTheme
+                                                color: themeInteractor.appTheme
                                                     .addFormInactiveLabel),
                                       ),
                                     ),
@@ -233,7 +233,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                         cursorWidth: 1,
                                         cursorHeight: 24,
                                         cursorColor:
-                                            themeProvider.appTheme.cursorColor,
+                                            themeInteractor.appTheme.cursorColor,
                                         onEditingComplete: () {
                                           _checkEmptyFields();
                                           fn2.unfocus();
@@ -271,7 +271,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                         AppStrings.height.toUpperCase(),
                                         style: AppTypography.superSmall
                                             .copyWith(
-                                                color: themeProvider.appTheme
+                                                color: themeInteractor.appTheme
                                                     .addFormInactiveLabel),
                                       ),
                                     ),
@@ -283,7 +283,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                         cursorWidth: 1,
                                         cursorHeight: 24,
                                         cursorColor:
-                                            themeProvider.appTheme.cursorColor,
+                                            themeInteractor.appTheme.cursorColor,
                                         onEditingComplete: () {
                                           _checkEmptyFields();
                                           fn3.unfocus();
@@ -319,7 +319,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                               AppStrings.putOnMap,
                               style: AppTypography.simpleText.copyWith(
                                   color:
-                                      themeProvider.appTheme.clearButtonColor),
+                                      themeInteractor.appTheme.clearButtonColor),
                             ),
                           ),
                         ),
@@ -328,7 +328,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           child: Text(
                             AppStrings.description.toUpperCase(),
                             style: AppTypography.superSmall.copyWith(
-                                color: themeProvider
+                                color: themeInteractor
                                     .appTheme.addFormInactiveLabel),
                           ),
                         ),
@@ -345,10 +345,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
                             keyboardType: TextInputType.text,
                             textCapitalization: TextCapitalization.sentences,
                             style: AppTypography.formLabel.copyWith(
-                                color: themeProvider.appTheme.cursorColor),
+                                color: themeInteractor.appTheme.cursorColor),
                             cursorWidth: 1,
                             cursorHeight: 24,
-                            cursorColor: themeProvider.appTheme.cursorColor,
+                            cursorColor: themeInteractor.appTheme.cursorColor,
                             minLines: 3,
                             maxLines: 8,
                             textAlignVertical: TextAlignVertical.top,
@@ -377,8 +377,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
                         ),
                       ),
                       backgroundColor: !_isButtonEnabled
-                          ? themeProvider.appTheme.cardColor
-                          : themeProvider.appTheme.routeButtonColor,
+                          ? themeInteractor.appTheme.cardColor
+                          : themeInteractor.appTheme.routeButtonColor,
                       minimumSize: const Size(328, 48),
                       alignment: Alignment.center,
                     ),
@@ -389,8 +389,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           AppStrings.create.toUpperCase(),
                           style: AppTypography.button.copyWith(
                               color: !_isButtonEnabled
-                                  ? themeProvider.appTheme.addFormInactiveLabel
-                                  : themeProvider.appTheme.addFormActiveLabel),
+                                  ? themeInteractor.appTheme.addFormInactiveLabel
+                                  : themeInteractor.appTheme.addFormActiveLabel),
                         )
                       ],
                     ),
