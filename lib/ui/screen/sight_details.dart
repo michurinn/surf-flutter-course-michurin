@@ -77,7 +77,7 @@ class _HeadWithImage extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               shape: const CircleBorder(),
               padding: const EdgeInsets.all(0),
-              backgroundColor: themeProvider.appTheme.cardColor,
+              backgroundColor: themeInteractor.appTheme.cardColor,
               fixedSize: const Size(32, 32),
               alignment: Alignment.center,
             ),
@@ -86,7 +86,7 @@ class _HeadWithImage extends StatelessWidget {
             },
             child: SvgPicture.asset(
               AppAssets.cancel,
-              color: themeProvider.appTheme.cardIconColor,
+              color: themeInteractor.appTheme.cardIconColor,
             ),
           ),
         ),
@@ -96,7 +96,7 @@ class _HeadWithImage extends StatelessWidget {
         thumbVisibility: true,
         child: Container(
           decoration: BoxDecoration(
-            color: themeProvider.appTheme.backgroundColor,
+            color: themeInteractor.appTheme.backgroundColor,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
@@ -148,7 +148,7 @@ class _BodyWithTextsState extends State<_BodyWithTexts> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: themeProvider.appTheme.backgroundColor,
+      color: themeInteractor.appTheme.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder(
@@ -202,7 +202,7 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: themeProvider.appTheme.backgroundColor,
+      color: themeInteractor.appTheme.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
@@ -217,7 +217,7 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                     Radius.circular(12),
                   ),
                 ),
-                backgroundColor: themeProvider.appTheme.routeButtonColor,
+                backgroundColor: themeInteractor.appTheme.routeButtonColor,
                 minimumSize: const Size(328, 48),
                 alignment: Alignment.center,
               ),
@@ -262,7 +262,7 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                           AppAssets.calendar,
                           width: 22,
                           height: 19,
-                          color: themeProvider
+                          color: themeInteractor
                               .appTheme.bottomNavBarSelectedItemColor,
                         ),
                         const SizedBox(
@@ -271,7 +271,7 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                         Text(
                           AppStrings.addToCalendar,
                           style: AppTypography.small.copyWith(
-                            color: themeProvider
+                            color: themeInteractor
                                 .appTheme.bottomNavBarSelectedItemColor,
                           ),
                         )
@@ -297,7 +297,7 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                           isFavorite ? AppAssets.likeFilled : AppAssets.like,
                           width: 20,
                           height: 20,
-                          color: themeProvider
+                          color: themeInteractor
                               .appTheme.bottomNavBarSelectedItemColor,
                         ),
                         const SizedBox(
@@ -308,7 +308,7 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                               ? AppStrings.inFavoriteAlready
                               : AppStrings.inFavorite,
                           style: AppTypography.small.copyWith(
-                            color: themeProvider
+                            color: themeInteractor
                                 .appTheme.bottomNavBarSelectedItemColor,
                           ),
                         )
@@ -334,7 +334,7 @@ class _DetailsScreenPersistantHeaderDelegate
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       alignment: Alignment.centerLeft,
-      color: themeProvider.appTheme.backgroundColor,
+      color: themeInteractor.appTheme.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(

@@ -43,15 +43,14 @@ class _SettingScreenState extends State<SettingScreen> {
                 Switch.adaptive(
                   value: _switch,
                   onChanged: (value) {
+                    themeInteractor.swipeTheme();
                     setState(
                       () {
                         _switch = value;
-                        Provider.of<ThemeProvider>(context, listen: false)
-                            .changeTheme();
                       },
                     );
                   },
-                  activeColor: themeProvider.appTheme.clearButtonColor,
+                  activeColor: themeInteractor.appTheme.clearButtonColor,
                 )
               ],
             ),
@@ -70,7 +69,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                   SvgPicture.asset(
                     'assets/icons/info_icon.svg',
-                    color: themeProvider.appTheme.clearButtonColor,
+                    color: themeInteractor.appTheme.clearButtonColor,
                   ),
                 ],
               ),

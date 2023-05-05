@@ -115,7 +115,7 @@ class _SightCardState extends State<SightCard> {
                         iconSize: 20.0,
                         icon: SvgPicture.asset(
                           isFavorite ? AppAssets.likeFilled : AppAssets.like,
-                          color: themeProvider.appTheme.iconColor,
+                          color: themeInteractor.appTheme.iconColor,
                         ),
                         onPressed: () => {
                           widget.onHeartTap!(),

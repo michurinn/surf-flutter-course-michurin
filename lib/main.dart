@@ -3,6 +3,7 @@ import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/repository/place_repository.dart';
 import 'package:places/dio_client.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/domain/place.dart';
 import 'package:places/theme_provider.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
@@ -30,6 +31,8 @@ final SearchInteractor searchInteractor = SearchInteractor(
     httpClient: DioClient(),
   ),
 );
+final SettingsInteractor themeInteractor =
+    SettingsInteractor(themeProvider: themeProvider);
 
 void main() {
   runApp(
