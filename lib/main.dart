@@ -4,7 +4,6 @@ import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/repository/place_repository.dart';
 import 'package:places/dio_client.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
-import 'package:places/domain/place.dart';
 import 'package:places/theme_provider.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
 import 'package:places/ui/screen/categories_screen.dart';
@@ -68,12 +67,9 @@ class App extends StatelessWidget {
             onGenerateRoute: (RouteSettings settings) {
               switch (settings.name) {
                 case SightSearchScreen.routeName:
-                  final List<Place> filteredPlaces =
-                      settings.arguments as List<Place>;
                   return MaterialPageRoute(
                       settings: settings,
-                      builder: (context) => SightSearchScreen(
-                            filteredPlaces: filteredPlaces,
+                      builder: (context) => const SightSearchScreen(
                           ));
                 default:
                   return null;

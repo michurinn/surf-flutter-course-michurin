@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -25,28 +26,26 @@ class SightListScreen extends StatefulWidget {
 class _SightListScreenState extends State<SightListScreen> {
   // Храним здесь список, который будем отображать с учётом фильтров и поиска,
   // изменения из екранов поиска передаём через callback .then(...) навигатора
-  late List<Place> places;
   final ScrollController _scrollController = ScrollController();
-
+  late StreamController<List<Place>> placesController;
   @override
   void initState() {
-    places = [];
+    placesController = StreamController();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    placesController.close();
   }
 
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    // Покажем результаты с фильтром, если установлен фильтр
-    if (searchInteractor.filteredPlaces.isNotEmpty) {
-      places = searchInteractor.filteredPlaces;
-    } else {
-      await placeInteractor.getPlaces().then((value) {
-        setState(() {
-          places = value;
-        });
-      });
-    }
+    await placeInteractor.getPlaces().then((value) {
+      placesController.add(value);
+    });
   }
 
   @override
@@ -61,81 +60,46 @@ class _SightListScreenState extends State<SightListScreen> {
               CustomScrollView(
                 slivers: [
                   SliverPersistentHeader(
-                    delegate: MediaQuery.of(context).orientation ==
-                            Orientation.portrait
-                        ? _SightListScreenPersistantHeaderDelegatePortrait(
-                            places: places,
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(
-                                FilterScreen.routeName,
-                              )
-                                  .then((value) async {
-                                // Покажем результаты с фильтром, если установлен фильтр
-                                if (searchInteractor
-                                    .filteredPlaces.isNotEmpty) {
-                                  places = searchInteractor.filteredPlaces;
-                                  setState(() {
-                                    places = places;
-                                  });
-                                } else {
-                                  await placeInteractor
-                                      .getPlaces()
-                                      .then((value) {
-                                    setState(() {
-                                      places = value;
-                                    });
-                                  });
-                                }
-                              });
-                            },
-                          )
-                        : _SightListScreenPersistantHeaderDelegateLandScape(
-                            places: places,
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .pushNamed(
-                                FilterScreen.routeName,
-                              )
-                                  .then((value) async {
-                                // Покажем результаты с фильтром, если установлен фильтр
-                                if (searchInteractor
-                                    .filteredPlaces.isNotEmpty) {
-                                  places = searchInteractor.filteredPlaces;
-                                  setState(() {
-                                    places = places;
-                                  });
-                                } else {
-                                  await placeInteractor
-                                      .getPlaces()
-                                      .then((value) {
-                                    setState(() {
-                                      places = value;
-                                    });
-                                  });
-                                }
-                              });
-                            },
-                            onNewPlaceCreated: () {
-                              setState(() {}); //Покажем обновлённый список
-                            },
-                          ),
+                    delegate: _SightListHeaderDelegate.fromScreenOrientation(
+                      orientation: MediaQuery.of(context).orientation,
+                      onPressed: () => Navigator.of(context)
+                          .pushNamed(
+                        FilterScreen.routeName,
+                      )
+                          .then((_) {
+                        // Покажем результаты с фильтром, если установлен фильтр
+                        if (searchInteractor.filteredPlaces.isNotEmpty) {
+                          placesController.add(searchInteractor.filteredPlaces);
+                        }
+                      }),
+                    ) as SliverPersistentHeaderDelegate,
                     pinned: true,
                   ),
                   SliverList(
                     delegate: SliverChildListDelegate([
                       OverscrollGlowAbsorver(
-                        child: MediaQuery.of(context).orientation ==
-                                Orientation.portrait
-                            ? ListOfPlacesVertical(
-                                places: places,
-                                scrollController: _scrollController,
-                              )
-                            : ListOfPlacesHorizontal(
-                                places: places,
-                                scrollController: _scrollController,
-                              ),
-                      ),
+                          child: StreamBuilder<List<Place>>(
+                              stream: placesController.stream,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const SizedBox.square(
+                                    dimension: 200,
+                                    child: Center(
+                                      child:
+                                          CircularProgressIndicator.adaptive(),
+                                    ),
+                                  );
+                                }
+                                return _ListOfPlaces.fromScreenOrientation(
+                                  orientation:
+                                      MediaQuery.of(context).orientation,
+                                  places: snapshot.hasData
+                                      ? snapshot.data as List<Place>
+                                      : [],
+                                  scrollController: _scrollController,
+                                ) as StatefulWidget;
+                              })),
                       const SizedBox(
                         height: 50,
                       ),
@@ -152,10 +116,8 @@ class _SightListScreenState extends State<SightListScreen> {
                           : false,
                   onNewPlaceCreated: ((Place newPlace) async {
                     await placeInteractor.addNewPlace(newPlace);
-                    setState(
-                      // Покажем обновлённый список
-                      () {},
-                    );
+                    final response = await placeInteractor.getPlaces();
+                    placesController.add(response);
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -186,14 +148,10 @@ class _SightListScreenState extends State<SightListScreen> {
 class _AppBarSearchWidget extends StatelessWidget
     implements PreferredSizeWidget {
   const _AppBarSearchWidget(
-      {Key? key,
-      required this.places,
-      required this.onPressed,
-      this.tiny = false})
+      {Key? key, required this.onPressed, this.tiny = false})
       : super(key: key);
 
-  final List<Place>? places;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool tiny;
   @override
   Widget build(BuildContext context) {
@@ -207,8 +165,8 @@ class _AppBarSearchWidget extends StatelessWidget
             // При тапе на виджет поиска переход на страницу поиска,
             // а при тапе именно на иконку Icons.tune_rounded - переход на екран фильтров
             GestureDetector(
-              onTap: () => Navigator.of(context)
-                  .pushNamed(SightSearchScreen.routeName, arguments: places),
+              onTap: () =>
+                  Navigator.of(context).pushNamed(SightSearchScreen.routeName),
               child: tiny
                   ? const SizedBox(
                       height: 30,
@@ -240,9 +198,29 @@ class _AppBarSearchWidget extends StatelessWidget
   Size get preferredSize => Size.fromHeight(tiny ? 30 : 40);
 }
 
+//Класс отображает интересные места в зависимости от ориентации екрана
+abstract class _ListOfPlaces {
+  factory _ListOfPlaces.fromScreenOrientation(
+      {required Orientation orientation,
+      required List<Place> places,
+      required ScrollController scrollController}) {
+    if (orientation == Orientation.portrait) {
+      return ListOfPlacesPortrait(
+        places: places,
+        scrollController: scrollController,
+      );
+    } else {
+      return ListOfPlacesLandScape(
+        places: places,
+        scrollController: scrollController,
+      );
+    }
+  }
+}
+
 //Содержимое (места), если ориентация горизонтальная
-class ListOfPlacesHorizontal extends StatefulWidget {
-  const ListOfPlacesHorizontal({
+class ListOfPlacesLandScape extends StatefulWidget with _ListOfPlaces {
+  const ListOfPlacesLandScape({
     Key? key,
     required this.places,
     required this.scrollController,
@@ -251,10 +229,10 @@ class ListOfPlacesHorizontal extends StatefulWidget {
   final List<Place> places;
   final ScrollController scrollController;
   @override
-  State<ListOfPlacesHorizontal> createState() => _ListOfPlacesHorizontalState();
+  State<ListOfPlacesLandScape> createState() => _ListOfPlacesLandScapeState();
 }
 
-class _ListOfPlacesHorizontalState extends State<ListOfPlacesHorizontal> {
+class _ListOfPlacesLandScapeState extends State<ListOfPlacesLandScape> {
   late List<Place> places;
 
   @override
@@ -264,7 +242,7 @@ class _ListOfPlacesHorizontalState extends State<ListOfPlacesHorizontal> {
   }
 
   @override
-  void didUpdateWidget(covariant ListOfPlacesHorizontal oldWidget) {
+  void didUpdateWidget(covariant ListOfPlacesLandScape oldWidget) {
     super.didUpdateWidget(oldWidget);
     places = widget.places;
   }
@@ -331,33 +309,33 @@ class _ListOfPlacesHorizontalState extends State<ListOfPlacesHorizontal> {
   }
 }
 
-//Содержимое (места), если ориентация вертикальная
-class ListOfPlacesVertical extends StatefulWidget {
-  const ListOfPlacesVertical({
+//Содержимое (места), если ориентация портретная
+class ListOfPlacesPortrait extends StatefulWidget with _ListOfPlaces {
+  const ListOfPlacesPortrait({
     Key? key,
     required this.places,
     required this.scrollController,
   }) : super(key: key);
 
-  final List<Place>? places;
+  final List<Place> places;
   final ScrollController scrollController;
   @override
-  State<ListOfPlacesVertical> createState() => _ListOfPlacesVerticalState();
+  State<ListOfPlacesPortrait> createState() => _ListOfPlacesPortraitState();
 }
 
-class _ListOfPlacesVerticalState extends State<ListOfPlacesVertical> {
+class _ListOfPlacesPortraitState extends State<ListOfPlacesPortrait> {
   late List<Place> places;
 
   @override
   void initState() {
     super.initState();
-    places = widget.places ?? [];
+    places = widget.places;
   }
 
   @override
-  void didUpdateWidget(covariant ListOfPlacesVertical oldWidget) {
+  void didUpdateWidget(covariant ListOfPlacesPortrait oldWidget) {
     super.didUpdateWidget(oldWidget);
-    places = widget.places ?? [];
+    places = widget.places;
   }
 
   @override
@@ -495,8 +473,8 @@ class _AddButton extends StatelessWidget {
             if (portraitOrientation)
               Text(
                 AppStrings.create.toUpperCase(),
-                style: AppTypography.button
-                    .copyWith(color: themeInteractor.appTheme.addFormActiveLabel),
+                style: AppTypography.button.copyWith(
+                    color: themeInteractor.appTheme.addFormActiveLabel),
               )
           ],
         ),
@@ -523,13 +501,27 @@ class OverscrollGlowAbsorver extends StatelessWidget {
   }
 }
 
+//Класс отображает AppBar в зависимости от ориентации екрана
+abstract class _SightListHeaderDelegate {
+  factory _SightListHeaderDelegate.fromScreenOrientation(
+      {required Orientation orientation, VoidCallback? onPressed}) {
+    if (orientation == Orientation.portrait) {
+      return _SightListScreenPersistantHeaderDelegatePortrait(
+          onPressed: onPressed);
+    } else {
+      return _SightListScreenPersistantHeaderDelegateLandScape(
+        onPressed: onPressed,
+      );
+    }
+  }
+}
+
 //Аппбар, если ориентация вертикальная
 class _SightListScreenPersistantHeaderDelegatePortrait
-    extends SliverPersistentHeaderDelegate {
+    extends SliverPersistentHeaderDelegate implements _SightListHeaderDelegate {
   const _SightListScreenPersistantHeaderDelegatePortrait(
-      {required this.places, required this.onPressed});
-  final List<Place>? places;
-  final VoidCallback onPressed;
+      {required this.onPressed});
+  final VoidCallback? onPressed;
 
   @override
   Widget build(
@@ -558,7 +550,6 @@ class _SightListScreenPersistantHeaderDelegatePortrait
                 ),
           if (shrinkOffset == 0)
             _AppBarSearchWidget(
-              places: places,
               onPressed: onPressed,
             ),
         ],
@@ -580,14 +571,11 @@ class _SightListScreenPersistantHeaderDelegatePortrait
 //Аппбар, если ориентация горизонтальная
 
 class _SightListScreenPersistantHeaderDelegateLandScape
-    extends SliverPersistentHeaderDelegate {
-  const _SightListScreenPersistantHeaderDelegateLandScape(
-      {required this.places,
-      required this.onPressed,
-      required this.onNewPlaceCreated});
-  final List<Place>? places;
-  final VoidCallback onPressed;
-  final VoidCallback onNewPlaceCreated;
+    extends SliverPersistentHeaderDelegate with _SightListHeaderDelegate {
+  const _SightListScreenPersistantHeaderDelegateLandScape({
+    required this.onPressed,
+  });
+  final VoidCallback? onPressed;
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
@@ -610,7 +598,6 @@ class _SightListScreenPersistantHeaderDelegateLandScape
               if (shrinkOffset == 0)
                 _AppBarSearchWidget(
                   tiny: true,
-                  places: places,
                   onPressed: onPressed,
                 ),
             ],

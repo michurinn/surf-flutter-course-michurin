@@ -4,13 +4,10 @@ import 'package:places/main.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
-import 'package:places/theme_provider.dart';
-import 'package:provider/provider.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
   static const routeName = 'settings_screen';
-
   @override
   State<SettingScreen> createState() => _SettingScreenState();
 }
