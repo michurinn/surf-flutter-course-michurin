@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/place.dart';
@@ -10,12 +12,12 @@ class SightCard extends StatefulWidget {
   const SightCard(
       {Key? key,
       required this.sight,
-      this.onTap,
-      this.onHeartTap,
+      required this.onTap,
+      required this.onHeartTap,
       required this.isFavorite})
       : super(key: key);
-  final VoidCallback? onTap;
-  final VoidCallback? onHeartTap;
+  final VoidCallback onTap;
+  final VoidCallback onHeartTap;
   final bool isFavorite;
   final Place sight;
 
@@ -24,17 +26,35 @@ class SightCard extends StatefulWidget {
 }
 
 class _SightCardState extends State<SightCard> {
-  late bool isFavorite;
+  // Последний елемент потока хранит
+  // переменная currentStateOfHeartButton, в неё записывается последний елемент
+  // через подписку favoriteSubscription
+  // При нажатии на кнопку-сердечко в поток отправляется значение,
+  // обратное последнему
+  late StreamController<bool> isFavoriteController;
+  late bool currentStateOfHeartButton;
+  late StreamSubscription favoriteSubscription;
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    isFavorite = widget.isFavorite;
+  void initState() {
+    super.initState();
   }
 
   @override
-  void didUpdateWidget(covariant SightCard oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    isFavorite = widget.isFavorite;
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    currentStateOfHeartButton = widget.isFavorite;
+    isFavoriteController = StreamController.broadcast();
+    favoriteSubscription = isFavoriteController.stream.listen((event) {
+      currentStateOfHeartButton = event;
+    });
+    isFavoriteController.add(widget.isFavorite);
+  }
+
+  @override
+  void dispose() {
+    favoriteSubscription.cancel();
+    isFavoriteController.close();
+    super.dispose();
   }
 
   @override
@@ -111,19 +131,23 @@ class _SightCardState extends State<SightCard> {
                     Positioned(
                       right: 10,
                       top: 10,
-                      child: IconButton(
-                        iconSize: 20.0,
-                        icon: SvgPicture.asset(
-                          isFavorite ? AppAssets.likeFilled : AppAssets.like,
-                          color: themeInteractor.appTheme.iconColor,
-                        ),
-                        onPressed: () => {
-                          widget.onHeartTap!(),
-                          setState(() {
-                            isFavorite = !isFavorite;
-                          })
-                        },
-                      ),
+                      child: StreamBuilder<bool>(
+                          stream: isFavoriteController.stream,
+                          builder: (context, snapshot) {
+                            return IconButton(
+                                iconSize: 20.0,
+                                icon: SvgPicture.asset(
+                                  snapshot.data == true
+                                      ? AppAssets.likeFilled
+                                      : AppAssets.like,
+                                  color: themeInteractor.appTheme.iconColor,
+                                ),
+                                onPressed: () {
+                                  widget.onHeartTap();
+                                  isFavoriteController
+                                      .add(!currentStateOfHeartButton);
+                                });
+                          }),
                     ),
                     Positioned(
                       left: 16,

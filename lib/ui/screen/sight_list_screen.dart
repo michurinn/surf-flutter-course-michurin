@@ -286,6 +286,12 @@ class _ListOfPlacesLandScapeState extends State<ListOfPlacesLandScape> {
                           sight: element,
                           isFavorite:
                               placeInteractor.favoritePlaces.contains(element),
+                          onHeartTap: () {
+                            // No possible to tap in 'feedback' view
+                          },
+                          onTap: () {
+                            // No possible to tap in 'feedback' view
+                          },
                         ),
                       ),
                     ),
@@ -376,6 +382,12 @@ class _ListOfPlacesPortraitState extends State<ListOfPlacesPortrait> {
                         sight: places[index],
                         isFavorite: placeInteractor.favoritePlaces
                             .contains(places[index]),
+                        onHeartTap: () {
+                          // No possible to tap in 'feedback' view
+                        },
+                        onTap: () {
+                          // No possible to tap in 'feedback' view
+                        },
                       ),
                     ),
                   ),
