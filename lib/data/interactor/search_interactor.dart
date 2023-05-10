@@ -9,7 +9,7 @@ class SearchInteractor {
 
   // ignore: non_constant_identifier_names
   factory SearchInteractor(IPlaceRepository IplaceRepository) {
-    placeRepository = IplaceRepository;
+    _placeRepository = IplaceRepository;
     return _instance;
   }
 
@@ -17,6 +17,11 @@ class SearchInteractor {
 
   static PlacesFilterRequestDto _filter = const PlacesFilterRequestDto();
 
+  List<String> get favoriteCategories => _filter.typeFilter ?? [];
+  List<Place> get filteredPlaces => _filteredPlaces;
+  List<String> get history => _history;
+
+  static late final IPlaceRepository _placeRepository;
   void setFilter({
     double? radius,
     List<String>? typeFilter,
@@ -56,16 +61,11 @@ class SearchInteractor {
     }
   }
 
-  List<String> get favoriteCategories => _filter.typeFilter ?? [];
-  List<Place> get filteredPlaces => _filteredPlaces;
-  List<String> get history => _history;
-
-  static late final IPlaceRepository placeRepository;
   //Поиск по имени
   Future<List<Place>> searchByName(String name) async {
     final PlacesFilterRequestDto namedFilter =
         _filter.copyWith(nameFilter: name);
-    final response = await placeRepository.getFilteredPlaces(namedFilter);
+    final response = await _placeRepository.getFilteredPlaces(namedFilter);
 
     _filteredPlaces = response.map((element) => element).toList();
     _filteredPlaces.sort(
@@ -76,7 +76,7 @@ class SearchInteractor {
 
   //Поиск мест по фильтру
   Future<List<Place>?> searchByFilter() async {
-    final response = await placeRepository.getFilteredPlaces(_filter);
+    final response = await _placeRepository.getFilteredPlaces(_filter);
     _filteredPlaces = response.map((element) => element).toList();
     return _filteredPlaces;
   }

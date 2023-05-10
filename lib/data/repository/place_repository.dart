@@ -45,6 +45,7 @@ class PlaceRepository implements IPlaceRepository {
     try {
       Completer<List<Place>> completer = Completer();
       final response = await httpClient.dio.get('/place');
+
       if (response.statusCode == 200) {
         List result = response.data;
         result = result.expand((e) => [Place.fromMap((e))]).toList();
@@ -90,6 +91,7 @@ class PlaceRepository implements IPlaceRepository {
           filter.toMap(),
         ),
       );
+
       if (response.statusCode == 200) {
         List result = response.data;
         result = result

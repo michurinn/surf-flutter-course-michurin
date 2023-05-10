@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:places/domain/place.dart';
 import 'package:places/main.dart';
+import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/ui/dialogs/sight_details_bottom_sheet.dart';
@@ -13,6 +14,7 @@ import 'package:places/ui/screen/widgets/sight_card.dart';
 import 'package:places/ui/screen/sight_details.dart';
 import 'package:places/ui/screen/sight_search_screen.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
+import 'package:places/domain/error_widget.dart' as error_widget;
 
 // Екран списка мест
 class SightListScreen extends StatefulWidget {
@@ -45,7 +47,7 @@ class _SightListScreenState extends State<SightListScreen> {
     super.didChangeDependencies();
     await placeInteractor.getPlaces().then((value) {
       placesController.add(value);
-    });
+    }, onError: (error) => placesController.addError(error));
   }
 
   @override
@@ -78,19 +80,24 @@ class _SightListScreenState extends State<SightListScreen> {
                   SliverList(
                     delegate: SliverChildListDelegate([
                       OverscrollGlowAbsorver(
-                          child: StreamBuilder<List<Place>>(
-                              stream: placesController.stream,
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const SizedBox.square(
-                                    dimension: 200,
-                                    child: Center(
-                                      child:
-                                          CircularProgressIndicator.adaptive(),
-                                    ),
-                                  );
-                                }
+                        child: StreamBuilder<List<Place>>(
+                            stream: placesController.stream,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return const Center(
+                                  child: error_widget.ErrorWidget(
+                                    color: AppColors.inactiveBlack,
+                                  ),
+                                );
+                              } else if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const SizedBox.square(
+                                  dimension: 200,
+                                  child: Center(
+                                    child: CircularProgressIndicator.adaptive(),
+                                  ),
+                                );
+                              } else {
                                 return _ListOfPlaces.fromScreenOrientation(
                                   orientation:
                                       MediaQuery.of(context).orientation,
@@ -99,7 +106,9 @@ class _SightListScreenState extends State<SightListScreen> {
                                       : [],
                                   scrollController: _scrollController,
                                 ) as StatefulWidget;
-                              })),
+                              }
+                            }),
+                      ),
                       const SizedBox(
                         height: 50,
                       ),
@@ -205,12 +214,12 @@ abstract class _ListOfPlaces {
       required List<Place> places,
       required ScrollController scrollController}) {
     if (orientation == Orientation.portrait) {
-      return ListOfPlacesPortrait(
+      return _ListOfPlacesPortrait(
         places: places,
         scrollController: scrollController,
       );
     } else {
-      return ListOfPlacesLandScape(
+      return _ListOfPlacesLandScape(
         places: places,
         scrollController: scrollController,
       );
@@ -219,8 +228,8 @@ abstract class _ListOfPlaces {
 }
 
 //Содержимое (места), если ориентация горизонтальная
-class ListOfPlacesLandScape extends StatefulWidget with _ListOfPlaces {
-  const ListOfPlacesLandScape({
+class _ListOfPlacesLandScape extends StatefulWidget with _ListOfPlaces {
+  const _ListOfPlacesLandScape({
     Key? key,
     required this.places,
     required this.scrollController,
@@ -229,10 +238,10 @@ class ListOfPlacesLandScape extends StatefulWidget with _ListOfPlaces {
   final List<Place> places;
   final ScrollController scrollController;
   @override
-  State<ListOfPlacesLandScape> createState() => _ListOfPlacesLandScapeState();
+  State<_ListOfPlacesLandScape> createState() => _ListOfPlacesLandScapeState();
 }
 
-class _ListOfPlacesLandScapeState extends State<ListOfPlacesLandScape> {
+class _ListOfPlacesLandScapeState extends State<_ListOfPlacesLandScape> {
   late List<Place> places;
 
   @override
@@ -242,7 +251,7 @@ class _ListOfPlacesLandScapeState extends State<ListOfPlacesLandScape> {
   }
 
   @override
-  void didUpdateWidget(covariant ListOfPlacesLandScape oldWidget) {
+  void didUpdateWidget(covariant _ListOfPlacesLandScape oldWidget) {
     super.didUpdateWidget(oldWidget);
     places = widget.places;
   }
@@ -316,8 +325,8 @@ class _ListOfPlacesLandScapeState extends State<ListOfPlacesLandScape> {
 }
 
 //Содержимое (места), если ориентация портретная
-class ListOfPlacesPortrait extends StatefulWidget with _ListOfPlaces {
-  const ListOfPlacesPortrait({
+class _ListOfPlacesPortrait extends StatefulWidget with _ListOfPlaces {
+  const _ListOfPlacesPortrait({
     Key? key,
     required this.places,
     required this.scrollController,
@@ -326,10 +335,10 @@ class ListOfPlacesPortrait extends StatefulWidget with _ListOfPlaces {
   final List<Place> places;
   final ScrollController scrollController;
   @override
-  State<ListOfPlacesPortrait> createState() => _ListOfPlacesPortraitState();
+  State<_ListOfPlacesPortrait> createState() => _ListOfPlacesPortraitState();
 }
 
-class _ListOfPlacesPortraitState extends State<ListOfPlacesPortrait> {
+class _ListOfPlacesPortraitState extends State<_ListOfPlacesPortrait> {
   late List<Place> places;
 
   @override
@@ -339,7 +348,7 @@ class _ListOfPlacesPortraitState extends State<ListOfPlacesPortrait> {
   }
 
   @override
-  void didUpdateWidget(covariant ListOfPlacesPortrait oldWidget) {
+  void didUpdateWidget(covariant _ListOfPlacesPortrait oldWidget) {
     super.didUpdateWidget(oldWidget);
     places = widget.places;
   }
