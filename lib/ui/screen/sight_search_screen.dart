@@ -8,10 +8,9 @@ import 'package:places/ui/dialogs/sight_details_bottom_sheet.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 
 class SightSearchScreen extends StatefulWidget {
-  const SightSearchScreen({super.key, required this.filteredPlaces});
+  const SightSearchScreen({super.key});
   static const routeName = 'sight_search_screen';
 
-  final List<Place> filteredPlaces;
 
   @override
   State<SightSearchScreen> createState() => _SightSearchScreenState();
