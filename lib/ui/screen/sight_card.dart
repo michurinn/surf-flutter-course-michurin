@@ -32,27 +32,16 @@ class _SightCardState extends State<SightCard> {
   // При нажатии на кнопку-сердечко в поток отправляется значение,
   // обратное последнему
   late StreamController<bool> isFavoriteController;
-  late bool currentStateOfHeartButton;
-  late StreamSubscription favoriteSubscription;
   @override
   void initState() {
     super.initState();
-  }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    currentStateOfHeartButton = widget.isFavorite;
     isFavoriteController = StreamController.broadcast();
-    favoriteSubscription = isFavoriteController.stream.listen((event) {
-      currentStateOfHeartButton = event;
-    });
     isFavoriteController.add(widget.isFavorite);
   }
 
   @override
   void dispose() {
-    favoriteSubscription.cancel();
     isFavoriteController.close();
     super.dispose();
   }
@@ -133,6 +122,7 @@ class _SightCardState extends State<SightCard> {
                       top: 10,
                       child: StreamBuilder<bool>(
                           stream: isFavoriteController.stream,
+                          initialData: widget.isFavorite,
                           builder: (context, snapshot) {
                             return IconButton(
                                 iconSize: 20.0,
@@ -144,8 +134,9 @@ class _SightCardState extends State<SightCard> {
                                 ),
                                 onPressed: () {
                                   widget.onHeartTap();
-                                  isFavoriteController
-                                      .add(!currentStateOfHeartButton);
+                                  if (snapshot.hasData) {
+                                    isFavoriteController.add(!snapshot.data!);
+                                  }
                                 });
                           }),
                     ),
