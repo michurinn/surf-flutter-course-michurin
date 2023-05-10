@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:places/domain/exceptions.dart';
 import 'package:places/domain/place.dart';
 import 'package:places/data/model/place_dto.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
@@ -27,17 +28,14 @@ class PlaceRepository implements IPlaceRepository {
       );
       if (response.statusCode == 200) {
         completer.complete(Place.fromMap(response.data));
-      } else if (response.statusCode == 400) {
-        throw Exception('400: Invalid request');
-      } else if (response.statusCode == 409) {
-        throw Exception('409: Object already exist');
       } else {
-        throw Exception();
+        throw NetworkException(
+            errorCode: response.statusCode ?? 0,
+            errorName: response.statusMessage ?? '',
+            request: 'POST ${httpClient.dio.options.baseUrl}/place');
       }
-
       return completer.future;
-    } on Exception catch (e) {
-      print('Exception $e in addPlace');
+    } on Exception catch (_) {
       rethrow;
     }
   }
@@ -51,17 +49,14 @@ class PlaceRepository implements IPlaceRepository {
         List result = response.data;
         result = result.expand((e) => [Place.fromMap((e))]).toList();
         completer.complete(result as List<Place>);
-      } else if (response.statusCode == 400) {
-        throw Exception('400: Invalid request');
-      } else if (response.statusCode == 409) {
-        throw Exception('409: Object already exist');
       } else {
-        throw Exception();
+        throw NetworkException(
+            errorCode: response.statusCode ?? 0,
+            errorName: response.statusMessage ?? '',
+            request: 'GET ${httpClient.dio.options.baseUrl}/place');
       }
-
       return completer.future;
-    } on Exception catch (e) {
-      print('Exception $e in getPlacesList');
+    } on Exception catch (_) {
       rethrow;
     }
   }
@@ -72,13 +67,14 @@ class PlaceRepository implements IPlaceRepository {
       Response response = await httpClient.dio.delete('/place/$id');
       if (response.statusCode == 200) {
         return;
-      } else if (response.statusCode == 404) {
-        throw Exception('404: Object not found');
       } else {
-        throw Exception();
+        throw NetworkException(
+            errorCode: response.statusCode ?? 0,
+            errorName: response.statusMessage ?? '',
+            request: 'DELETE ${httpClient.dio.options.baseUrl}/place/$id');
       }
-    } on Exception catch (e) {
-      print('Exception $e in deletePlaceByID');
+    } on Exception catch (_) {
+      rethrow;
     }
   }
 
@@ -103,11 +99,13 @@ class PlaceRepository implements IPlaceRepository {
             .toList();
         completer.complete(result as List<Place>?);
       } else {
-        throw Exception();
+        throw NetworkException(
+            errorCode: response.statusCode ?? 0,
+            errorName: response.statusMessage ?? '',
+            request: 'POST ${httpClient.dio.options.baseUrl}/filtered_places');
       }
       return completer.future;
-    } on Exception catch (e) {
-      print('Exception $e in getFilteredPlaces');
+    } on Exception catch (_) {
       rethrow;
     }
   }
@@ -121,15 +119,15 @@ class PlaceRepository implements IPlaceRepository {
         completer.complete(
           Place.fromMap(response.data),
         );
-      } else if (response.statusCode == 400) {
-        throw Exception('400: Invalid request');
       } else {
-        throw Exception();
+        throw NetworkException(
+            errorCode: response.statusCode ?? 0,
+            errorName: response.statusMessage ?? '',
+            request: 'GET ${httpClient.dio.options.baseUrl}place/$id');
       }
 
       return completer.future;
-    } on Exception catch (e) {
-      print('Exception $e in getPlaceByID');
+    } on Exception catch (_) {
       rethrow;
     }
   }
@@ -143,17 +141,13 @@ class PlaceRepository implements IPlaceRepository {
 
       if (response.statusCode == 200) {
         return response.data;
-      } else if (response.statusCode == 201) {
-        if (response.headers['location'] == null) {
-          throw Exception();
-        } else {
-          return response.headers['location'] as List<String>;
-        }
       } else {
-        throw Exception();
+        throw NetworkException(
+            errorCode: response.statusCode ?? 0,
+            errorName: response.statusMessage ?? '',
+            request: 'POST ${httpClient.dio.options.baseUrl}/upload_file');
       }
-    } on Exception catch (e) {
-      print('Exception $e in uploadFile');
+    } on Exception catch (_) {
       rethrow;
     } finally {
       httpClient.dio.options.contentType = 'application/json';
@@ -177,19 +171,16 @@ class PlaceRepository implements IPlaceRepository {
         completer.complete(
           Place.fromMap(response.data),
         );
-      } else if (response.statusCode == 404) {
-        throw Exception('404: No object found');
-      } else if (response.statusCode == 404) {
-        throw Exception('409: Object already exist');
-      } else if (response.statusCode == 400) {
-        throw Exception('400: Invalid request');
       } else {
-        throw Exception();
+        throw NetworkException(
+            errorCode: response.statusCode ?? 0,
+            errorName: response.statusMessage ?? '',
+            request:
+                'PUT ${httpClient.dio.options.baseUrl}//place/${place.id}');
       }
 
       return completer.future;
-    } on Exception catch (e) {
-      print('Exception $e in updatePlaceByID');
+    } on Exception catch (_) {
       rethrow;
     }
   }
