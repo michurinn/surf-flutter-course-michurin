@@ -9,7 +9,7 @@ import 'package:places/res/app_typography.dart';
 import 'package:places/ui/dialogs/sight_details_bottom_sheet.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
 import 'package:places/ui/screen/filters_screen.dart';
-import 'package:places/ui/screen/sight_card.dart';
+import 'package:places/ui/screen/widgets/sight_card.dart';
 import 'package:places/ui/screen/sight_details.dart';
 import 'package:places/ui/screen/sight_search_screen.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
