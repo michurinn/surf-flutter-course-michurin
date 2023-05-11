@@ -275,11 +275,6 @@ class _FilterScreenState extends State<FilterScreen> {
   }
 }
 
-// return Text(
-//                               AppStrings.noPlacesFinded.toUpperCase(),
-//                               style: AppTypography.button,
-//                             );
-
 // Сетка типов мест
 class _GridView extends StatefulWidget {
   const _GridView({Key? key, required this.itemsList}) : super(key: key);
