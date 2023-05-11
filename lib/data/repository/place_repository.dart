@@ -91,7 +91,6 @@ class PlaceRepository implements IPlaceRepository {
           filter.toMap(),
         ),
       );
-
       if (response.statusCode == 200) {
         List result = response.data;
         result = result

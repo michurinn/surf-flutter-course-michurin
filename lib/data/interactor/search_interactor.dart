@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:places/domain/place.dart';
 import 'package:places/data/model/places_filter_request_dto.dart';
 import 'package:places/data/repository/place_repository_interface.dart';
@@ -75,11 +77,15 @@ class SearchInteractor {
   }
 
   //Поиск мест по фильтру
-  Future<List<Place>?> searchByFilter() async {
+  Future<List<Place>> searchByFilter() async {
     final response = await _placeRepository.getFilteredPlaces(_filter);
     _filteredPlaces = response.map((element) => element).toList();
     return _filteredPlaces;
   }
+
+  final StreamController<List<Place>?> _searchStreamController =
+      StreamController();
+  Stream<List<Place>?> get searchPlaceStream => _searchStreamController.stream;
 
   void addToHistory(String name) {
     name = name.trim();

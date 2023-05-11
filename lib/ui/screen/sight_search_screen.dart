@@ -6,11 +6,11 @@ import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/ui/dialogs/sight_details_bottom_sheet.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
+import 'package:places/domain/error_widget.dart' as error_widget;
 
 class SightSearchScreen extends StatefulWidget {
   const SightSearchScreen({super.key});
   static const routeName = 'sight_search_screen';
-
 
   @override
   State<SightSearchScreen> createState() => _SightSearchScreenState();
@@ -20,7 +20,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   late TextEditingController? controller;
   bool showHistory = true;
   List<Place> results = [];
-
+  bool showErrorWidget = false;
   late final GlobalKey<SearchBarState> _keySearchBar;
 
   @override
@@ -43,8 +43,8 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
             children: [
               SearchBar(
                 key: _keySearchBar,
-                searchRequest: (str, saveInHistory) =>
-                    _findSight(str, saveInHistory: saveInHistory),
+                searchRequest: (str, saveInHistory) async =>
+                    await _findSight(str, saveInHistory: saveInHistory),
                 isFocused: true, // автофокус
                 isEnabled: true,
                 hideHistory:
@@ -57,12 +57,12 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
               ),
               showHistory
                   ? _PreviuousSearchList(
-                      thenHistoryItemSelected: (str) {
-                        return _reFindSight(str);
+                      thenHistoryItemSelected: (str) async {
+                        return await _reFindSight(str);
                       },
                       clearHistory: _clearHistory,
                     )
-                  : _searchBody(results)
+                  : _searchBody(results, showErrorWidget)
             ],
           ),
         ),
@@ -88,50 +88,57 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
           showHistory = true;
         },
       );
-  // Показывает заглушку либо результаты поиска
-  Widget _searchBody(List<Place> resultsList) {
-    return (resultsList.isEmpty)
-        ? const Padding(
-            padding: EdgeInsets.symmetric(vertical: 180.0),
-            child: _CantFindIt(),
-          )
-        : Column(
-            children: resultsList
-                .expand(
-                  (element) => [
-                    _ListItem(sight: element),
-                  ],
-                )
-                .toList(),
-          );
+  // Показывает заглушку либо результаты поиска, или ошибку если прилетел Exception
+  Widget _searchBody(List<Place> resultsList, bool showErrorWidget) {
+    if (showErrorWidget) {
+      return const error_widget.ErrorWidget(color: AppColors.inactiveBlack);
+    } else {
+      return (resultsList.isEmpty)
+          ? const Padding(
+              padding: EdgeInsets.symmetric(vertical: 180.0),
+              child: _CantFindIt(),
+            )
+          : Column(
+              children: resultsList
+                  .expand(
+                    (element) => [
+                      _ListItem(sight: element),
+                    ],
+                  )
+                  .toList(),
+            );
+    }
   }
 
   _findSight(String name, {bool saveInHistory = true}) async {
-    List<Place>? response = await searchInteractor.searchByName(name);
-
-    if (saveInHistory) {
-      searchInteractor.addToHistory(name);
-    }
-    setState(
-      () {
-        results = response;
-        showHistory = false;
+    await searchInteractor.searchByName(name).then(
+      (value) {
+        if (saveInHistory) {
+          searchInteractor.addToHistory(name);
+        }
+        setState(
+          () {
+            results = value;
+            showHistory = false;
+            showErrorWidget = false;
+          },
+        );
       },
-    );
+    ).onError((error, stackTrace) {
+      setState(
+        () {
+          results = [];
+          showHistory = false;
+          showErrorWidget = true;
+        },
+      );
+    });
   }
 
   _reFindSight(String name) async {
     _keySearchBar.currentState!
         .fillControllerWithValue(name); // Повторный поиск - тоже поиск )
-    List<Place>? response = await searchInteractor.searchByName(name);
-    searchInteractor.addToHistory(name);
-
-    setState(
-      () {
-        results = response;
-        showHistory = false;
-      },
-    );
+    await _findSight(name,saveInHistory: true);
   }
 }
 
@@ -267,8 +274,8 @@ class __PreviuousSearchListState extends State<_PreviuousSearchList> {
               });
             },
             child: Text(AppStrings.clearHistore,
-                style: AppTypography.simpleText
-                    .copyWith(color: themeInteractor.appTheme.filterButtonColor)))
+                style: AppTypography.simpleText.copyWith(
+                    color: themeInteractor.appTheme.filterButtonColor)))
       ],
     );
   }

@@ -26,8 +26,6 @@ class SightListScreen extends StatefulWidget {
 }
 
 class _SightListScreenState extends State<SightListScreen> {
-  // Храним здесь список, который будем отображать с учётом фильтров и поиска,
-  // изменения из екранов поиска передаём через callback .then(...) навигатора
   final ScrollController _scrollController = ScrollController();
   late StreamController<List<Place>> placesController;
   @override
