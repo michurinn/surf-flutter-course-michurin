@@ -1,9 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:places/theme_provider.dart';
 import 'package:places/ui/screen/res/themes.dart';
 
 enum Theme { dark, light }
 
-class SettingsInteractor {
+class SettingsInteractor with ChangeNotifier {
   static final SettingsInteractor _instance = SettingsInteractor._internal();
 
   factory SettingsInteractor({required ThemeProvider themeProvider}) {
@@ -18,8 +19,6 @@ class SettingsInteractor {
   void swipeTheme() {
     _themeProvider.changeTheme();
   }
-
-
 
   BaseTheme get appTheme => _themeProvider.isLight ? LightTheme() : DarkTheme();
 }

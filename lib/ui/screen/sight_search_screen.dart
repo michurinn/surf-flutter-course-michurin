@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:places/data/interactor/search_interactor.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/domain/place.dart';
-import 'package:places/main.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/ui/dialogs/sight_details_bottom_sheet.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 import 'package:places/domain/error_widget.dart' as error_widget;
+import 'package:provider/provider.dart';
 
 class SightSearchScreen extends StatefulWidget {
   const SightSearchScreen({super.key});
@@ -77,7 +79,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
       );
 
   _clearHistory() {
-    searchInteractor.history.clear();
+    Provider.of<SearchInteractor>(context).history.clear();
     setState(
       () {},
     );
@@ -111,10 +113,10 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   }
 
   _findSight(String name, {bool saveInHistory = true}) async {
-    await searchInteractor.searchByName(name).then(
+    await Provider.of<SearchInteractor>(context).searchByName(name).then(
       (value) {
         if (saveInHistory) {
-          searchInteractor.addToHistory(name);
+          Provider.of<SearchInteractor>(context).addToHistory(name);
         }
         setState(
           () {
@@ -138,7 +140,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   _reFindSight(String name) async {
     _keySearchBar.currentState!
         .fillControllerWithValue(name); // Повторный поиск - тоже поиск )
-    await _findSight(name,saveInHistory: true);
+    await _findSight(name, saveInHistory: true);
   }
 }
 
@@ -199,8 +201,9 @@ class _ListItem extends StatelessWidget {
                     sight.name,
                     overflow: TextOverflow.ellipsis,
                     style: AppTypography.formLabel.copyWith(
-                        color: themeInteractor
-                            .appTheme.bottomNavBarSelectedItemColor),
+                        color: Provider.of<SettingsInteractor>(context)
+                            .appTheme
+                            .bottomNavBarSelectedItemColor),
                   ),
                   const SizedBox(
                     height: 8,
@@ -236,7 +239,7 @@ class _PreviuousSearchList extends StatefulWidget {
 class __PreviuousSearchListState extends State<_PreviuousSearchList> {
   @override
   Widget build(BuildContext context) {
-    if (searchInteractor.history.isEmpty) {
+    if (Provider.of<SearchInteractor>(context).history.isEmpty) {
       return const SizedBox.shrink();
     }
     return Column(
@@ -248,14 +251,16 @@ class __PreviuousSearchListState extends State<_PreviuousSearchList> {
               AppTypography.superSmall.copyWith(color: AppColors.inactiveBlack),
         ),
         Column(
-          children: searchInteractor.history
+          children: Provider.of<SearchInteractor>(context)
+              .history
               .expand(
                 (element) => [
                   HistoryItem(
                     whenSelected: widget.thenHistoryItemSelected,
                     text: element,
                     delete: () {
-                      searchInteractor.removeFromHistory(element);
+                      Provider.of<SearchInteractor>(context)
+                          .removeFromHistory(element);
                       setState(
                         () {},
                       );
@@ -275,7 +280,9 @@ class __PreviuousSearchListState extends State<_PreviuousSearchList> {
             },
             child: Text(AppStrings.clearHistore,
                 style: AppTypography.simpleText.copyWith(
-                    color: themeInteractor.appTheme.filterButtonColor)))
+                    color: Provider.of<SettingsInteractor>(context)
+                        .appTheme
+                        .filterButtonColor)))
       ],
     );
   }

@@ -2,13 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/domain/place.dart';
-import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/ui/screen/favorite_card.dart';
+import 'package:provider/provider.dart';
 
 // Екран Хочу посетить/Посещённые
 class VisitingScreen extends StatefulWidget {
@@ -20,12 +22,12 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
-  final List<Place> favoritePlaces =
-      placeInteractor.getFavoritePlacesSortedByDistance();
-  final List<Place> visitedPlaces = placeInteractor.visitedPlaces;
-
   @override
   Widget build(BuildContext context) {
+    final List<Place> favoritePlaces = Provider.of<PlaceInteractor>(context)
+        .getFavoritePlacesSortedByDistance();
+    final List<Place> visitedPlaces =
+        Provider.of<PlaceInteractor>(context).visitedPlaces;
     return DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -85,7 +87,9 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                     child: Container(
                       alignment: Alignment.centerRight,
                       decoration: BoxDecoration(
-                        color: themeInteractor.appTheme.errorColor,
+                        color: Provider.of<SettingsInteractor>(context)
+                            .appTheme
+                            .errorColor,
                         borderRadius: const BorderRadius.all(
                           Radius.circular(10),
                         ),
@@ -119,7 +123,7 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                   key: ValueKey<int>(widget.favoritePlaces[index].hashCode),
                   direction: DismissDirection.endToStart,
                   onDismissed: (direction) {
-                    placeInteractor
+                    Provider.of<PlaceInteractor>(context)
                         .removeFromFavorites(widget.favoritePlaces[index]);
                     setState(() {});
                   },
@@ -128,16 +132,25 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                       ValueKey<String> rawData = data as ValueKey<String>;
 
                       setState(() {
-                        placeInteractor.favoritePlaces.insert(
-                          placeInteractor.favoritePlaces
-                              .indexOf(placeInteractor.favoritePlaces[index]),
-                          placeInteractor.favoritePlaces.removeAt(
-                            placeInteractor.favoritePlaces.indexWhere(
-                              (element) =>
-                                  element.name == rawData.value.toString(),
-                            ),
-                          ),
-                        );
+                        Provider.of<PlaceInteractor>(context)
+                            .favoritePlaces
+                            .insert(
+                              Provider.of<PlaceInteractor>(context)
+                                  .favoritePlaces
+                                  .indexOf(Provider.of<PlaceInteractor>(context)
+                                      .favoritePlaces[index]),
+                              Provider.of<PlaceInteractor>(context)
+                                  .favoritePlaces
+                                  .removeAt(
+                                    Provider.of<PlaceInteractor>(context)
+                                        .favoritePlaces
+                                        .indexWhere(
+                                          (element) =>
+                                              element.name ==
+                                              rawData.value.toString(),
+                                        ),
+                                  ),
+                            );
                       });
                     },
                     builder: (context, candidateData, rejectedData) {
@@ -155,8 +168,9 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                                   sight: widget.favoritePlaces[index],
                                   isFinished: false,
                                   onClosePressed: () =>
-                                      placeInteractor.removeFromFavorites(
-                                          widget.favoritePlaces[index]),
+                                      Provider.of<PlaceInteractor>(context)
+                                          .removeFromFavorites(
+                                              widget.favoritePlaces[index]),
                                 ),
                               ),
                             ),
@@ -164,11 +178,10 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                               sight: widget.favoritePlaces[index],
                               isFinished: false,
                               onClosePressed: () {
-                                placeInteractor.removeFromFavorites(
-                                      widget.favoritePlaces[index]);
-                                      setState(() {
-                                        
-                                      });
+                                Provider.of<PlaceInteractor>(context)
+                                    .removeFromFavorites(
+                                        widget.favoritePlaces[index]);
+                                setState(() {});
                               },
                             ),
                           ),
@@ -202,7 +215,7 @@ class _FavoriteAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Material(
-            color: themeInteractor.appTheme.cardColor,
+            color: Provider.of<SettingsInteractor>(context).appTheme.cardColor,
             borderRadius: const BorderRadius.all(Radius.circular(40.0)),
             child: TabBar(
               splashBorderRadius: const BorderRadius.all(Radius.circular(40.0)),

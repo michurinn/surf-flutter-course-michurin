@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/main.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -52,7 +53,9 @@ class _HomeScreenState extends State<HomeScreen>
             icon: const Icon(Icons.list_alt),
             activeIcon: SvgPicture.asset(
               AppAssets.listFilled,
-              color: themeInteractor.appTheme.bottomNavBarSelectedItemColor,
+              color: Provider.of<SettingsInteractor>(context)
+                  .appTheme
+                  .bottomNavBarSelectedItemColor,
             ),
             label: 'List of Places',
           ),
@@ -60,18 +63,24 @@ class _HomeScreenState extends State<HomeScreen>
             icon: const Icon(Icons.map_outlined),
             activeIcon: SvgPicture.asset(
               AppAssets.mapFilled,
-              color: themeInteractor.appTheme.bottomNavBarSelectedItemColor,
+              color: Provider.of<SettingsInteractor>(context)
+                  .appTheme
+                  .bottomNavBarSelectedItemColor,
             ),
             label: 'Map',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               AppAssets.like,
-              color: themeInteractor.appTheme.bottomNavBarUnselectedItemColor,
+              color: Provider.of<SettingsInteractor>(context)
+                  .appTheme
+                  .bottomNavBarUnselectedItemColor,
             ),
             activeIcon: SvgPicture.asset(
               AppAssets.likeFilled,
-              color: themeInteractor.appTheme.bottomNavBarSelectedItemColor,
+              color: Provider.of<SettingsInteractor>(context)
+                  .appTheme
+                  .bottomNavBarSelectedItemColor,
             ),
             label: 'Favorite places',
           ),

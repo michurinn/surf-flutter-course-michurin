@@ -18,25 +18,29 @@ import 'package:places/ui/screen/splash_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
 
-final themeProvider = ThemeProvider();
-final PlaceInteractor placeInteractor = PlaceInteractor(
-  PlaceRepository(
-    httpClient: DioClient(),
-  ),
-);
-//Интерактор поиска, пока объявляем здесь на всё приложение
-final SearchInteractor searchInteractor = SearchInteractor(
-  PlaceRepository(
-    httpClient: DioClient(),
-  ),
-);
-final SettingsInteractor themeInteractor =
-    SettingsInteractor(themeProvider: themeProvider);
 
 void main() {
   runApp(
-    ChangeNotifierProvider<ThemeProvider>(
-      create: (_) => themeProvider,
+    MultiProvider(
+      providers: [
+        Provider<PlaceInteractor>(
+          create: (_) => PlaceInteractor(
+            PlaceRepository(
+              httpClient: DioClient(),
+            ),
+          ),
+        ),
+        Provider<SearchInteractor>(
+          create: (_) => SearchInteractor(
+            PlaceRepository(
+              httpClient: DioClient(),
+            ),
+          ),
+        ),
+        ChangeNotifierProvider<SettingsInteractor>(
+          create: (_) => SettingsInteractor(themeProvider: ThemeProvider()),
+        ),
+      ],
       child: const App(),
     ),
   );
@@ -69,8 +73,7 @@ class App extends StatelessWidget {
                 case SightSearchScreen.routeName:
                   return MaterialPageRoute(
                       settings: settings,
-                      builder: (context) => const SightSearchScreen(
-                          ));
+                      builder: (context) => const SightSearchScreen());
                 default:
                   return null;
               }

@@ -5,11 +5,12 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/domain/place.dart';
-import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
+import 'package:provider/provider.dart';
 
 // Карточка для Хочу посетить в Избранном
 class FavoriteSight extends StatelessWidget {
@@ -75,7 +76,10 @@ class FavoriteSight extends StatelessWidget {
                                 padding: const EdgeInsets.all(0),
                                 iconSize: 22,
                                 icon: Icon(Icons.share,
-                                    color: themeInteractor.appTheme.iconColor),
+                                    color:
+                                        Provider.of<SettingsInteractor>(context)
+                                            .appTheme
+                                            .iconColor),
                                 onPressed: () {
                                   print("Share on card pressed");
                                 },
@@ -84,7 +88,10 @@ class FavoriteSight extends StatelessWidget {
                                 padding: const EdgeInsets.all(0),
                                 iconSize: 22,
                                 icon: SvgPicture.asset(AppAssets.calendar,
-                                    color: themeInteractor.appTheme.iconColor),
+                                    color:
+                                        Provider.of<SettingsInteractor>(context)
+                                            .appTheme
+                                            .iconColor),
                                 onPressed: () async {
                                   DateTime? date = Platform.isAndroid
                                       ? await showDatePicker(
@@ -107,12 +114,13 @@ class FavoriteSight extends StatelessWidget {
                                 },
                               ),
                         IconButton(
-                          iconSize: 22,
-                          padding: const EdgeInsets.all(0),
-                          icon: Icon(Icons.close,
-                              color: themeInteractor.appTheme.iconColor),
-                          onPressed: onClosePressed
-                        )
+                            iconSize: 22,
+                            padding: const EdgeInsets.all(0),
+                            icon: Icon(Icons.close,
+                                color: Provider.of<SettingsInteractor>(context)
+                                    .appTheme
+                                    .iconColor),
+                            onPressed: onClosePressed)
                       ],
                     ),
                   ),
@@ -167,7 +175,9 @@ class _CupertinoDatePickerBody extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 28.0),
         child: Container(
           decoration: BoxDecoration(
-            color: themeInteractor.appTheme.backgroundColor,
+            color: Provider.of<SettingsInteractor>(context)
+                .appTheme
+                .backgroundColor,
             borderRadius: const BorderRadius.all(Radius.circular(20)),
           ),
           width: MediaQuery.of(context).size.width,
@@ -196,7 +206,9 @@ class _CupertinoDatePickerBody extends StatelessWidget {
                     child: Text(
                       AppStrings.addToCalendar,
                       style: AppTypography.button.copyWith(
-                          color: themeInteractor.appTheme.filterButtonColor),
+                          color: Provider.of<SettingsInteractor>(context)
+                              .appTheme
+                              .filterButtonColor),
                     ),
                   ),
                   TextButton(
@@ -206,7 +218,9 @@ class _CupertinoDatePickerBody extends StatelessWidget {
                     child: Text(
                       AppStrings.cancel,
                       style: AppTypography.button.copyWith(
-                          color: themeInteractor.appTheme.filterButtonColor),
+                          color: Provider.of<SettingsInteractor>(context)
+                              .appTheme
+                              .filterButtonColor),
                     ),
                   ),
                 ],

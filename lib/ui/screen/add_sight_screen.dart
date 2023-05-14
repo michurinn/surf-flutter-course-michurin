@@ -6,13 +6,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/domain/place.dart';
-import 'package:places/main.dart';
 import 'package:places/mocks.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/ui/screen/categories_screen.dart';
+import 'package:provider/provider.dart';
 
 // Заглушки с картинками
 var mocksPictures = mocksImages;
@@ -132,8 +133,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
             },
             child: Text(
               AppStrings.cancel,
-              style: AppTypography.simpleText
-                  .copyWith(color: themeInteractor.appTheme.appLeading),
+              style: AppTypography.simpleText.copyWith(
+                  color: Provider.of<SettingsInteractor>(context)
+                      .appTheme
+                      .appLeading),
             ),
           ),
         ),
@@ -157,8 +160,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           child: Text(
                             AppStrings.category.toUpperCase(),
                             style: AppTypography.superSmall.copyWith(
-                                color: themeInteractor
-                                    .appTheme.addFormInactiveLabel),
+                                color: Provider.of<SettingsInteractor>(context)
+                                    .appTheme
+                                    .addFormInactiveLabel),
                           ),
                         ),
                         _TypeFormField(
@@ -173,8 +177,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           child: Text(
                             AppStrings.name.toUpperCase(),
                             style: AppTypography.superSmall.copyWith(
-                                color: themeInteractor
-                                    .appTheme.addFormInactiveLabel),
+                                color: Provider.of<SettingsInteractor>(context)
+                                    .appTheme
+                                    .addFormInactiveLabel),
                           ),
                         ),
                         TextFormField(
@@ -189,14 +194,19 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           },
                           textCapitalization: TextCapitalization.sentences,
                           style: AppTypography.formLabel.copyWith(
-                              color: themeInteractor.appTheme.cursorColor),
+                              color: Provider.of<SettingsInteractor>(context)
+                                  .appTheme
+                                  .cursorColor),
                           cursorWidth: 1,
                           cursorHeight: 24,
-                          cursorColor: themeInteractor.appTheme.cursorColor,
+                          cursorColor: Provider.of<SettingsInteractor>(context)
+                              .appTheme
+                              .cursorColor,
                           minLines: 3,
                           maxLines: 8,
                           textAlignVertical: TextAlignVertical.top,
                           decoration: _inputDecoration(
+                              context: context,
                               label: AppStrings.name,
                               clear: () => nameController?.clear(),
                               showSuffix: _nameFieldShowSuffix),
@@ -219,7 +229,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                         AppStrings.width.toUpperCase(),
                                         style: AppTypography.superSmall
                                             .copyWith(
-                                                color: themeInteractor.appTheme
+                                                color: Provider.of<
+                                                            SettingsInteractor>(
+                                                        context)
+                                                    .appTheme
                                                     .addFormInactiveLabel),
                                       ),
                                     ),
@@ -233,7 +246,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                         cursorWidth: 1,
                                         cursorHeight: 24,
                                         cursorColor:
-                                            themeInteractor.appTheme.cursorColor,
+                                            Provider.of<SettingsInteractor>(
+                                                    context)
+                                                .appTheme
+                                                .cursorColor,
                                         onEditingComplete: () {
                                           _checkEmptyFields();
                                           fn2.unfocus();
@@ -244,6 +260,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                         validator: _validateCoordinates,
                                         keyboardType: TextInputType.number,
                                         decoration: _inputDecoration(
+                                          context: context,
                                           label: AppStrings.width,
                                           clear: () => widthController?.clear(),
                                           showSuffix: _widthFieldShowSuffix,
@@ -271,7 +288,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                         AppStrings.height.toUpperCase(),
                                         style: AppTypography.superSmall
                                             .copyWith(
-                                                color: themeInteractor.appTheme
+                                                color: Provider.of<
+                                                            SettingsInteractor>(
+                                                        context)
+                                                    .appTheme
                                                     .addFormInactiveLabel),
                                       ),
                                     ),
@@ -283,7 +303,10 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                         cursorWidth: 1,
                                         cursorHeight: 24,
                                         cursorColor:
-                                            themeInteractor.appTheme.cursorColor,
+                                            Provider.of<SettingsInteractor>(
+                                                    context)
+                                                .appTheme
+                                                .cursorColor,
                                         onEditingComplete: () {
                                           _checkEmptyFields();
                                           fn3.unfocus();
@@ -294,6 +317,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                         validator: _validateCoordinates,
                                         keyboardType: TextInputType.number,
                                         decoration: _inputDecoration(
+                                          context: context,
                                           label: AppStrings.height,
                                           clear: () =>
                                               heightController?.clear(),
@@ -319,7 +343,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
                               AppStrings.putOnMap,
                               style: AppTypography.simpleText.copyWith(
                                   color:
-                                      themeInteractor.appTheme.clearButtonColor),
+                                      Provider.of<SettingsInteractor>(context)
+                                          .appTheme
+                                          .clearButtonColor),
                             ),
                           ),
                         ),
@@ -328,8 +354,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           child: Text(
                             AppStrings.description.toUpperCase(),
                             style: AppTypography.superSmall.copyWith(
-                                color: themeInteractor
-                                    .appTheme.addFormInactiveLabel),
+                                color: Provider.of<SettingsInteractor>(context)
+                                    .appTheme
+                                    .addFormInactiveLabel),
                           ),
                         ),
                         Padding(
@@ -345,14 +372,20 @@ class _AddSightScreenState extends State<AddSightScreen> {
                             keyboardType: TextInputType.text,
                             textCapitalization: TextCapitalization.sentences,
                             style: AppTypography.formLabel.copyWith(
-                                color: themeInteractor.appTheme.cursorColor),
+                                color: Provider.of<SettingsInteractor>(context)
+                                    .appTheme
+                                    .cursorColor),
                             cursorWidth: 1,
                             cursorHeight: 24,
-                            cursorColor: themeInteractor.appTheme.cursorColor,
+                            cursorColor:
+                                Provider.of<SettingsInteractor>(context)
+                                    .appTheme
+                                    .cursorColor,
                             minLines: 3,
                             maxLines: 8,
                             textAlignVertical: TextAlignVertical.top,
                             decoration: _inputDecoration(
+                              context: context,
                               label: AppStrings.inputText,
                               clear: (() => descriptionController?.clear()),
                               showSuffix: _descriptionFieldShowSuffix,
@@ -377,8 +410,12 @@ class _AddSightScreenState extends State<AddSightScreen> {
                         ),
                       ),
                       backgroundColor: !_isButtonEnabled
-                          ? themeInteractor.appTheme.cardColor
-                          : themeInteractor.appTheme.routeButtonColor,
+                          ? Provider.of<SettingsInteractor>(context)
+                              .appTheme
+                              .cardColor
+                          : Provider.of<SettingsInteractor>(context)
+                              .appTheme
+                              .routeButtonColor,
                       minimumSize: const Size(328, 48),
                       alignment: Alignment.center,
                     ),
@@ -389,8 +426,12 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           AppStrings.create.toUpperCase(),
                           style: AppTypography.button.copyWith(
                               color: !_isButtonEnabled
-                                  ? themeInteractor.appTheme.addFormInactiveLabel
-                                  : themeInteractor.appTheme.addFormActiveLabel),
+                                  ? Provider.of<SettingsInteractor>(context)
+                                      .appTheme
+                                      .addFormInactiveLabel
+                                  : Provider.of<SettingsInteractor>(context)
+                                      .appTheme
+                                      .addFormActiveLabel),
                         )
                       ],
                     ),
@@ -420,9 +461,13 @@ class _AddSightScreenState extends State<AddSightScreen> {
               padding: const EdgeInsets.all(0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: themeInteractor.appTheme.backgroundColor,
-                  border:
-                      Border.all(color: themeInteractor.appTheme.backgroundColor),
+                  color: Provider.of<SettingsInteractor>(context)
+                      .appTheme
+                      .backgroundColor,
+                  border: Border.all(
+                      color: Provider.of<SettingsInteractor>(context)
+                          .appTheme
+                          .backgroundColor),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(12),
                     topRight: Radius.circular(12),
@@ -462,9 +507,13 @@ class _AddSightScreenState extends State<AddSightScreen> {
               padding: const EdgeInsets.all(0),
               child: Container(
                 decoration: BoxDecoration(
-                    color: themeInteractor.appTheme.backgroundColor,
+                    color: Provider.of<SettingsInteractor>(context)
+                        .appTheme
+                        .backgroundColor,
                     border: Border.all(
-                        color: themeInteractor.appTheme.backgroundColor)),
+                        color: Provider.of<SettingsInteractor>(context)
+                            .appTheme
+                            .backgroundColor)),
                 width: MediaQuery.of(context).size.width,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 19.0),
@@ -498,9 +547,13 @@ class _AddSightScreenState extends State<AddSightScreen> {
               padding: const EdgeInsets.all(0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: themeInteractor.appTheme.backgroundColor,
-                  border:
-                      Border.all(color: themeInteractor.appTheme.backgroundColor),
+                  color: Provider.of<SettingsInteractor>(context)
+                      .appTheme
+                      .backgroundColor,
+                  border: Border.all(
+                      color: Provider.of<SettingsInteractor>(context)
+                          .appTheme
+                          .backgroundColor),
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(12),
                     bottomRight: Radius.circular(12),
@@ -548,7 +601,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           Radius.circular(12),
                         ),
                       ),
-                      backgroundColor: themeInteractor.appTheme.cardColor,
+                      backgroundColor: Provider.of<SettingsInteractor>(context)
+                          .appTheme
+                          .cardColor,
                       minimumSize: const Size.fromHeight(48),
                       alignment: Alignment.center,
                       fixedSize:
@@ -559,7 +614,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
                       Text(
                         AppStrings.cancel.toUpperCase(),
                         style: AppTypography.button.copyWith(
-                            color: themeInteractor.appTheme.routeButtonColor),
+                            color: Provider.of<SettingsInteractor>(context)
+                                .appTheme
+                                .routeButtonColor),
                       )
                     ],
                   ),
@@ -687,6 +744,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
 // Общий InputDecoration для полей
 InputDecoration _inputDecoration({
+  required BuildContext context,
   required String label,
   required VoidCallback clear,
   required bool showSuffix,
@@ -696,7 +754,9 @@ InputDecoration _inputDecoration({
         ? InkWell(
             child: Icon(
               Icons.cancel,
-              color: themeInteractor.appTheme.badgeColors[0],
+              color: Provider.of<SettingsInteractor>(context)
+                  .appTheme
+                  .badgeColors[0],
               size: 18,
             ),
             onTap: () {
@@ -729,18 +789,24 @@ InputDecoration _inputDecoration({
       borderRadius: const BorderRadius.all(
         Radius.circular(8),
       ),
-      borderSide:
-          BorderSide(width: 2, color: themeInteractor.appTheme.addFormBorder),
+      borderSide: BorderSide(
+          width: 2,
+          color:
+              Provider.of<SettingsInteractor>(context).appTheme.addFormBorder),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: const BorderRadius.all(
         Radius.circular(8),
       ),
-      borderSide: BorderSide(color: themeInteractor.appTheme.addFormBorder),
+      borderSide: BorderSide(
+          color:
+              Provider.of<SettingsInteractor>(context).appTheme.addFormBorder),
     ),
     labelText: label,
-    labelStyle: AppTypography.formLabel
-        .copyWith(color: themeInteractor.appTheme.addFormInactiveLabel),
+    labelStyle: AppTypography.formLabel.copyWith(
+        color: Provider.of<SettingsInteractor>(context)
+            .appTheme
+            .addFormInactiveLabel),
   );
 }
 
@@ -780,8 +846,9 @@ class _TypeFormField extends StatelessWidget {
         validator: validate,
         textInputAction: TextInputAction.none,
         textCapitalization: TextCapitalization.sentences,
-        style: AppTypography.formLabel
-            .copyWith(color: themeInteractor.appTheme.cursorColor),
+        style: AppTypography.formLabel.copyWith(
+            color:
+                Provider.of<SettingsInteractor>(context).appTheme.cursorColor),
         showCursor: false,
         decoration: InputDecoration(
           errorBorder: OutlineInputBorder(
@@ -796,7 +863,8 @@ class _TypeFormField extends StatelessWidget {
           floatingLabelBehavior: FloatingLabelBehavior.never,
           suffixIcon: Icon(
             Icons.arrow_forward_ios_sharp,
-            color: themeInteractor.appTheme.cursorColor,
+            color:
+                Provider.of<SettingsInteractor>(context).appTheme.cursorColor,
           ),
           isDense: true,
           border: const UnderlineInputBorder(),
@@ -830,7 +898,7 @@ class _TopImagesListState extends State<_TopImagesList> {
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           children: [
-            _addPictureButton(widget.addPictures),
+            _addPictureButton(context, widget.addPictures),
             ...mocksPictures
                 .expand((element) => [
                       const SizedBox(
@@ -848,7 +916,8 @@ class _TopImagesListState extends State<_TopImagesList> {
   }
 }
 
-Widget _addPictureButton(VoidCallback setStateInParent) => OutlinedButton(
+Widget _addPictureButton(BuildContext context, VoidCallback setStateInParent) =>
+    OutlinedButton(
       onPressed: () {
         mocksPictures = mocksImages;
         setStateInParent();
@@ -856,20 +925,25 @@ Widget _addPictureButton(VoidCallback setStateInParent) => OutlinedButton(
       style: OutlinedButton.styleFrom(
         side: BorderSide(
             width: 2.0,
-            color: themeInteractor.appTheme.clearButtonColor.withOpacity(0.48)),
+            color: Provider.of<SettingsInteractor>(context)
+                .appTheme
+                .clearButtonColor
+                .withOpacity(0.48)),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(12),
           ),
         ),
-        backgroundColor: themeInteractor.appTheme.backgroundColor,
+        backgroundColor:
+            Provider.of<SettingsInteractor>(context).appTheme.backgroundColor,
         fixedSize: const Size(72, 72),
         alignment: Alignment.center,
       ),
       child: Icon(
         Icons.add,
         size: 33,
-        color: themeInteractor.appTheme.clearButtonColor,
+        color:
+            Provider.of<SettingsInteractor>(context).appTheme.clearButtonColor,
       ),
     );
 
@@ -917,7 +991,9 @@ class _PictureQuadCard extends StatelessWidget {
               },
               icon: Icon(
                 Icons.cancel,
-                color: themeInteractor.appTheme.badgeColors[1],
+                color: Provider.of<SettingsInteractor>(context)
+                    .appTheme
+                    .badgeColors[1],
                 size: 22,
               ),
             ),

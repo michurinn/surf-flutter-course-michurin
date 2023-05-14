@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:places/main.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
+import 'package:provider/provider.dart';
 
 class SearchBar extends StatefulWidget {
   const SearchBar(
@@ -80,7 +81,8 @@ class SearchBarState extends State<SearchBar> {
       controller: controller,
       cursorWidth: 1,
       cursorHeight: 24,
-      cursorColor: themeInteractor.appTheme.cursorColor,
+      cursorColor:
+          Provider.of<SettingsInteractor>(context).appTheme.cursorColor,
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.never,
         prefixIcon:
@@ -90,15 +92,18 @@ class SearchBarState extends State<SearchBar> {
             : InkWell(
                 child: Icon(
                   Icons.cancel,
-                  color: themeInteractor.appTheme.badgeColors[0],
+                  color: Provider.of<SettingsInteractor>(context)
+                      .appTheme
+                      .badgeColors[0],
                   size: 18,
                 ),
                 onTap: () {
                   clear();
                 },
               ),
-        suffixIconColor: themeInteractor.appTheme.filterButtonColor,
-        fillColor: themeInteractor.appTheme.cardColor,
+        suffixIconColor:
+            Provider.of<SettingsInteractor>(context).appTheme.filterButtonColor,
+        fillColor: Provider.of<SettingsInteractor>(context).appTheme.cardColor,
         filled: true,
         label: const Text(AppStrings.search),
         labelStyle:

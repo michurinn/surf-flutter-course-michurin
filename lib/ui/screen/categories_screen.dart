@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/main.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
+import 'package:provider/provider.dart';
 
 // Екран выбора категории места
 class CategoriesScreen extends StatefulWidget {
@@ -47,7 +48,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           },
           child: SvgPicture.asset(
             AppAssets.back,
-            color: themeInteractor.appTheme.cardIconColor,
+            color:
+                Provider.of<SettingsInteractor>(context).appTheme.cardIconColor,
             width: 5,
             height: 10,
           ),
@@ -86,7 +88,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                               (states) =>
                                   const BorderSide(color: Colors.transparent),
                             ),
-                            checkColor: themeInteractor.appTheme.routeButtonColor,
+                            checkColor: Provider.of<SettingsInteractor>(context)
+                                .appTheme
+                                .routeButtonColor,
                             value: checkedMap[element.type],
                             onChanged: (value) {
                               setState(
@@ -150,8 +154,8 @@ class __SaveButtonState extends State<_SaveButton> {
         ),
         // Кнопка меняет цвет если не активна
         backgroundColor: widget.isActive
-            ? themeInteractor.appTheme.routeButtonColor
-            : themeInteractor.appTheme.cardColor,
+            ? Provider.of<SettingsInteractor>(context).appTheme.routeButtonColor
+            : Provider.of<SettingsInteractor>(context).appTheme.cardColor,
         minimumSize: const Size(0, 48),
         alignment: Alignment.center,
       ),
@@ -162,8 +166,12 @@ class __SaveButtonState extends State<_SaveButton> {
             AppStrings.save.toUpperCase(),
             style: AppTypography.button.copyWith(
                 color: widget.isActive
-                    ? themeInteractor.appTheme.addFormActiveLabel
-                    : themeInteractor.appTheme.addFormInactiveLabel),
+                    ? Provider.of<SettingsInteractor>(context)
+                        .appTheme
+                        .addFormActiveLabel
+                    : Provider.of<SettingsInteractor>(context)
+                        .appTheme
+                        .addFormInactiveLabel),
           )
         ],
       ),
