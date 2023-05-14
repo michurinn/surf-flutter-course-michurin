@@ -23,19 +23,18 @@ class _FilterScreenState extends State<FilterScreen> {
   double _endValue = 9; // Конечное значение слайдера по умолчанию
   double _startValue = 2; // Начальное значение слайдера по умолчанию
   List<Place> results = searchInteractor.filteredPlaces;
-
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    results = await searchInteractor.searchByFilter() ?? [];
+    results = await searchInteractor.searchByFilter();
   }
 
   @override
   void initState() {
     super.initState();
     searchInteractor.setFilter(
-        radius:
-            _endValue*2000); // Радиус поиска и верхняя граница слайдера совпадают по определнию
+        radius: _endValue *
+            2000); // Радиус поиска и верхняя граница слайдера совпадают по определнию
   }
 
   // Отсчёт начинаетс от 100 м, затем в км
@@ -61,7 +60,10 @@ class _FilterScreenState extends State<FilterScreen> {
         leading: OutlinedButton(
           style: OutlinedButton.styleFrom(
             shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10))),
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+            ),
             side: BorderSide.none,
             padding: const EdgeInsets.all(0),
             backgroundColor: themeInteractor.appTheme.backgroundColor,
@@ -91,7 +93,9 @@ class _FilterScreenState extends State<FilterScreen> {
                 });
               },
               style: const ButtonStyle(
-                minimumSize: MaterialStatePropertyAll(Size(72, 20)),
+                minimumSize: MaterialStatePropertyAll(
+                  Size(72, 20),
+                ),
               ),
               child: Text(
                 AppStrings.clearIt,
@@ -126,27 +130,47 @@ class _FilterScreenState extends State<FilterScreen> {
                   ),
                 ),
                 _GridView(
-                  itemsList: SightType.values
-                      .map(
-                        (e) {
-                          return _itemGridView(
-                          isChecked: searchInteractor.favoriteCategories
-                                  .contains(e.name)
-                              ? true
-                              : false,
-                          onPressed: () async {
-                            searchInteractor.setOrUnsetCategory(e.name);
-                            final filteredResults =
-                                await searchInteractor.searchByFilter() ?? [];
-                            setState(() {
-                              results = filteredResults;
-                            });
-                          },
-                          sightType: e,
-                        );
+                  itemsList: SightType.values.map(
+                    (e) {
+                      return _itemGridView(
+                        isChecked:
+                            searchInteractor.favoriteCategories.contains(e.name)
+                                ? true
+                                : false,
+                        onPressed: () async {
+                          searchInteractor.setOrUnsetCategory(e.name);
+                          await searchInteractor
+                              .searchByFilter()
+                              .then(
+                                (value) => setState(() {
+                                  results = value;
+                                }),
+                              )
+                              .onError(
+                                (error, stackTrace) =>
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    showCloseIcon: true,
+                                    closeIconColor: AppColors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
+                                    behavior: SnackBarBehavior.floating,
+                                    duration:
+                                        const Duration(milliseconds: 1500),
+                                    content: const Text(
+                                      AppStrings.errorDescription,
+                                      style: AppTypography.simpleText,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              );
                         },
-                      )
-                      .toList(),
+                        sightType: e,
+                      );
+                    },
+                  ).toList(),
                 ),
                 const SizedBox(
                   height: 56,
@@ -183,11 +207,33 @@ class _FilterScreenState extends State<FilterScreen> {
                       searchInteractor.setFilter(
                         radius: _endValue * 2000, // in kilometers
                       );
-                      final filteredResults =
-                          await searchInteractor.searchByFilter() ?? [];
-                      setState(() {
-                        results = filteredResults;
-                      });
+
+                      await searchInteractor
+                          .searchByFilter()
+                          .then(
+                            (value) => setState(() {
+                              results = value;
+                            }),
+                          )
+                          .onError(
+                            (error, stackTrace) =>
+                                ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                showCloseIcon: true,
+                                closeIconColor: AppColors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                behavior: SnackBarBehavior.floating,
+                                duration: const Duration(milliseconds: 1500),
+                                content: const Text(
+                                  AppStrings.errorDescription,
+                                  style: AppTypography.simpleText,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          );
                     },
                     min: 0,
                     max: 10,
@@ -203,7 +249,10 @@ class _FilterScreenState extends State<FilterScreen> {
                 },
                 style: OutlinedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12))),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(12),
+                    ),
+                  ),
                   backgroundColor: themeInteractor.appTheme.routeButtonColor,
                   minimumSize: const Size(328, 48),
                   alignment: Alignment.center,
@@ -287,15 +336,14 @@ class __itemGridViewState extends State<_itemGridView> {
   }
 
   @override
-  void didUpdateWidget(covariant _itemGridView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    isChecked = widget.isChecked;
-  }
-
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: widget.onPressed,
+      onTap: () {
+        widget.onPressed();
+        setState(() {
+          isChecked = !isChecked;
+        });
+      },
       child: Column(
         children: [
           Stack(
@@ -334,9 +382,11 @@ class __itemGridViewState extends State<_itemGridView> {
           const SizedBox(
             height: 12,
           ),
-          Text(widget.sightType.type,
-              style: AppTypography.superSmall.copyWith(
-                  color: themeInteractor.appTheme.bottomNavBarSelectedItemColor)),
+          Text(
+            widget.sightType.type,
+            style: AppTypography.superSmall.copyWith(
+                color: themeInteractor.appTheme.bottomNavBarSelectedItemColor),
+          ),
         ],
       ),
     );

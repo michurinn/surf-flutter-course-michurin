@@ -71,6 +71,10 @@ class AppStrings {
   static const camera = "Камера";
   static const picture = "Фотография";
   static const fromFile = "Файл";
+
+  static const error = "Ошибка";
+  static const errorDescription = "Что-то пошло не так\nПопробуйте позже.";
+  static const noPlacesFinded = "Места не найдены";
 }
 
 // Выбор способа добавления фото
