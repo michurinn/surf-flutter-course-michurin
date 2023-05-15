@@ -77,7 +77,7 @@ class FavoriteSight extends StatelessWidget {
                                 iconSize: 22,
                                 icon: Icon(Icons.share,
                                     color:
-                                        Provider.of<SettingsInteractor>(context)
+                                        context.watch<SettingsInteractor>()
                                             .appTheme
                                             .iconColor),
                                 onPressed: () {
@@ -89,7 +89,7 @@ class FavoriteSight extends StatelessWidget {
                                 iconSize: 22,
                                 icon: SvgPicture.asset(AppAssets.calendar,
                                     color:
-                                        Provider.of<SettingsInteractor>(context)
+                                        context.watch<SettingsInteractor>()
                                             .appTheme
                                             .iconColor),
                                 onPressed: () async {
@@ -117,7 +117,7 @@ class FavoriteSight extends StatelessWidget {
                             iconSize: 22,
                             padding: const EdgeInsets.all(0),
                             icon: Icon(Icons.close,
-                                color: Provider.of<SettingsInteractor>(context)
+                                color: context.watch<SettingsInteractor>()
                                     .appTheme
                                     .iconColor),
                             onPressed: onClosePressed)
@@ -175,7 +175,7 @@ class _CupertinoDatePickerBody extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 28.0),
         child: Container(
           decoration: BoxDecoration(
-            color: Provider.of<SettingsInteractor>(context)
+            color: context.watch<SettingsInteractor>()
                 .appTheme
                 .backgroundColor,
             borderRadius: const BorderRadius.all(Radius.circular(20)),
@@ -206,7 +206,7 @@ class _CupertinoDatePickerBody extends StatelessWidget {
                     child: Text(
                       AppStrings.addToCalendar,
                       style: AppTypography.button.copyWith(
-                          color: Provider.of<SettingsInteractor>(context)
+                          color: context.watch<SettingsInteractor>()
                               .appTheme
                               .filterButtonColor),
                     ),
@@ -218,7 +218,7 @@ class _CupertinoDatePickerBody extends StatelessWidget {
                     child: Text(
                       AppStrings.cancel,
                       style: AppTypography.button.copyWith(
-                          color: Provider.of<SettingsInteractor>(context)
+                          color: context.watch<SettingsInteractor>()
                               .appTheme
                               .filterButtonColor),
                     ),

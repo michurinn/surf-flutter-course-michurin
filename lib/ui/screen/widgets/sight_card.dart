@@ -132,7 +132,7 @@ class _SightCardState extends State<SightCard> {
                                       ? AppAssets.likeFilled
                                       : AppAssets.like,
                                   color:
-                                      Provider.of<SettingsInteractor>(context)
+                                      context.watch<SettingsInteractor>()
                                           .appTheme
                                           .iconColor,
                                 ),

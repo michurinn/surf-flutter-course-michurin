@@ -49,7 +49,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           child: SvgPicture.asset(
             AppAssets.back,
             color:
-                Provider.of<SettingsInteractor>(context).appTheme.cardIconColor,
+                context.watch<SettingsInteractor>().appTheme.cardIconColor,
             width: 5,
             height: 10,
           ),
@@ -88,7 +88,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                               (states) =>
                                   const BorderSide(color: Colors.transparent),
                             ),
-                            checkColor: Provider.of<SettingsInteractor>(context)
+                            checkColor: context.watch<SettingsInteractor>()
                                 .appTheme
                                 .routeButtonColor,
                             value: checkedMap[element.type],
@@ -154,8 +154,8 @@ class __SaveButtonState extends State<_SaveButton> {
         ),
         // Кнопка меняет цвет если не активна
         backgroundColor: widget.isActive
-            ? Provider.of<SettingsInteractor>(context).appTheme.routeButtonColor
-            : Provider.of<SettingsInteractor>(context).appTheme.cardColor,
+            ? context.watch<SettingsInteractor>().appTheme.routeButtonColor
+            : context.watch<SettingsInteractor>().appTheme.cardColor,
         minimumSize: const Size(0, 48),
         alignment: Alignment.center,
       ),
@@ -166,10 +166,10 @@ class __SaveButtonState extends State<_SaveButton> {
             AppStrings.save.toUpperCase(),
             style: AppTypography.button.copyWith(
                 color: widget.isActive
-                    ? Provider.of<SettingsInteractor>(context)
+                    ? context.watch<SettingsInteractor>()
                         .appTheme
                         .addFormActiveLabel
-                    : Provider.of<SettingsInteractor>(context)
+                    : context.watch<SettingsInteractor>()
                         .appTheme
                         .addFormInactiveLabel),
           )

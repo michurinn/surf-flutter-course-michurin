@@ -18,7 +18,6 @@ import 'package:places/ui/screen/splash_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
 
-
 void main() {
   runApp(
     MultiProvider(
@@ -51,7 +50,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeProvider>(
+    return Consumer<SettingsInteractor>(
       builder: ((context, theme, child) => MaterialApp(
             debugShowCheckedModeBanner: false,
             title: "Surf",

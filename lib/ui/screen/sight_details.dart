@@ -47,15 +47,20 @@ class SightDetails extends StatelessWidget {
                 ),
                 const Spacer(),
                 _BottomWithButtons(
-                    isFavorite: Provider.of<PlaceInteractor>(context)
-.favoritePlaces.contains(sight),
-                    onFavoriteTap: () =>
-                        Provider.of<PlaceInteractor>(context)
-.favoritePlaces.contains(sight)
-                            ? Provider.of<PlaceInteractor>(context)
-.removeFromFavorites(sight)
-                            : Provider.of<PlaceInteractor>(context)
-.addToFavorites(sight)),
+                    isFavorite: context
+                        .watch<PlaceInteractor>()
+                        .favoritePlaces
+                        .contains(sight),
+                    onFavoriteTap: () => context
+                            .watch<PlaceInteractor>()
+                            .favoritePlaces
+                            .contains(sight)
+                        ? context
+                            .read<PlaceInteractor>()
+                            .removeFromFavorites(sight)
+                        : context
+                            .read<PlaceInteractor>()
+                            .addToFavorites(sight)),
               ]),
             ),
           ],
@@ -83,8 +88,8 @@ class _HeadWithImage extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               shape: const CircleBorder(),
               padding: const EdgeInsets.all(0),
-              backgroundColor: Provider.of<SettingsInteractor>(context)
-.appTheme.cardColor,
+              backgroundColor:
+                  context.watch<SettingsInteractor>().appTheme.cardColor,
               fixedSize: const Size(32, 32),
               alignment: Alignment.center,
             ),
@@ -93,8 +98,7 @@ class _HeadWithImage extends StatelessWidget {
             },
             child: SvgPicture.asset(
               AppAssets.cancel,
-              color: Provider.of<SettingsInteractor>(context)
-.appTheme.cardIconColor,
+              color: context.watch<SettingsInteractor>().appTheme.cardIconColor,
             ),
           ),
         ),
@@ -104,8 +108,7 @@ class _HeadWithImage extends StatelessWidget {
         thumbVisibility: true,
         child: Container(
           decoration: BoxDecoration(
-            color: Provider.of<SettingsInteractor>(context)
-.appTheme.backgroundColor,
+            color: context.watch<SettingsInteractor>().appTheme.backgroundColor,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
@@ -157,13 +160,12 @@ class _BodyWithTextsState extends State<_BodyWithTexts> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Provider.of<SettingsInteractor>(context)
-.appTheme.backgroundColor,
+      color: context.watch<SettingsInteractor>().appTheme.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder(
-          future: Provider.of<PlaceInteractor>(context)
-.getPlaceDetails(widget.sight.id),
+          future: context.watch<PlaceInteractor>()
+              .getPlaceDetails(widget.sight.id),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
@@ -213,8 +215,7 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Provider.of<SettingsInteractor>(context)
-.appTheme.backgroundColor,
+      color: context.watch<SettingsInteractor>().appTheme.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
@@ -229,8 +230,10 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                     Radius.circular(12),
                   ),
                 ),
-                backgroundColor: Provider.of<SettingsInteractor>(context)
-.appTheme.routeButtonColor,
+                backgroundColor: context
+                    .watch<SettingsInteractor>()
+                    .appTheme
+                    .routeButtonColor,
                 minimumSize: const Size(328, 48),
                 alignment: Alignment.center,
               ),
@@ -275,9 +278,10 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                           AppAssets.calendar,
                           width: 22,
                           height: 19,
-                          color: Provider.of<SettingsInteractor>(context)
-
-                              .appTheme.bottomNavBarSelectedItemColor,
+                          color: context
+                              .watch<SettingsInteractor>()
+                              .appTheme
+                              .bottomNavBarSelectedItemColor,
                         ),
                         const SizedBox(
                           width: 10,
@@ -285,9 +289,10 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                         Text(
                           AppStrings.addToCalendar,
                           style: AppTypography.small.copyWith(
-                            color: Provider.of<SettingsInteractor>(context)
-
-                                .appTheme.bottomNavBarSelectedItemColor,
+                            color: context
+                                .watch<SettingsInteractor>()
+                                .appTheme
+                                .bottomNavBarSelectedItemColor,
                           ),
                         )
                       ],
@@ -312,9 +317,10 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                           isFavorite ? AppAssets.likeFilled : AppAssets.like,
                           width: 20,
                           height: 20,
-                          color: Provider.of<SettingsInteractor>(context)
-
-                              .appTheme.bottomNavBarSelectedItemColor,
+                          color: context
+                              .watch<SettingsInteractor>()
+                              .appTheme
+                              .bottomNavBarSelectedItemColor,
                         ),
                         const SizedBox(
                           width: 10,
@@ -324,9 +330,10 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                               ? AppStrings.inFavoriteAlready
                               : AppStrings.inFavorite,
                           style: AppTypography.small.copyWith(
-                            color: Provider.of<SettingsInteractor>(context)
-
-                                .appTheme.bottomNavBarSelectedItemColor,
+                            color: context
+                                .watch<SettingsInteractor>()
+                                .appTheme
+                                .bottomNavBarSelectedItemColor,
                           ),
                         )
                       ],
@@ -351,8 +358,7 @@ class _DetailsScreenPersistantHeaderDelegate
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       alignment: Alignment.centerLeft,
-      color: Provider.of<SettingsInteractor>(context)
-.appTheme.backgroundColor,
+      color: context.watch<SettingsInteractor>().appTheme.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(

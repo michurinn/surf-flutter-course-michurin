@@ -18,7 +18,9 @@ class SettingsInteractor with ChangeNotifier {
 
   void swipeTheme() {
     _themeProvider.changeTheme();
+    notifyListeners();
   }
 
+  bool get isLight => _themeProvider.isLight;
   BaseTheme get appTheme => _themeProvider.isLight ? LightTheme() : DarkTheme();
 }

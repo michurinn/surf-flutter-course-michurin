@@ -82,7 +82,7 @@ class SearchBarState extends State<SearchBar> {
       cursorWidth: 1,
       cursorHeight: 24,
       cursorColor:
-          Provider.of<SettingsInteractor>(context).appTheme.cursorColor,
+          context.watch<SettingsInteractor>().appTheme.cursorColor,
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.never,
         prefixIcon:
@@ -92,7 +92,7 @@ class SearchBarState extends State<SearchBar> {
             : InkWell(
                 child: Icon(
                   Icons.cancel,
-                  color: Provider.of<SettingsInteractor>(context)
+                  color: context.watch<SettingsInteractor>()
                       .appTheme
                       .badgeColors[0],
                   size: 18,
@@ -102,8 +102,8 @@ class SearchBarState extends State<SearchBar> {
                 },
               ),
         suffixIconColor:
-            Provider.of<SettingsInteractor>(context).appTheme.filterButtonColor,
-        fillColor: Provider.of<SettingsInteractor>(context).appTheme.cardColor,
+            context.watch<SettingsInteractor>().appTheme.filterButtonColor,
+        fillColor: context.watch<SettingsInteractor>().appTheme.cardColor,
         filled: true,
         label: const Text(AppStrings.search),
         labelStyle:

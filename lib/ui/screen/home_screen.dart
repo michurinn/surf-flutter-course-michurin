@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen>
             icon: const Icon(Icons.list_alt),
             activeIcon: SvgPicture.asset(
               AppAssets.listFilled,
-              color: Provider.of<SettingsInteractor>(context)
+              color: context.watch<SettingsInteractor>()
                   .appTheme
                   .bottomNavBarSelectedItemColor,
             ),
@@ -63,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen>
             icon: const Icon(Icons.map_outlined),
             activeIcon: SvgPicture.asset(
               AppAssets.mapFilled,
-              color: Provider.of<SettingsInteractor>(context)
+              color: context.watch<SettingsInteractor>()
                   .appTheme
                   .bottomNavBarSelectedItemColor,
             ),
@@ -72,13 +72,13 @@ class _HomeScreenState extends State<HomeScreen>
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               AppAssets.like,
-              color: Provider.of<SettingsInteractor>(context)
+              color: context.watch<SettingsInteractor>()
                   .appTheme
                   .bottomNavBarUnselectedItemColor,
             ),
             activeIcon: SvgPicture.asset(
               AppAssets.likeFilled,
-              color: Provider.of<SettingsInteractor>(context)
+              color: context.watch<SettingsInteractor>()
                   .appTheme
                   .bottomNavBarSelectedItemColor,
             ),

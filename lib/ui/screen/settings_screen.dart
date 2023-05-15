@@ -15,9 +15,11 @@ class SettingScreen extends StatefulWidget {
 
 // Екран настроек
 class _SettingScreenState extends State<SettingScreen> {
-  bool _switch = false;
+  
   @override
   Widget build(BuildContext context) {
+    // ignore: no_leading_underscores_for_local_identifiers
+    bool _switch = !context.watch<SettingsInteractor>().isLight;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -41,14 +43,14 @@ class _SettingScreenState extends State<SettingScreen> {
                 Switch.adaptive(
                   value: _switch,
                   onChanged: (value) {
-                    Provider.of<SettingsInteractor>(context).swipeTheme();
+                    context.read<SettingsInteractor>().swipeTheme();
                     setState(
                       () {
                         _switch = value;
                       },
                     );
                   },
-                  activeColor: Provider.of<SettingsInteractor>(context)
+                  activeColor: context.watch<SettingsInteractor>()
                       .appTheme
                       .clearButtonColor,
                 )
@@ -69,7 +71,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                   SvgPicture.asset(
                     'assets/icons/info_icon.svg',
-                    color: Provider.of<SettingsInteractor>(context)
+                    color: context.watch<SettingsInteractor>()
                         .appTheme
                         .clearButtonColor,
                   ),

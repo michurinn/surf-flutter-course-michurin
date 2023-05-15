@@ -45,8 +45,9 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
             children: [
               SearchBar(
                 key: _keySearchBar,
-                searchRequest: (str, saveInHistory) async =>
-                    await _findSight(str, saveInHistory: saveInHistory),
+                searchRequest: (str, saveInHistory) async => await _findSight(
+                    context, str,
+                    saveInHistory: saveInHistory),
                 isFocused: true, // автофокус
                 isEnabled: true,
                 hideHistory:
@@ -60,7 +61,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
               showHistory
                   ? _PreviuousSearchList(
                       thenHistoryItemSelected: (str) async {
-                        return await _reFindSight(str);
+                        return await _reFindSight(context, str);
                       },
                       clearHistory: _clearHistory,
                     )
@@ -79,7 +80,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
       );
 
   _clearHistory() {
-    Provider.of<SearchInteractor>(context).history.clear();
+    context.read<SearchInteractor>().history.clear();
     setState(
       () {},
     );
@@ -112,11 +113,12 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     }
   }
 
-  _findSight(String name, {bool saveInHistory = true}) async {
-    await Provider.of<SearchInteractor>(context).searchByName(name).then(
+  _findSight(BuildContext context, String name,
+      {bool saveInHistory = true}) async {
+    await context.read<SearchInteractor>().searchByName(name).then(
       (value) {
         if (saveInHistory) {
-          Provider.of<SearchInteractor>(context).addToHistory(name);
+          context.read<SearchInteractor>().addToHistory(name);
         }
         setState(
           () {
@@ -137,10 +139,10 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     });
   }
 
-  _reFindSight(String name) async {
+  _reFindSight(BuildContext context, String name) async {
     _keySearchBar.currentState!
         .fillControllerWithValue(name); // Повторный поиск - тоже поиск )
-    await _findSight(name, saveInHistory: true);
+    await _findSight(context, name, saveInHistory: true);
   }
 }
 
@@ -163,31 +165,39 @@ class _ListItem extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(12)),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(12),
+                  ),
                   image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: Image.network(
-                        sight.urls[0],
-                        fit: BoxFit.fitWidth,
-                        loadingBuilder: (
-                          BuildContext context,
-                          Widget child,
-                          ImageChunkEvent? loadingProgress,
-                        ) {
-                          if (loadingProgress == null) {
-                            return child;
-                          }
-                          return Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 6.0,
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
-                            ),
-                          );
-                        },
-                      ).image),
+                    fit: BoxFit.cover,
+                    image: Image.network(
+                      sight.urls.isNotEmpty
+                          ? sight.urls[0]
+                          : 'https://www.mdpi.com/humans/humans-02-00017/article_deploy/html/images/humans-02-00017-g002.png',
+                      fit: BoxFit.fitWidth,
+                      loadingBuilder: (
+                        BuildContext context,
+                        Widget child,
+                        ImageChunkEvent? loadingProgress,
+                      ) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 6.0,
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        );
+                      },
+                    ).image,
+                    onError: (exception, stackTrace) => Container(
+                      color: Colors.amber,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(
@@ -197,13 +207,21 @@ class _ListItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    sight.name,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTypography.formLabel.copyWith(
-                        color: Provider.of<SettingsInteractor>(context)
-                            .appTheme
-                            .bottomNavBarSelectedItemColor),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 105,
+                        child: Text(
+                          sight.name,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.formLabel.copyWith(
+                              color: context
+                                  .watch<SettingsInteractor>()
+                                  .appTheme
+                                  .bottomNavBarSelectedItemColor),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 8,
@@ -239,7 +257,7 @@ class _PreviuousSearchList extends StatefulWidget {
 class __PreviuousSearchListState extends State<_PreviuousSearchList> {
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<SearchInteractor>(context).history.isEmpty) {
+    if (context.read<SearchInteractor>().history.isEmpty) {
       return const SizedBox.shrink();
     }
     return Column(
@@ -251,7 +269,8 @@ class __PreviuousSearchListState extends State<_PreviuousSearchList> {
               AppTypography.superSmall.copyWith(color: AppColors.inactiveBlack),
         ),
         Column(
-          children: Provider.of<SearchInteractor>(context)
+          children: context
+              .read<SearchInteractor>()
               .history
               .expand(
                 (element) => [
@@ -259,7 +278,8 @@ class __PreviuousSearchListState extends State<_PreviuousSearchList> {
                     whenSelected: widget.thenHistoryItemSelected,
                     text: element,
                     delete: () {
-                      Provider.of<SearchInteractor>(context)
+                      context
+                          .read<SearchInteractor>()
                           .removeFromHistory(element);
                       setState(
                         () {},
@@ -273,16 +293,20 @@ class __PreviuousSearchListState extends State<_PreviuousSearchList> {
         ),
         // Кнопка Очистить историю
         TextButton(
-            onPressed: () {
-              setState(() {
-                widget.clearHistory!();
-              });
-            },
-            child: Text(AppStrings.clearHistore,
-                style: AppTypography.simpleText.copyWith(
-                    color: Provider.of<SettingsInteractor>(context)
-                        .appTheme
-                        .filterButtonColor)))
+          onPressed: () {
+            setState(() {
+              widget.clearHistory!();
+            });
+          },
+          child: Text(
+            AppStrings.clearHistore,
+            style: AppTypography.simpleText.copyWith(
+                color: context
+                    .watch<SettingsInteractor>()
+                    .appTheme
+                    .filterButtonColor),
+          ),
+        )
       ],
     );
   }
@@ -365,9 +389,10 @@ class _CantFindIt extends StatelessWidget {
                 AppTypography.subtitle.copyWith(color: AppColors.inactiveBlack),
           ),
         ),
-        Text(AppStrings.tryToChangeSearchParams,
-            style:
-                AppTypography.small.copyWith(color: AppColors.inactiveBlack)),
+        Text(
+          AppStrings.tryToChangeSearchParams,
+          style: AppTypography.small.copyWith(color: AppColors.inactiveBlack),
+        ),
       ],
     );
   }
