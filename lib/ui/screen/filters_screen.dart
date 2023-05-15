@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
-import 'package:places/domain/place.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
