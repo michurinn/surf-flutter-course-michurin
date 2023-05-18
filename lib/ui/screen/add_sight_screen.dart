@@ -743,6 +743,7 @@ InputDecoration _inputDecoration({
   required VoidCallback clear,
   required bool showSuffix,
 }) {
+  final themeProvider = context.watch<SettingsInteractor>().appTheme;
   return InputDecoration(
     suffixIcon: showSuffix
         ? InkWell(
@@ -786,7 +787,7 @@ InputDecoration _inputDecoration({
       borderSide: BorderSide(
           width: 2,
           color:
-              context.watch<SettingsInteractor>().appTheme.addFormBorder),
+              themeProvider.addFormBorder),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: const BorderRadius.all(
@@ -794,7 +795,7 @@ InputDecoration _inputDecoration({
       ),
       borderSide: BorderSide(
           color:
-              context.watch<SettingsInteractor>().appTheme.addFormBorder),
+              themeProvider.addFormBorder),
     ),
     labelText: label,
     labelStyle: AppTypography.formLabel.copyWith(
@@ -820,6 +821,7 @@ class _TypeFormField extends StatelessWidget {
 
   @override
   build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return GestureDetector(
       onTap: () {
         Navigator.of(context)
@@ -842,7 +844,7 @@ class _TypeFormField extends StatelessWidget {
         textCapitalization: TextCapitalization.sentences,
         style: AppTypography.formLabel.copyWith(
             color:
-                context.watch<SettingsInteractor>().appTheme.cursorColor),
+                themeProvider.cursorColor),
         showCursor: false,
         decoration: InputDecoration(
           errorBorder: OutlineInputBorder(
@@ -858,7 +860,7 @@ class _TypeFormField extends StatelessWidget {
           suffixIcon: Icon(
             Icons.arrow_forward_ios_sharp,
             color:
-                context.watch<SettingsInteractor>().appTheme.cursorColor,
+                themeProvider.cursorColor,
           ),
           isDense: true,
           border: const UnderlineInputBorder(),
@@ -910,8 +912,9 @@ class _TopImagesListState extends State<_TopImagesList> {
   }
 }
 
-Widget _addPictureButton(BuildContext context, VoidCallback setStateInParent) =>
-    OutlinedButton(
+Widget _addPictureButton(BuildContext context, VoidCallback setStateInParent) {
+  final themeProvider = context.watch<SettingsInteractor>().appTheme;
+  return OutlinedButton(
       onPressed: () {
         mocksPictures = mocksImages;
         setStateInParent();
@@ -929,7 +932,7 @@ Widget _addPictureButton(BuildContext context, VoidCallback setStateInParent) =>
           ),
         ),
         backgroundColor:
-            context.watch<SettingsInteractor>().appTheme.backgroundColor,
+            themeProvider.backgroundColor,
         fixedSize: const Size(72, 72),
         alignment: Alignment.center,
       ),
@@ -937,9 +940,10 @@ Widget _addPictureButton(BuildContext context, VoidCallback setStateInParent) =>
         Icons.add,
         size: 33,
         color:
-            context.watch<SettingsInteractor>().appTheme.clearButtonColor,
+            themeProvider.clearButtonColor,
       ),
     );
+}
 
 class _PictureQuadCard extends StatelessWidget {
   const _PictureQuadCard({

@@ -78,6 +78,7 @@ class _HeadWithImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return SliverAppBar(
       backgroundColor: Colors.transparent,
       automaticallyImplyLeading: false,
@@ -88,8 +89,7 @@ class _HeadWithImage extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               shape: const CircleBorder(),
               padding: const EdgeInsets.all(0),
-              backgroundColor:
-                  context.watch<SettingsInteractor>().appTheme.cardColor,
+              backgroundColor: themeProvider.cardColor,
               fixedSize: const Size(32, 32),
               alignment: Alignment.center,
             ),
@@ -98,7 +98,7 @@ class _HeadWithImage extends StatelessWidget {
             },
             child: SvgPicture.asset(
               AppAssets.cancel,
-              color: context.watch<SettingsInteractor>().appTheme.cardIconColor,
+              color: themeProvider.cardIconColor,
             ),
           ),
         ),
@@ -108,7 +108,7 @@ class _HeadWithImage extends StatelessWidget {
         thumbVisibility: true,
         child: Container(
           decoration: BoxDecoration(
-            color: context.watch<SettingsInteractor>().appTheme.backgroundColor,
+            color: themeProvider.backgroundColor,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
@@ -159,13 +159,14 @@ class _BodyWithTexts extends StatefulWidget {
 class _BodyWithTextsState extends State<_BodyWithTexts> {
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Container(
-      color: context.watch<SettingsInteractor>().appTheme.backgroundColor,
+      color: themeProvider.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder(
-          future: context.watch<PlaceInteractor>()
-              .getPlaceDetails(widget.sight.id),
+          future:
+              context.watch<PlaceInteractor>().getPlaceDetails(widget.sight.id),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
@@ -214,8 +215,9 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Container(
-      color: context.watch<SettingsInteractor>().appTheme.backgroundColor,
+      color: themeProvider.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
@@ -356,9 +358,10 @@ class _DetailsScreenPersistantHeaderDelegate
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Container(
       alignment: Alignment.centerLeft,
-      color: context.watch<SettingsInteractor>().appTheme.backgroundColor,
+      color: themeProvider.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(

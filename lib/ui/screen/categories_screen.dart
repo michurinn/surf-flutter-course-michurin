@@ -25,6 +25,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -49,7 +50,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           child: SvgPicture.asset(
             AppAssets.back,
             color:
-                context.watch<SettingsInteractor>().appTheme.cardIconColor,
+                themeProvider.cardIconColor,
             width: 5,
             height: 10,
           ),
@@ -137,6 +138,7 @@ class _SaveButton extends StatefulWidget {
 class __SaveButtonState extends State<_SaveButton> {
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return OutlinedButton(
       onPressed: () {
         // Вернём название выбранной категории
@@ -154,8 +156,8 @@ class __SaveButtonState extends State<_SaveButton> {
         ),
         // Кнопка меняет цвет если не активна
         backgroundColor: widget.isActive
-            ? context.watch<SettingsInteractor>().appTheme.routeButtonColor
-            : context.watch<SettingsInteractor>().appTheme.cardColor,
+            ? themeProvider.routeButtonColor
+            : themeProvider.cardColor,
         minimumSize: const Size(0, 48),
         alignment: Alignment.center,
       ),

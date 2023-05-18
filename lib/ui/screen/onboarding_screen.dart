@@ -174,7 +174,8 @@ class _AppBar extends StatelessWidget {
               child: Text(
                 AppStrings.skip,
                 style: AppTypography.simpleText.copyWith(
-                    color: context.watch<SettingsInteractor>()
+                    color: context
+                        .watch<SettingsInteractor>()
                         .appTheme
                         .routeButtonColor),
               ),
@@ -196,6 +197,7 @@ class _OnStartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Visibility(
       visible: isVisible,
       child: OutlinedButton(
@@ -209,9 +211,7 @@ class _OnStartButton extends StatelessWidget {
               Radius.circular(12),
             ),
           ),
-          backgroundColor: context.watch<SettingsInteractor>()
-              .appTheme
-              .routeButtonColor,
+          backgroundColor: themeProvider.routeButtonColor,
           alignment: Alignment.center,
         ),
         child: ConstrainedBox(
@@ -223,7 +223,8 @@ class _OnStartButton extends StatelessWidget {
                 child: Text(
                   AppStrings.onStart.toUpperCase(),
                   style: AppTypography.button.copyWith(
-                      color: context.watch<SettingsInteractor>()
+                      color: context
+                          .watch<SettingsInteractor>()
                           .appTheme
                           .addFormActiveLabel),
                   textAlign: TextAlign.center,
@@ -243,6 +244,7 @@ class _PageFirst extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -250,17 +252,15 @@ class _PageFirst extends StatelessWidget {
           children: [
             SvgPicture.asset(
               AppAssets.onboardingRouter,
-              color: context.watch<SettingsInteractor>().appTheme.appTitle,
+              color: themeProvider.appTitle,
             ),
             const SizedBox(
               height: 42,
             ),
             Text(
               OnboardingTexts.screen1.title,
-              style: AppTypography.title.copyWith(
-                  color: context.watch<SettingsInteractor>()
-                      .appTheme
-                      .appTitle),
+              style:
+                  AppTypography.title.copyWith(color: themeProvider.appTitle),
               textAlign: TextAlign.center,
             ),
             const SizedBox(
@@ -269,7 +269,8 @@ class _PageFirst extends StatelessWidget {
             Text(
               OnboardingTexts.screen1.subTitle,
               style: AppTypography.small.copyWith(
-                  color: context.watch<SettingsInteractor>()
+                  color: context
+                      .watch<SettingsInteractor>()
                       .appTheme
                       .onboardingSubtitle),
               textAlign: TextAlign.center,
@@ -287,6 +288,7 @@ class _PageSecond extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -294,17 +296,15 @@ class _PageSecond extends StatelessWidget {
           children: [
             SvgPicture.asset(
               AppAssets.onboardingBackPack,
-              color: context.watch<SettingsInteractor>().appTheme.appTitle,
+              color: themeProvider.appTitle,
             ),
             const SizedBox(
               height: 42,
             ),
             Text(
               OnboardingTexts.screen2.title,
-              style: AppTypography.title.copyWith(
-                  color: context.watch<SettingsInteractor>()
-                      .appTheme
-                      .appTitle),
+              style:
+                  AppTypography.title.copyWith(color: themeProvider.appTitle),
               textAlign: TextAlign.center,
             ),
             const SizedBox(
@@ -313,7 +313,8 @@ class _PageSecond extends StatelessWidget {
             Text(
               OnboardingTexts.screen2.subTitle,
               style: AppTypography.small.copyWith(
-                  color: context.watch<SettingsInteractor>()
+                  color: context
+                      .watch<SettingsInteractor>()
                       .appTheme
                       .onboardingSubtitle),
               textAlign: TextAlign.center,
@@ -331,6 +332,7 @@ class _PageThird extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
@@ -338,17 +340,15 @@ class _PageThird extends StatelessWidget {
           children: [
             SvgPicture.asset(
               AppAssets.onboardingFinger,
-              color: context.watch<SettingsInteractor>().appTheme.appTitle,
+              color: themeProvider.appTitle,
             ),
             const SizedBox(
               height: 42,
             ),
             Text(
               OnboardingTexts.screen3.title,
-              style: AppTypography.title.copyWith(
-                  color: context.watch<SettingsInteractor>()
-                      .appTheme
-                      .appTitle),
+              style:
+                  AppTypography.title.copyWith(color: themeProvider.appTitle),
               textAlign: TextAlign.center,
             ),
             const SizedBox(
@@ -357,7 +357,8 @@ class _PageThird extends StatelessWidget {
             Text(
               OnboardingTexts.screen3.subTitle,
               style: AppTypography.small.copyWith(
-                  color: context.watch<SettingsInteractor>()
+                  color: context
+                      .watch<SettingsInteractor>()
                       .appTheme
                       .onboardingSubtitle),
               textAlign: TextAlign.center,
@@ -375,14 +376,13 @@ class _CirclePoint extends StatelessWidget {
   final bool isActive;
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Container(
       height: 8,
       width: 8,
       decoration: BoxDecoration(
           color: isActive
-              ? context.watch<SettingsInteractor>()
-                  .appTheme
-                  .routeButtonColor
+              ? themeProvider.routeButtonColor
               : AppColors.inactiveBlack,
           borderRadius: const BorderRadius.all(Radius.circular(12))),
     );

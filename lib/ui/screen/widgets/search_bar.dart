@@ -71,6 +71,7 @@ class SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return TextField(
       enableInteractiveSelection:
           widget.isEnabled ? true : false, // will disable paste operation
@@ -81,8 +82,7 @@ class SearchBarState extends State<SearchBar> {
       controller: controller,
       cursorWidth: 1,
       cursorHeight: 24,
-      cursorColor:
-          context.watch<SettingsInteractor>().appTheme.cursorColor,
+      cursorColor: themeProvider.cursorColor,
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.never,
         prefixIcon:
@@ -92,7 +92,8 @@ class SearchBarState extends State<SearchBar> {
             : InkWell(
                 child: Icon(
                   Icons.cancel,
-                  color: context.watch<SettingsInteractor>()
+                  color: context
+                      .watch<SettingsInteractor>()
                       .appTheme
                       .badgeColors[0],
                   size: 18,
@@ -101,9 +102,8 @@ class SearchBarState extends State<SearchBar> {
                   clear();
                 },
               ),
-        suffixIconColor:
-            context.watch<SettingsInteractor>().appTheme.filterButtonColor,
-        fillColor: context.watch<SettingsInteractor>().appTheme.cardColor,
+        suffixIconColor: themeProvider.filterButtonColor,
+        fillColor: themeProvider.cardColor,
         filled: true,
         label: const Text(AppStrings.search),
         labelStyle:

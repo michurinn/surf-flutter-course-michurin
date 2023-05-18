@@ -53,6 +53,7 @@ class _FilterScreenState extends State<FilterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -65,8 +66,7 @@ class _FilterScreenState extends State<FilterScreen> {
             ),
             side: BorderSide.none,
             padding: const EdgeInsets.all(0),
-            backgroundColor:
-                context.watch<SettingsInteractor>().appTheme.backgroundColor,
+            backgroundColor: themeProvider.backgroundColor,
             minimumSize: const Size(32, 32),
             maximumSize: const Size(32, 32),
             alignment: Alignment.center,
@@ -76,7 +76,7 @@ class _FilterScreenState extends State<FilterScreen> {
           },
           child: SvgPicture.asset(
             AppAssets.back,
-            color: context.watch<SettingsInteractor>().appTheme.cardIconColor,
+            color: themeProvider.cardIconColor,
             width: 5,
             height: 10,
           ),
@@ -96,10 +96,7 @@ class _FilterScreenState extends State<FilterScreen> {
               child: Text(
                 AppStrings.clearIt,
                 style: AppTypography.simpleText.copyWith(
-                  color: context
-                      .watch<SettingsInteractor>()
-                      .appTheme
-                      .clearButtonColor,
+                  color: themeProvider.clearButtonColor,
                 ),
               ),
             ),
@@ -195,10 +192,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   data: SliderThemeData(
                     thumbColor: AppColors.white,
                     disabledThumbColor: AppColors.white,
-                    activeTrackColor: context
-                        .watch<SettingsInteractor>()
-                        .appTheme
-                        .routeButtonColor,
+                    activeTrackColor: themeProvider.routeButtonColor,
                     trackHeight: 2,
                   ),
                   child: RangeSlider(
@@ -257,10 +251,7 @@ class _FilterScreenState extends State<FilterScreen> {
                       Radius.circular(12),
                     ),
                   ),
-                  backgroundColor: context
-                      .watch<SettingsInteractor>()
-                      .appTheme
-                      .routeButtonColor,
+                  backgroundColor: themeProvider.routeButtonColor,
                   minimumSize: const Size(328, 48),
                   alignment: Alignment.center,
                 ),
@@ -347,6 +338,7 @@ class __itemGridViewState extends State<_itemGridView> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return GestureDetector(
       onTap: () {
         widget.onPressed();
@@ -362,11 +354,7 @@ class __itemGridViewState extends State<_itemGridView> {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                    color: context
-                        .watch<SettingsInteractor>()
-                        .appTheme
-                        .clearButtonColor
-                        .withOpacity(0.16),
+                    color: themeProvider.clearButtonColor.withOpacity(0.16),
                     shape: BoxShape.circle),
                 child: SvgPicture.asset(
                   widget.sightType.icon,
@@ -381,18 +369,12 @@ class __itemGridViewState extends State<_itemGridView> {
                     width: 16,
                     height: 16,
                     decoration: BoxDecoration(
-                        color: context
-                            .watch<SettingsInteractor>()
-                            .appTheme
-                            .badgeColors[0],
+                        color: themeProvider.badgeColors[0],
                         shape: BoxShape.circle),
                     child: Icon(
                       Icons.done,
                       size: 10,
-                      color: context
-                          .watch<SettingsInteractor>()
-                          .appTheme
-                          .badgeColors[1],
+                      color: themeProvider.badgeColors[1],
                     ),
                   ),
                 )
@@ -403,11 +385,8 @@ class __itemGridViewState extends State<_itemGridView> {
           ),
           Text(
             widget.sightType.type,
-            style: AppTypography.superSmall.copyWith(
-                color: context
-                    .watch<SettingsInteractor>()
-                    .appTheme
-                    .bottomNavBarSelectedItemColor),
+            style: AppTypography.superSmall
+                .copyWith(color: themeProvider.bottomNavBarSelectedItemColor),
           ),
         ],
       ),

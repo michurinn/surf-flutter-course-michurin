@@ -24,8 +24,8 @@ class VisitingScreen extends StatefulWidget {
 class _VisitingScreenState extends State<VisitingScreen> {
   @override
   Widget build(BuildContext context) {
-    final List<Place> favoritePlaces = context.watch<PlaceInteractor>()
-        .getFavoritePlacesSortedByDistance();
+    final List<Place> favoritePlaces =
+        context.watch<PlaceInteractor>().getFavoritePlacesSortedByDistance();
     final List<Place> visitedPlaces =
         context.watch<PlaceInteractor>().visitedPlaces;
     return DefaultTabController(
@@ -87,7 +87,8 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                     child: Container(
                       alignment: Alignment.centerRight,
                       decoration: BoxDecoration(
-                        color: context.watch<SettingsInteractor>()
+                        color: context
+                            .watch<SettingsInteractor>()
                             .appTheme
                             .errorColor,
                         borderRadius: const BorderRadius.all(
@@ -123,7 +124,8 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                   key: ValueKey<int>(widget.favoritePlaces[index].hashCode),
                   direction: DismissDirection.endToStart,
                   onDismissed: (direction) {
-                    context.read<PlaceInteractor>()
+                    context
+                        .read<PlaceInteractor>()
                         .removeFromFavorites(widget.favoritePlaces[index]);
                     setState(() {});
                   },
@@ -132,17 +134,19 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                       ValueKey<String> rawData = data as ValueKey<String>;
 
                       setState(() {
-                        context.read<PlaceInteractor>()
-                            .favoritePlaces
-                            .insert(
-                              context.read<PlaceInteractor>()
+                        context.read<PlaceInteractor>().favoritePlaces.insert(
+                              context
+                                  .read<PlaceInteractor>()
                                   .favoritePlaces
-                                  .indexOf(context.read<PlaceInteractor>()
+                                  .indexOf(context
+                                      .read<PlaceInteractor>()
                                       .favoritePlaces[index]),
-                              context.read<PlaceInteractor>()
+                              context
+                                  .read<PlaceInteractor>()
                                   .favoritePlaces
                                   .removeAt(
-                                    context.read<PlaceInteractor>()
+                                    context
+                                        .read<PlaceInteractor>()
                                         .favoritePlaces
                                         .indexWhere(
                                           (element) =>
@@ -167,10 +171,10 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                                 child: FavoriteSight(
                                   sight: widget.favoritePlaces[index],
                                   isFinished: false,
-                                  onClosePressed: () =>
-                                      context.read<PlaceInteractor>()
-                                          .removeFromFavorites(
-                                              widget.favoritePlaces[index]),
+                                  onClosePressed: () => context
+                                      .read<PlaceInteractor>()
+                                      .removeFromFavorites(
+                                          widget.favoritePlaces[index]),
                                 ),
                               ),
                             ),
@@ -178,7 +182,8 @@ class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
                               sight: widget.favoritePlaces[index],
                               isFinished: false,
                               onClosePressed: () {
-                                context.read<PlaceInteractor>()
+                                context
+                                    .read<PlaceInteractor>()
                                     .removeFromFavorites(
                                         widget.favoritePlaces[index]);
                                 setState(() {});
@@ -205,6 +210,7 @@ class _FavoriteAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return AppBar(
       elevation: 0,
       title:
@@ -215,7 +221,7 @@ class _FavoriteAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Material(
-            color: context.watch<SettingsInteractor>().appTheme.cardColor,
+            color: themeProvider.cardColor,
             borderRadius: const BorderRadius.all(Radius.circular(40.0)),
             child: TabBar(
               splashBorderRadius: const BorderRadius.all(Radius.circular(40.0)),
