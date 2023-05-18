@@ -115,6 +115,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double heightVisible = MediaQuery.of(context).viewInsets.bottom;
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       behavior: HitTestBehavior.opaque,
@@ -133,10 +134,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
             },
             child: Text(
               AppStrings.cancel,
-              style: AppTypography.simpleText.copyWith(
-                  color: context.watch<SettingsInteractor>()
-                      .appTheme
-                      .appLeading),
+              style: AppTypography.simpleText
+                  .copyWith(color: themeProvider.appLeading),
             ),
           ),
         ),
@@ -160,9 +159,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           child: Text(
                             AppStrings.category.toUpperCase(),
                             style: AppTypography.superSmall.copyWith(
-                                color: context.watch<SettingsInteractor>()
-                                    .appTheme
-                                    .addFormInactiveLabel),
+                                color: themeProvider.addFormInactiveLabel),
                           ),
                         ),
                         _TypeFormField(
@@ -177,9 +174,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           child: Text(
                             AppStrings.name.toUpperCase(),
                             style: AppTypography.superSmall.copyWith(
-                                color: context.watch<SettingsInteractor>()
-                                    .appTheme
-                                    .addFormInactiveLabel),
+                                color: themeProvider.addFormInactiveLabel),
                           ),
                         ),
                         TextFormField(
@@ -193,15 +188,11 @@ class _AddSightScreenState extends State<AddSightScreen> {
                             fn2.requestFocus();
                           },
                           textCapitalization: TextCapitalization.sentences,
-                          style: AppTypography.formLabel.copyWith(
-                              color: context.watch<SettingsInteractor>()
-                                  .appTheme
-                                  .cursorColor),
+                          style: AppTypography.formLabel
+                              .copyWith(color: themeProvider.cursorColor),
                           cursorWidth: 1,
                           cursorHeight: 24,
-                          cursorColor: context.watch<SettingsInteractor>()
-                              .appTheme
-                              .cursorColor,
+                          cursorColor: themeProvider.cursorColor,
                           minLines: 3,
                           maxLines: 8,
                           textAlignVertical: TextAlignVertical.top,
@@ -229,8 +220,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                         AppStrings.width.toUpperCase(),
                                         style: AppTypography.superSmall
                                             .copyWith(
-                                                color: context.watch<SettingsInteractor>()
-                                                    .appTheme
+                                                color: themeProvider
                                                     .addFormInactiveLabel),
                                       ),
                                     ),
@@ -243,10 +233,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                         controller: widthController,
                                         cursorWidth: 1,
                                         cursorHeight: 24,
-                                        cursorColor:
-                                            context.watch<SettingsInteractor>()
-                                                .appTheme
-                                                .cursorColor,
+                                        cursorColor: themeProvider.cursorColor,
                                         onEditingComplete: () {
                                           _checkEmptyFields();
                                           fn2.unfocus();
@@ -285,8 +272,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                         AppStrings.height.toUpperCase(),
                                         style: AppTypography.superSmall
                                             .copyWith(
-                                                color: context.watch<SettingsInteractor>()
-                                                    .appTheme
+                                                color: themeProvider
                                                     .addFormInactiveLabel),
                                       ),
                                     ),
@@ -297,10 +283,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                                         controller: heightController,
                                         cursorWidth: 1,
                                         cursorHeight: 24,
-                                        cursorColor:
-                                            context.watch<SettingsInteractor>()
-                                                .appTheme
-                                                .cursorColor,
+                                        cursorColor: themeProvider.cursorColor,
                                         onEditingComplete: () {
                                           _checkEmptyFields();
                                           fn3.unfocus();
@@ -336,10 +319,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                             child: Text(
                               AppStrings.putOnMap,
                               style: AppTypography.simpleText.copyWith(
-                                  color:
-                                      context.watch<SettingsInteractor>()
-                                          .appTheme
-                                          .clearButtonColor),
+                                  color: themeProvider.clearButtonColor),
                             ),
                           ),
                         ),
@@ -348,9 +328,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           child: Text(
                             AppStrings.description.toUpperCase(),
                             style: AppTypography.superSmall.copyWith(
-                                color: context.watch<SettingsInteractor>()
-                                    .appTheme
-                                    .addFormInactiveLabel),
+                                color: themeProvider.addFormInactiveLabel),
                           ),
                         ),
                         Padding(
@@ -365,16 +343,11 @@ class _AddSightScreenState extends State<AddSightScreen> {
                             },
                             keyboardType: TextInputType.text,
                             textCapitalization: TextCapitalization.sentences,
-                            style: AppTypography.formLabel.copyWith(
-                                color: context.watch<SettingsInteractor>()
-                                    .appTheme
-                                    .cursorColor),
+                            style: AppTypography.formLabel
+                                .copyWith(color: themeProvider.cursorColor),
                             cursorWidth: 1,
                             cursorHeight: 24,
-                            cursorColor:
-                                context.watch<SettingsInteractor>()
-                                    .appTheme
-                                    .cursorColor,
+                            cursorColor: themeProvider.cursorColor,
                             minLines: 3,
                             maxLines: 8,
                             textAlignVertical: TextAlignVertical.top,
@@ -404,12 +377,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
                         ),
                       ),
                       backgroundColor: !_isButtonEnabled
-                          ? context.watch<SettingsInteractor>()
-                              .appTheme
-                              .cardColor
-                          : context.watch<SettingsInteractor>()
-                              .appTheme
-                              .routeButtonColor,
+                          ? themeProvider.cardColor
+                          : themeProvider.routeButtonColor,
                       minimumSize: const Size(328, 48),
                       alignment: Alignment.center,
                     ),
@@ -420,12 +389,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           AppStrings.create.toUpperCase(),
                           style: AppTypography.button.copyWith(
                               color: !_isButtonEnabled
-                                  ? context.watch<SettingsInteractor>()
-                                      .appTheme
-                                      .addFormInactiveLabel
-                                  : context.watch<SettingsInteractor>()
-                                      .appTheme
-                                      .addFormActiveLabel),
+                                  ? themeProvider.addFormInactiveLabel
+                                  : themeProvider.addFormActiveLabel),
                         )
                       ],
                     ),
@@ -442,6 +407,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   // Диалог для кнопки Добавить фото
   // ignore: non_constant_identifier_names
   Future<dynamic> _AddPictureShowDialog(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return showDialog(
       context: context,
       builder: (context) => SimpleDialog(
@@ -455,13 +421,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
               padding: const EdgeInsets.all(0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: context.watch<SettingsInteractor>()
-                      .appTheme
-                      .backgroundColor,
-                  border: Border.all(
-                      color: context.watch<SettingsInteractor>()
-                          .appTheme
-                          .backgroundColor),
+                  color: themeProvider.backgroundColor,
+                  border: Border.all(color: themeProvider.backgroundColor),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(12),
                     topRight: Radius.circular(12),
@@ -501,13 +462,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
               padding: const EdgeInsets.all(0),
               child: Container(
                 decoration: BoxDecoration(
-                    color: context.watch<SettingsInteractor>()
-                        .appTheme
-                        .backgroundColor,
-                    border: Border.all(
-                        color: context.watch<SettingsInteractor>()
-                            .appTheme
-                            .backgroundColor)),
+                    color: themeProvider.backgroundColor,
+                    border: Border.all(color: themeProvider.backgroundColor)),
                 width: MediaQuery.of(context).size.width,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 19.0),
@@ -541,13 +497,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
               padding: const EdgeInsets.all(0),
               child: Container(
                 decoration: BoxDecoration(
-                  color: context.watch<SettingsInteractor>()
-                      .appTheme
-                      .backgroundColor,
-                  border: Border.all(
-                      color: context.watch<SettingsInteractor>()
-                          .appTheme
-                          .backgroundColor),
+                  color: themeProvider.backgroundColor,
+                  border: Border.all(color: themeProvider.backgroundColor),
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(12),
                     bottomRight: Radius.circular(12),
@@ -595,9 +546,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
                           Radius.circular(12),
                         ),
                       ),
-                      backgroundColor: context.watch<SettingsInteractor>()
-                          .appTheme
-                          .cardColor,
+                      backgroundColor: themeProvider.cardColor,
                       minimumSize: const Size.fromHeight(48),
                       alignment: Alignment.center,
                       fixedSize:
@@ -607,10 +556,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
                     children: [
                       Text(
                         AppStrings.cancel.toUpperCase(),
-                        style: AppTypography.button.copyWith(
-                            color: context.watch<SettingsInteractor>()
-                                .appTheme
-                                .routeButtonColor),
+                        style: AppTypography.button
+                            .copyWith(color: themeProvider.routeButtonColor),
                       )
                     ],
                   ),
@@ -749,9 +696,7 @@ InputDecoration _inputDecoration({
         ? InkWell(
             child: Icon(
               Icons.cancel,
-              color: context.watch<SettingsInteractor>()
-                  .appTheme
-                  .badgeColors[0],
+              color: themeProvider.badgeColors[0],
               size: 18,
             ),
             onTap: () {
@@ -784,24 +729,17 @@ InputDecoration _inputDecoration({
       borderRadius: const BorderRadius.all(
         Radius.circular(8),
       ),
-      borderSide: BorderSide(
-          width: 2,
-          color:
-              themeProvider.addFormBorder),
+      borderSide: BorderSide(width: 2, color: themeProvider.addFormBorder),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: const BorderRadius.all(
         Radius.circular(8),
       ),
-      borderSide: BorderSide(
-          color:
-              themeProvider.addFormBorder),
+      borderSide: BorderSide(color: themeProvider.addFormBorder),
     ),
     labelText: label,
-    labelStyle: AppTypography.formLabel.copyWith(
-        color: context.watch<SettingsInteractor>()
-            .appTheme
-            .addFormInactiveLabel),
+    labelStyle: AppTypography.formLabel
+        .copyWith(color: themeProvider.addFormInactiveLabel),
   );
 }
 
@@ -842,9 +780,8 @@ class _TypeFormField extends StatelessWidget {
         validator: validate,
         textInputAction: TextInputAction.none,
         textCapitalization: TextCapitalization.sentences,
-        style: AppTypography.formLabel.copyWith(
-            color:
-                themeProvider.cursorColor),
+        style:
+            AppTypography.formLabel.copyWith(color: themeProvider.cursorColor),
         showCursor: false,
         decoration: InputDecoration(
           errorBorder: OutlineInputBorder(
@@ -859,8 +796,7 @@ class _TypeFormField extends StatelessWidget {
           floatingLabelBehavior: FloatingLabelBehavior.never,
           suffixIcon: Icon(
             Icons.arrow_forward_ios_sharp,
-            color:
-                themeProvider.cursorColor,
+            color: themeProvider.cursorColor,
           ),
           isDense: true,
           border: const UnderlineInputBorder(),
@@ -915,34 +851,28 @@ class _TopImagesListState extends State<_TopImagesList> {
 Widget _addPictureButton(BuildContext context, VoidCallback setStateInParent) {
   final themeProvider = context.watch<SettingsInteractor>().appTheme;
   return OutlinedButton(
-      onPressed: () {
-        mocksPictures = mocksImages;
-        setStateInParent();
-      },
-      style: OutlinedButton.styleFrom(
-        side: BorderSide(
-            width: 2.0,
-            color: context.watch<SettingsInteractor>()
-                .appTheme
-                .clearButtonColor
-                .withOpacity(0.48)),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(12),
-          ),
+    onPressed: () {
+      mocksPictures = mocksImages;
+      setStateInParent();
+    },
+    style: OutlinedButton.styleFrom(
+      side: BorderSide(
+          width: 2.0, color: themeProvider.clearButtonColor.withOpacity(0.48)),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(12),
         ),
-        backgroundColor:
-            themeProvider.backgroundColor,
-        fixedSize: const Size(72, 72),
-        alignment: Alignment.center,
       ),
-      child: Icon(
-        Icons.add,
-        size: 33,
-        color:
-            themeProvider.clearButtonColor,
-      ),
-    );
+      backgroundColor: themeProvider.backgroundColor,
+      fixedSize: const Size(72, 72),
+      alignment: Alignment.center,
+    ),
+    child: Icon(
+      Icons.add,
+      size: 33,
+      color: themeProvider.clearButtonColor,
+    ),
+  );
 }
 
 class _PictureQuadCard extends StatelessWidget {
@@ -955,6 +885,7 @@ class _PictureQuadCard extends StatelessWidget {
   final VoidCallback onDeletePressed;
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Dismissible(
       onDismissed: (direction) {
         mocksImages.removeWhere((element) => element == imagePath);
@@ -989,9 +920,7 @@ class _PictureQuadCard extends StatelessWidget {
               },
               icon: Icon(
                 Icons.cancel,
-                color: context.watch<SettingsInteractor>()
-                    .appTheme
-                    .badgeColors[1],
+                color: themeProvider.badgeColors[1],
                 size: 22,
               ),
             ),

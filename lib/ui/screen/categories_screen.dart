@@ -89,8 +89,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                               (states) =>
                                   const BorderSide(color: Colors.transparent),
                             ),
-                            checkColor: context.watch<SettingsInteractor>()
-                                .appTheme
+                            checkColor: themeProvider
                                 .routeButtonColor,
                             value: checkedMap[element.type],
                             onChanged: (value) {
@@ -168,11 +167,9 @@ class __SaveButtonState extends State<_SaveButton> {
             AppStrings.save.toUpperCase(),
             style: AppTypography.button.copyWith(
                 color: widget.isActive
-                    ? context.watch<SettingsInteractor>()
-                        .appTheme
+                    ? themeProvider
                         .addFormActiveLabel
-                    : context.watch<SettingsInteractor>()
-                        .appTheme
+                    : themeProvider
                         .addFormInactiveLabel),
           )
         ],

@@ -25,6 +25,7 @@ class FavoriteSight extends StatelessWidget {
   final VoidCallback? onClosePressed;
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return AspectRatio(
       aspectRatio: 3 / 2,
       child: Card(
@@ -76,10 +77,7 @@ class FavoriteSight extends StatelessWidget {
                                 padding: const EdgeInsets.all(0),
                                 iconSize: 22,
                                 icon: Icon(Icons.share,
-                                    color:
-                                        context.watch<SettingsInteractor>()
-                                            .appTheme
-                                            .iconColor),
+                                    color: themeProvider.iconColor),
                                 onPressed: () {
                                   print("Share on card pressed");
                                 },
@@ -88,10 +86,7 @@ class FavoriteSight extends StatelessWidget {
                                 padding: const EdgeInsets.all(0),
                                 iconSize: 22,
                                 icon: SvgPicture.asset(AppAssets.calendar,
-                                    color:
-                                        context.watch<SettingsInteractor>()
-                                            .appTheme
-                                            .iconColor),
+                                    color: themeProvider.iconColor),
                                 onPressed: () async {
                                   DateTime? date = Platform.isAndroid
                                       ? await showDatePicker(
@@ -117,9 +112,7 @@ class FavoriteSight extends StatelessWidget {
                             iconSize: 22,
                             padding: const EdgeInsets.all(0),
                             icon: Icon(Icons.close,
-                                color: context.watch<SettingsInteractor>()
-                                    .appTheme
-                                    .iconColor),
+                                color: themeProvider.iconColor),
                             onPressed: onClosePressed)
                       ],
                     ),
@@ -170,14 +163,14 @@ class _CupertinoDatePickerBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateTime plannedDate = DateTime.now().add(const Duration(days: 1));
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 28.0),
         child: Container(
           decoration: BoxDecoration(
-            color: context.watch<SettingsInteractor>()
-                .appTheme
-                .backgroundColor,
+            color: themeProvider.backgroundColor,
             borderRadius: const BorderRadius.all(Radius.circular(20)),
           ),
           width: MediaQuery.of(context).size.width,
@@ -205,10 +198,8 @@ class _CupertinoDatePickerBody extends StatelessWidget {
                     },
                     child: Text(
                       AppStrings.addToCalendar,
-                      style: AppTypography.button.copyWith(
-                          color: context.watch<SettingsInteractor>()
-                              .appTheme
-                              .filterButtonColor),
+                      style: AppTypography.button
+                          .copyWith(color: themeProvider.filterButtonColor),
                     ),
                   ),
                   TextButton(
@@ -217,10 +208,8 @@ class _CupertinoDatePickerBody extends StatelessWidget {
                     },
                     child: Text(
                       AppStrings.cancel,
-                      style: AppTypography.button.copyWith(
-                          color: context.watch<SettingsInteractor>()
-                              .appTheme
-                              .filterButtonColor),
+                      style: AppTypography.button
+                          .copyWith(color: themeProvider.filterButtonColor),
                     ),
                   ),
                 ],

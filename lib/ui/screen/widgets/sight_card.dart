@@ -50,6 +50,7 @@ class _SightCardState extends State<SightCard> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return ConstrainedBox(
       constraints: BoxConstraints(
           maxWidth: width, maxHeight: width / 1.5, minHeight: width / 1.5),
@@ -131,10 +132,7 @@ class _SightCardState extends State<SightCard> {
                                   snapshot.data == true
                                       ? AppAssets.likeFilled
                                       : AppAssets.like,
-                                  color:
-                                      context.watch<SettingsInteractor>()
-                                          .appTheme
-                                          .iconColor,
+                                  color: themeProvider.iconColor,
                                 ),
                                 onPressed: () {
                                   widget.onHeartTap();

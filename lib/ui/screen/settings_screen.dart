@@ -15,10 +15,10 @@ class SettingScreen extends StatefulWidget {
 
 // Екран настроек
 class _SettingScreenState extends State<SettingScreen> {
-  
   @override
   Widget build(BuildContext context) {
     // ignore: no_leading_underscores_for_local_identifiers
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     bool _switch = !context.watch<SettingsInteractor>().isLight;
     return Scaffold(
       appBar: AppBar(
@@ -50,9 +50,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       },
                     );
                   },
-                  activeColor: context.watch<SettingsInteractor>()
-                      .appTheme
-                      .clearButtonColor,
+                  activeColor: themeProvider.clearButtonColor,
                 )
               ],
             ),
@@ -71,9 +69,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                   SvgPicture.asset(
                     'assets/icons/info_icon.svg',
-                    color: context.watch<SettingsInteractor>()
-                        .appTheme
-                        .clearButtonColor,
+                    color: themeProvider.clearButtonColor,
                   ),
                 ],
               ),
