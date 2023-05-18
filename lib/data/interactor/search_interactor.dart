@@ -77,9 +77,9 @@ class SearchInteractor {
   }
 
   //Поиск мест по фильтру
-  Future<List<Place>> searchByFilter() async {
+  Future<List<Place>?> searchByFilter() async {
     final response = await _placeRepository.getFilteredPlaces(_filter);
-    _filteredPlaces = response.map((element) => element).toList();
+    _filteredPlaces = response;
     return _filteredPlaces;
   }
 

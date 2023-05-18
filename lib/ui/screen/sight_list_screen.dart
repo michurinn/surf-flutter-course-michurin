@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/interactor/search_interactor.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/domain/place.dart';
-import 'package:places/main.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
@@ -15,6 +17,7 @@ import 'package:places/ui/screen/sight_details.dart';
 import 'package:places/ui/screen/sight_search_screen.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 import 'package:places/domain/error_widget.dart' as error_widget;
+import 'package:provider/provider.dart';
 
 // Екран списка мест
 class SightListScreen extends StatefulWidget {
@@ -43,7 +46,7 @@ class _SightListScreenState extends State<SightListScreen> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    await placeInteractor.getPlaces().then((value) {
+    await context.read<PlaceInteractor>().getPlaces().then((value) {
       placesController.add(value);
     }, onError: (error) => placesController.addError(error));
   }
@@ -68,8 +71,12 @@ class _SightListScreenState extends State<SightListScreen> {
                       )
                           .then((_) {
                         // Покажем результаты с фильтром, если установлен фильтр
-                        if (searchInteractor.filteredPlaces.isNotEmpty) {
-                          placesController.add(searchInteractor.filteredPlaces);
+                        if (context
+                            .read<SearchInteractor>()
+                            .filteredPlaces
+                            .isNotEmpty) {
+                          placesController.add(
+                              context.read<SearchInteractor>().filteredPlaces);
                         }
                       }),
                     ) as SliverPersistentHeaderDelegate,
@@ -122,9 +129,12 @@ class _SightListScreenState extends State<SightListScreen> {
                           ? true
                           : false,
                   onNewPlaceCreated: ((Place newPlace) async {
-                    await placeInteractor.addNewPlace(newPlace);
-                    final response = await placeInteractor.getPlaces();
-                    placesController.add(response);
+                    await context.read<PlaceInteractor>().addNewPlace(newPlace);
+                    if (mounted) {
+                      final response =
+                          await context.watch<PlaceInteractor>().getPlaces();
+                      placesController.add(response);
+                    }
                     if (mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -191,7 +201,10 @@ class _AppBarSearchWidget extends StatelessWidget
               padding: const EdgeInsets.only(right: 10),
               child: IconButton(
                 icon: Icon(Icons.tune_rounded,
-                    color: themeInteractor.appTheme.filterButtonColor),
+                    color: context
+                        .watch<SettingsInteractor>()
+                        .appTheme
+                        .filterButtonColor),
                 onPressed: onPressed,
               ),
             )
@@ -291,8 +304,10 @@ class _ListOfPlacesLandScapeState extends State<_ListOfPlacesLandScape> {
                         height: 300 * 0.8,
                         child: SightCard(
                           sight: element,
-                          isFavorite:
-                              placeInteractor.favoritePlaces.contains(element),
+                          isFavorite: context
+                              .watch<PlaceInteractor>()
+                              .favoritePlaces
+                              .contains(element),
                           onHeartTap: () {
                             // No possible to tap in 'feedback' view
                           },
@@ -303,12 +318,20 @@ class _ListOfPlacesLandScapeState extends State<_ListOfPlacesLandScape> {
                       ),
                     ),
                     child: SightCard(
-                      onHeartTap: () =>
-                          placeInteractor.favoritePlaces.contains(element)
-                              ? placeInteractor.removeFromFavorites(element)
-                              : placeInteractor.addToFavorites(element),
-                      isFavorite:
-                          placeInteractor.favoritePlaces.contains(element),
+                      onHeartTap: () => context
+                              .watch<PlaceInteractor>()
+                              .favoritePlaces
+                              .contains(element)
+                          ? context
+                              .read<PlaceInteractor>()
+                              .removeFromFavorites(element)
+                          : context
+                              .read<PlaceInteractor>()
+                              .addToFavorites(element),
+                      isFavorite: context
+                          .watch<PlaceInteractor>()
+                          .favoritePlaces
+                          .contains(element),
                       sight: element,
                       onTap: () => showDetailsBottomSheet(context, element),
                     ),
@@ -387,7 +410,9 @@ class _ListOfPlacesPortraitState extends State<_ListOfPlacesPortrait> {
                       width: MediaQuery.of(context).size.width * 0.9,
                       child: SightCard(
                         sight: places[index],
-                        isFavorite: placeInteractor.favoritePlaces
+                        isFavorite: context
+                            .watch<PlaceInteractor>()
+                            .favoritePlaces
                             .contains(places[index]),
                         onHeartTap: () {
                           // No possible to tap in 'feedback' view
@@ -422,12 +447,20 @@ class _ListOfPlacesPortraitState extends State<_ListOfPlacesPortrait> {
                         ),
                       ),
                     ),
-                    isFavorite:
-                        placeInteractor.favoritePlaces.contains(places[index]),
-                    onHeartTap: () =>
-                        placeInteractor.favoritePlaces.contains(places[index])
-                            ? placeInteractor.removeFromFavorites(places[index])
-                            : placeInteractor.addToFavorites(places[index]),
+                    isFavorite: context
+                        .watch<PlaceInteractor>()
+                        .favoritePlaces
+                        .contains(places[index]),
+                    onHeartTap: () => context
+                            .read<PlaceInteractor>()
+                            .favoritePlaces
+                            .contains(places[index])
+                        ? context
+                            .read<PlaceInteractor>()
+                            .removeFromFavorites(places[index])
+                        : context
+                            .read<PlaceInteractor>()
+                            .addToFavorites(places[index]),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -449,6 +482,7 @@ class _AddButton extends StatelessWidget {
       {required this.onNewPlaceCreated, this.portraitOrientation = true});
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return OutlinedButton(
       onPressed: () {
         Navigator.of(context).pushNamed(AddSightScreen.routeName).then(
@@ -474,8 +508,7 @@ class _AddButton extends StatelessWidget {
             ? const BoxConstraints(maxWidth: 300.0, minHeight: 50.0)
             : const BoxConstraints(maxWidth: 50.0, minHeight: 50.0),
         decoration: BoxDecoration(
-          gradient:
-              LinearGradient(colors: themeInteractor.appTheme.newPlaceButton),
+          gradient: LinearGradient(colors: themeProvider.newPlaceButton),
           borderRadius: const BorderRadius.all(
             Radius.circular(24.0),
           ),
@@ -484,7 +517,11 @@ class _AddButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.plus_one,
-                size: 20, color: themeInteractor.appTheme.addFormActiveLabel),
+                size: 20,
+                color: context
+                    .watch<SettingsInteractor>()
+                    .appTheme
+                    .addFormActiveLabel),
             if (portraitOrientation)
               const SizedBox(
                 width: 10,
@@ -493,7 +530,10 @@ class _AddButton extends StatelessWidget {
               Text(
                 AppStrings.create.toUpperCase(),
                 style: AppTypography.button.copyWith(
-                    color: themeInteractor.appTheme.addFormActiveLabel),
+                    color: context
+                        .watch<SettingsInteractor>()
+                        .appTheme
+                        .addFormActiveLabel),
               )
           ],
         ),
@@ -545,8 +585,9 @@ class _SightListScreenPersistantHeaderDelegatePortrait
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Container(
-      color: themeInteractor.appTheme.backgroundColor,
+      color: themeProvider.backgroundColor,
       child: Column(
         crossAxisAlignment: shrinkOffset < 100
             ? CrossAxisAlignment.start
@@ -555,16 +596,22 @@ class _SightListScreenPersistantHeaderDelegatePortrait
           shrinkOffset < 100
               ? Text(
                   AppStrings.listOfInterestingPlases,
-                  style: AppTypography.largeTitle
-                      .copyWith(color: themeInteractor.appTheme.appTitle),
+                  style: AppTypography.largeTitle.copyWith(
+                      color: context
+                          .watch<SettingsInteractor>()
+                          .appTheme
+                          .appTitle),
                 )
               : Padding(
                   padding: const EdgeInsets.symmetric(vertical: 28.0),
                   child: Text(
                     AppStrings.listOfInterestingPlases
                         .replaceFirst(RegExp(r'\n'), ' '),
-                    style: AppTypography.subtitle
-                        .copyWith(color: themeInteractor.appTheme.appTitle),
+                    style: AppTypography.subtitle.copyWith(
+                        color: context
+                            .watch<SettingsInteractor>()
+                            .appTheme
+                            .appTitle),
                   ),
                 ),
           if (shrinkOffset == 0)
@@ -598,8 +645,9 @@ class _SightListScreenPersistantHeaderDelegateLandScape
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Container(
-      color: themeInteractor.appTheme.backgroundColor,
+      color: themeProvider.backgroundColor,
       child: Stack(
         children: [
           Column(
@@ -610,8 +658,11 @@ class _SightListScreenPersistantHeaderDelegateLandScape
                 child: Text(
                   AppStrings.listOfInterestingPlases
                       .replaceFirst(RegExp(r'\n'), ' '),
-                  style: AppTypography.subtitle
-                      .copyWith(color: themeInteractor.appTheme.appTitle),
+                  style: AppTypography.subtitle.copyWith(
+                      color: context
+                          .watch<SettingsInteractor>()
+                          .appTheme
+                          .appTitle),
                 ),
               ),
               if (shrinkOffset == 0)

@@ -2,12 +2,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/domain/place.dart';
-import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
+import 'package:provider/provider.dart';
 
 class SightDetails extends StatelessWidget {
   const SightDetails({
@@ -45,11 +47,20 @@ class SightDetails extends StatelessWidget {
                 ),
                 const Spacer(),
                 _BottomWithButtons(
-                    isFavorite: placeInteractor.favoritePlaces.contains(sight),
-                    onFavoriteTap: () =>
-                        placeInteractor.favoritePlaces.contains(sight)
-                            ? placeInteractor.removeFromFavorites(sight)
-                            : placeInteractor.addToFavorites(sight)),
+                    isFavorite: context
+                        .watch<PlaceInteractor>()
+                        .favoritePlaces
+                        .contains(sight),
+                    onFavoriteTap: () => context
+                            .watch<PlaceInteractor>()
+                            .favoritePlaces
+                            .contains(sight)
+                        ? context
+                            .read<PlaceInteractor>()
+                            .removeFromFavorites(sight)
+                        : context
+                            .read<PlaceInteractor>()
+                            .addToFavorites(sight)),
               ]),
             ),
           ],
@@ -67,6 +78,7 @@ class _HeadWithImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return SliverAppBar(
       backgroundColor: Colors.transparent,
       automaticallyImplyLeading: false,
@@ -77,7 +89,7 @@ class _HeadWithImage extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               shape: const CircleBorder(),
               padding: const EdgeInsets.all(0),
-              backgroundColor: themeInteractor.appTheme.cardColor,
+              backgroundColor: themeProvider.cardColor,
               fixedSize: const Size(32, 32),
               alignment: Alignment.center,
             ),
@@ -86,7 +98,7 @@ class _HeadWithImage extends StatelessWidget {
             },
             child: SvgPicture.asset(
               AppAssets.cancel,
-              color: themeInteractor.appTheme.cardIconColor,
+              color: themeProvider.cardIconColor,
             ),
           ),
         ),
@@ -96,7 +108,7 @@ class _HeadWithImage extends StatelessWidget {
         thumbVisibility: true,
         child: Container(
           decoration: BoxDecoration(
-            color: themeInteractor.appTheme.backgroundColor,
+            color: themeProvider.backgroundColor,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20),
               topRight: Radius.circular(20),
@@ -147,12 +159,14 @@ class _BodyWithTexts extends StatefulWidget {
 class _BodyWithTextsState extends State<_BodyWithTexts> {
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Container(
-      color: themeInteractor.appTheme.backgroundColor,
+      color: themeProvider.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: FutureBuilder(
-          future: placeInteractor.getPlaceDetails(widget.sight.id),
+          future:
+              context.watch<PlaceInteractor>().getPlaceDetails(widget.sight.id),
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
               case ConnectionState.none:
@@ -201,8 +215,9 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Container(
-      color: themeInteractor.appTheme.backgroundColor,
+      color: themeProvider.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
@@ -217,7 +232,10 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                     Radius.circular(12),
                   ),
                 ),
-                backgroundColor: themeInteractor.appTheme.routeButtonColor,
+                backgroundColor: context
+                    .watch<SettingsInteractor>()
+                    .appTheme
+                    .routeButtonColor,
                 minimumSize: const Size(328, 48),
                 alignment: Alignment.center,
               ),
@@ -262,8 +280,10 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                           AppAssets.calendar,
                           width: 22,
                           height: 19,
-                          color: themeInteractor
-                              .appTheme.bottomNavBarSelectedItemColor,
+                          color: context
+                              .watch<SettingsInteractor>()
+                              .appTheme
+                              .bottomNavBarSelectedItemColor,
                         ),
                         const SizedBox(
                           width: 10,
@@ -271,8 +291,10 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                         Text(
                           AppStrings.addToCalendar,
                           style: AppTypography.small.copyWith(
-                            color: themeInteractor
-                                .appTheme.bottomNavBarSelectedItemColor,
+                            color: context
+                                .watch<SettingsInteractor>()
+                                .appTheme
+                                .bottomNavBarSelectedItemColor,
                           ),
                         )
                       ],
@@ -297,8 +319,10 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                           isFavorite ? AppAssets.likeFilled : AppAssets.like,
                           width: 20,
                           height: 20,
-                          color: themeInteractor
-                              .appTheme.bottomNavBarSelectedItemColor,
+                          color: context
+                              .watch<SettingsInteractor>()
+                              .appTheme
+                              .bottomNavBarSelectedItemColor,
                         ),
                         const SizedBox(
                           width: 10,
@@ -308,8 +332,10 @@ class _BottomWithButtonsState extends State<_BottomWithButtons> {
                               ? AppStrings.inFavoriteAlready
                               : AppStrings.inFavorite,
                           style: AppTypography.small.copyWith(
-                            color: themeInteractor
-                                .appTheme.bottomNavBarSelectedItemColor,
+                            color: context
+                                .watch<SettingsInteractor>()
+                                .appTheme
+                                .bottomNavBarSelectedItemColor,
                           ),
                         )
                       ],
@@ -332,9 +358,10 @@ class _DetailsScreenPersistantHeaderDelegate
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Container(
       alignment: Alignment.centerLeft,
-      color: themeInteractor.appTheme.backgroundColor,
+      color: themeProvider.backgroundColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(

@@ -2,12 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/domain/place.dart';
-import 'package:places/main.dart';
+import 'package:places/data/interactor/search_interactor.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
+import 'package:provider/provider.dart';
 
 //Екран Фильтров
 class FilterScreen extends StatefulWidget {
@@ -22,17 +23,15 @@ class FilterScreen extends StatefulWidget {
 class _FilterScreenState extends State<FilterScreen> {
   double _endValue = 9; // Конечное значение слайдера по умолчанию
   double _startValue = 2; // Начальное значение слайдера по умолчанию
-  List<Place> results = searchInteractor.filteredPlaces;
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    results = await searchInteractor.searchByFilter();
   }
 
   @override
   void initState() {
     super.initState();
-    searchInteractor.setFilter(
+    context.read<SearchInteractor>().setFilter(
         radius: _endValue *
             2000); // Радиус поиска и верхняя граница слайдера совпадают по определнию
   }
@@ -54,6 +53,7 @@ class _FilterScreenState extends State<FilterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -66,7 +66,7 @@ class _FilterScreenState extends State<FilterScreen> {
             ),
             side: BorderSide.none,
             padding: const EdgeInsets.all(0),
-            backgroundColor: themeInteractor.appTheme.backgroundColor,
+            backgroundColor: themeProvider.backgroundColor,
             minimumSize: const Size(32, 32),
             maximumSize: const Size(32, 32),
             alignment: Alignment.center,
@@ -76,7 +76,7 @@ class _FilterScreenState extends State<FilterScreen> {
           },
           child: SvgPicture.asset(
             AppAssets.back,
-            color: themeInteractor.appTheme.cardIconColor,
+            color: themeProvider.cardIconColor,
             width: 5,
             height: 10,
           ),
@@ -86,11 +86,7 @@ class _FilterScreenState extends State<FilterScreen> {
             padding: const EdgeInsets.only(right: 16.0),
             child: TextButton(
               onPressed: () {
-                searchInteractor.resetFilter();
-                setState(() {
-                  _endValue = 9;
-                  _startValue = 2;
-                });
+                context.read<SearchInteractor>().resetFilter();
               },
               style: const ButtonStyle(
                 minimumSize: MaterialStatePropertyAll(
@@ -100,7 +96,7 @@ class _FilterScreenState extends State<FilterScreen> {
               child: Text(
                 AppStrings.clearIt,
                 style: AppTypography.simpleText.copyWith(
-                  color: themeInteractor.appTheme.clearButtonColor,
+                  color: themeProvider.clearButtonColor,
                 ),
               ),
             ),
@@ -133,39 +129,43 @@ class _FilterScreenState extends State<FilterScreen> {
                   itemsList: SightType.values.map(
                     (e) {
                       return _itemGridView(
-                        isChecked:
-                            searchInteractor.favoriteCategories.contains(e.name)
-                                ? true
-                                : false,
-                        onPressed: () async {
-                          searchInteractor.setOrUnsetCategory(e.name);
-                          await searchInteractor
+                        isChecked: context
+                                .watch<SearchInteractor>()
+                                .favoriteCategories
+                                .contains(e.name)
+                            ? true
+                            : false,
+                        onPressed: () {
+                          context
+                              .read<SearchInteractor>()
+                              .setOrUnsetCategory(e.name);
+                          context
+                              .read<SearchInteractor>()
                               .searchByFilter()
                               .then(
-                                (value) => setState(() {
-                                  results = value;
-                                }),
+                                (value) => setState(() {}),
                               )
                               .onError(
-                                (error, stackTrace) =>
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    showCloseIcon: true,
-                                    closeIconColor: AppColors.white,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                    ),
-                                    behavior: SnackBarBehavior.floating,
-                                    duration:
-                                        const Duration(milliseconds: 1500),
-                                    content: const Text(
-                                      AppStrings.errorDescription,
-                                      style: AppTypography.simpleText,
-                                      textAlign: TextAlign.center,
-                                    ),
+                            (error, stackTrace) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  showCloseIcon: true,
+                                  closeIconColor: AppColors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  behavior: SnackBarBehavior.floating,
+                                  duration: const Duration(milliseconds: 1500),
+                                  content: const Text(
+                                    AppStrings.errorDescription,
+                                    style: AppTypography.simpleText,
+                                    textAlign: TextAlign.center,
                                   ),
                                 ),
                               );
+                              return null;
+                            },
+                          );
                         },
                         sightType: e,
                       );
@@ -192,7 +192,7 @@ class _FilterScreenState extends State<FilterScreen> {
                   data: SliderThemeData(
                     thumbColor: AppColors.white,
                     disabledThumbColor: AppColors.white,
-                    activeTrackColor: themeInteractor.appTheme.routeButtonColor,
+                    activeTrackColor: themeProvider.routeButtonColor,
                     trackHeight: 2,
                   ),
                   child: RangeSlider(
@@ -204,36 +204,33 @@ class _FilterScreenState extends State<FilterScreen> {
                       _endValue = value.end;
                     }),
                     onChangeEnd: (_) async {
-                      searchInteractor.setFilter(
-                        radius: _endValue * 2000, // in kilometers
-                      );
-
-                      await searchInteractor
+                      context.read<SearchInteractor>().setFilter(
+                            radius: _endValue * 2000, // in kilometers
+                          );
+                      await context
+                          .read<SearchInteractor>()
                           .searchByFilter()
-                          .then(
-                            (value) => setState(() {
-                              results = value;
-                            }),
-                          )
                           .onError(
-                            (error, stackTrace) =>
-                                ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                showCloseIcon: true,
-                                closeIconColor: AppColors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                ),
-                                behavior: SnackBarBehavior.floating,
-                                duration: const Duration(milliseconds: 1500),
-                                content: const Text(
-                                  AppStrings.errorDescription,
-                                  style: AppTypography.simpleText,
-                                  textAlign: TextAlign.center,
-                                ),
+                        (error, stackTrace) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              showCloseIcon: true,
+                              closeIconColor: AppColors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                              duration: const Duration(milliseconds: 1500),
+                              content: const Text(
+                                AppStrings.errorDescription,
+                                style: AppTypography.simpleText,
+                                textAlign: TextAlign.center,
                               ),
                             ),
                           );
+                          return null;
+                        },
+                      );
                     },
                     min: 0,
                     max: 10,
@@ -245,7 +242,8 @@ class _FilterScreenState extends State<FilterScreen> {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: OutlinedButton(
                 onPressed: () {
-                  Navigator.pop(context, results);
+                  Navigator.pop(context,
+                      context.watch<SearchInteractor>().filteredPlaces);
                 },
                 style: OutlinedButton.styleFrom(
                   shape: const RoundedRectangleBorder(
@@ -253,17 +251,20 @@ class _FilterScreenState extends State<FilterScreen> {
                       Radius.circular(12),
                     ),
                   ),
-                  backgroundColor: themeInteractor.appTheme.routeButtonColor,
+                  backgroundColor: themeProvider.routeButtonColor,
                   minimumSize: const Size(328, 48),
                   alignment: Alignment.center,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "Показать (${results.length})".toUpperCase(),
-                      style: AppTypography.button,
-                    )
+                    Consumer<SearchInteractor>(
+                      builder: (context, value, child) => Text(
+                        "Показать (${value.filteredPlaces.length})"
+                            .toUpperCase(),
+                        style: AppTypography.button,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -337,6 +338,7 @@ class __itemGridViewState extends State<_itemGridView> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return GestureDetector(
       onTap: () {
         widget.onPressed();
@@ -352,8 +354,7 @@ class __itemGridViewState extends State<_itemGridView> {
                 width: 64,
                 height: 64,
                 decoration: BoxDecoration(
-                    color: themeInteractor.appTheme.clearButtonColor
-                        .withOpacity(0.16),
+                    color: themeProvider.clearButtonColor.withOpacity(0.16),
                     shape: BoxShape.circle),
                 child: SvgPicture.asset(
                   widget.sightType.icon,
@@ -368,12 +369,12 @@ class __itemGridViewState extends State<_itemGridView> {
                     width: 16,
                     height: 16,
                     decoration: BoxDecoration(
-                        color: themeInteractor.appTheme.badgeColors[0],
+                        color: themeProvider.badgeColors[0],
                         shape: BoxShape.circle),
                     child: Icon(
                       Icons.done,
                       size: 10,
-                      color: themeInteractor.appTheme.badgeColors[1],
+                      color: themeProvider.badgeColors[1],
                     ),
                   ),
                 )
@@ -384,8 +385,8 @@ class __itemGridViewState extends State<_itemGridView> {
           ),
           Text(
             widget.sightType.type,
-            style: AppTypography.superSmall.copyWith(
-                color: themeInteractor.appTheme.bottomNavBarSelectedItemColor),
+            style: AppTypography.superSmall
+                .copyWith(color: themeProvider.bottomNavBarSelectedItemColor),
           ),
         ],
       ),

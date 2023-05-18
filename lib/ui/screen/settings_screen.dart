@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/main.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
+import 'package:provider/provider.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({super.key});
@@ -14,9 +15,11 @@ class SettingScreen extends StatefulWidget {
 
 // Екран настроек
 class _SettingScreenState extends State<SettingScreen> {
-  bool _switch = false;
+  
   @override
   Widget build(BuildContext context) {
+    // ignore: no_leading_underscores_for_local_identifiers
+    bool _switch = !context.watch<SettingsInteractor>().isLight;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -40,14 +43,16 @@ class _SettingScreenState extends State<SettingScreen> {
                 Switch.adaptive(
                   value: _switch,
                   onChanged: (value) {
-                    themeInteractor.swipeTheme();
+                    context.read<SettingsInteractor>().swipeTheme();
                     setState(
                       () {
                         _switch = value;
                       },
                     );
                   },
-                  activeColor: themeInteractor.appTheme.clearButtonColor,
+                  activeColor: context.watch<SettingsInteractor>()
+                      .appTheme
+                      .clearButtonColor,
                 )
               ],
             ),
@@ -66,7 +71,9 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                   SvgPicture.asset(
                     'assets/icons/info_icon.svg',
-                    color: themeInteractor.appTheme.clearButtonColor,
+                    color: context.watch<SettingsInteractor>()
+                        .appTheme
+                        .clearButtonColor,
                   ),
                 ],
               ),

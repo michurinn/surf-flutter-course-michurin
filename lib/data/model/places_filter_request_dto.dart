@@ -38,7 +38,10 @@ class PlacesFilterRequestDto extends Equatable {
     };
   }
 
-  
+  @override
+  String toString() {
+    return "$nameFilter $typeFilter $nameFilter $radius $lng $lat";
+  }
 
   @override
   List<Object?> get props => [lat, lng, radius, typeFilter, nameFilter];

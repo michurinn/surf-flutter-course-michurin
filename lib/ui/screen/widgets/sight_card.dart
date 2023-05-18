@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/domain/place.dart';
-import 'package:places/main.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_typography.dart';
+import 'package:provider/provider.dart';
 
 // Карточка для показа места
 class SightCard extends StatefulWidget {
@@ -130,7 +131,10 @@ class _SightCardState extends State<SightCard> {
                                   snapshot.data == true
                                       ? AppAssets.likeFilled
                                       : AppAssets.like,
-                                  color: themeInteractor.appTheme.iconColor,
+                                  color:
+                                      context.watch<SettingsInteractor>()
+                                          .appTheme
+                                          .iconColor,
                                 ),
                                 onPressed: () {
                                   widget.onHeartTap();
