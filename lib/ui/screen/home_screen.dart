@@ -35,6 +35,7 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Scaffold(
       body: TabBarView(controller: _tabController, children: const [
         SightListScreen(),
@@ -53,9 +54,7 @@ class _HomeScreenState extends State<HomeScreen>
             icon: const Icon(Icons.list_alt),
             activeIcon: SvgPicture.asset(
               AppAssets.listFilled,
-              color: context.watch<SettingsInteractor>()
-                  .appTheme
-                  .bottomNavBarSelectedItemColor,
+              color: themeProvider.bottomNavBarSelectedItemColor,
             ),
             label: 'List of Places',
           ),
@@ -63,24 +62,18 @@ class _HomeScreenState extends State<HomeScreen>
             icon: const Icon(Icons.map_outlined),
             activeIcon: SvgPicture.asset(
               AppAssets.mapFilled,
-              color: context.watch<SettingsInteractor>()
-                  .appTheme
-                  .bottomNavBarSelectedItemColor,
+              color: themeProvider.bottomNavBarSelectedItemColor,
             ),
             label: 'Map',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               AppAssets.like,
-              color: context.watch<SettingsInteractor>()
-                  .appTheme
-                  .bottomNavBarUnselectedItemColor,
+              color: themeProvider.bottomNavBarUnselectedItemColor,
             ),
             activeIcon: SvgPicture.asset(
               AppAssets.likeFilled,
-              color: context.watch<SettingsInteractor>()
-                  .appTheme
-                  .bottomNavBarSelectedItemColor,
+              color: themeProvider.bottomNavBarSelectedItemColor,
             ),
             label: 'Favorite places',
           ),
