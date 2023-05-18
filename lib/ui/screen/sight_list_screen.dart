@@ -18,6 +18,8 @@ import 'package:places/ui/screen/sight_search_screen.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 import 'package:places/domain/error_widget.dart' as error_widget;
 import 'package:provider/provider.dart';
+import 'package:mobx/mobx.dart';
+
 
 // Екран списка мест
 class SightListScreen extends StatefulWidget {
