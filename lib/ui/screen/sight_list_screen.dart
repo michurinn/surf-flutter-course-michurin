@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
+import 'package:places/data/store/sight_list_store.dart';
 import 'package:places/domain/place.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
@@ -19,7 +20,7 @@ import 'package:places/ui/screen/widgets/search_bar.dart';
 import 'package:places/domain/error_widget.dart' as error_widget;
 import 'package:provider/provider.dart';
 import 'package:mobx/mobx.dart';
-
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 // Екран списка мест
 class SightListScreen extends StatefulWidget {
@@ -32,25 +33,13 @@ class SightListScreen extends StatefulWidget {
 
 class _SightListScreenState extends State<SightListScreen> {
   final ScrollController _scrollController = ScrollController();
-  late StreamController<List<Place>> placesController;
+  late final ObservableFuture<List<Place>> places;
+
   @override
   void initState() {
-    placesController = StreamController();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    placesController.close();
-  }
-
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-    await context.read<PlaceInteractor>().getPlaces().then((value) {
-      placesController.add(value);
-    }, onError: (error) => placesController.addError(error));
+    places = context.read<SightListStore>().places;
+    context.read<SightListStore>().checkPlaces();
   }
 
   @override
@@ -77,8 +66,9 @@ class _SightListScreenState extends State<SightListScreen> {
                             .read<SearchInteractor>()
                             .filteredPlaces
                             .isNotEmpty) {
-                          placesController.add(
-                              context.read<SearchInteractor>().filteredPlaces);
+                          //  При установке фильтров покажем места удовлетворяющие фильтру
+                          context.read<SightListStore>().checkPlacesWithFilter(
+                              filter: context.read<SearchInteractor>().filter);
                         }
                       }),
                     ) as SliverPersistentHeaderDelegate,
@@ -87,34 +77,34 @@ class _SightListScreenState extends State<SightListScreen> {
                   SliverList(
                     delegate: SliverChildListDelegate([
                       OverscrollGlowAbsorver(
-                        child: StreamBuilder<List<Place>>(
-                            stream: placesController.stream,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasError) {
-                                return const Center(
-                                  child: error_widget.ErrorWidget(
-                                    color: AppColors.inactiveBlack,
-                                  ),
-                                );
-                              } else if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
+                        child: Observer(
+                          builder: (BuildContext context) {
+                            switch (places.status) {
+                              case FutureStatus.pending:
                                 return const SizedBox.square(
                                   dimension: 200,
                                   child: Center(
                                     child: CircularProgressIndicator.adaptive(),
                                   ),
                                 );
-                              } else {
+                              case FutureStatus.rejected:
+                                return const Center(
+                                  child: error_widget.ErrorWidget(
+                                    color: AppColors.inactiveBlack,
+                                  ),
+                                );
+                              case FutureStatus.fulfilled:
                                 return _ListOfPlaces.fromScreenOrientation(
                                   orientation:
                                       MediaQuery.of(context).orientation,
-                                  places: snapshot.hasData
-                                      ? snapshot.data as List<Place>
-                                      : [],
+                                  places: places.result,
                                   scrollController: _scrollController,
                                 ) as StatefulWidget;
-                              }
-                            }),
+                              default:
+                                return const SizedBox.shrink();
+                            }
+                          },
+                        ),
                       ),
                       const SizedBox(
                         height: 50,
@@ -131,28 +121,46 @@ class _SightListScreenState extends State<SightListScreen> {
                           ? true
                           : false,
                   onNewPlaceCreated: ((Place newPlace) async {
-                    await context.read<PlaceInteractor>().addNewPlace(newPlace);
-                    if (mounted) {
-                      final response =
-                          await context.watch<PlaceInteractor>().getPlaces();
-                      placesController.add(response);
-                    }
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
+                    // Покажем снек если место успешно добавлено на сервер
+                    context.read<SightListStore>().addPlace(newPlace).then((_) {
+                      //Список интересных мест изменился на сервере - инициируем повторный запрос списка с сервера
+                      context
+                          .read<SightListStore>()
+                          .checkPlaces(isHidden: true);
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                            duration: const Duration(milliseconds: 500),
+                            content: const Text(
+                              AppStrings.newPlaceAdded,
+                              style: AppTypography.simpleText,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                          behavior: SnackBarBehavior.floating,
-                          duration: const Duration(milliseconds: 500),
-                          content: const Text(
-                            AppStrings.newPlaceAdded,
-                            style: AppTypography.simpleText,
-                            textAlign: TextAlign.center,
+                        );
+                      }
+                    }).onError((_, __) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                            duration: const Duration(milliseconds: 500),
+                            content: const Text(
+                              AppStrings.errorDescription,
+                              style: AppTypography.simpleText,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
-                      );
-                    }
+                        );
+                      }
+                    });
                   }),
                 ),
               ),

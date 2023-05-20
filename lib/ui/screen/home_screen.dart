@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
+import 'package:places/data/repository/place_repository.dart';
+import 'package:places/data/store/sight_list_store.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
@@ -20,10 +22,6 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void initState() {
     _tabController = TabController(length: 4, vsync: this);
-    //Перерисуем екран, чтобы обновить currentIndex: _tabController.index, в BottomNavigationBar
-    _tabController.addListener(() {
-      setState(() {});
-    });
     super.initState();
   }
 
@@ -37,11 +35,14 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Scaffold(
-      body: TabBarView(controller: _tabController, children: const [
-        SightListScreen(),
-        SizedBox.shrink(), // Map screen
-        VisitingScreen(),
-        SettingScreen(),
+      body: TabBarView(controller: _tabController, children: [
+        Provider<SightListStore>(
+          create: (context) => SightListStore(context.watch<PlaceRepository>()),
+          builder: (context, child) => const SightListScreen(),
+        ),
+        const SizedBox.shrink(), // Map screen
+        const VisitingScreen(),
+        const SettingScreen(),
       ]),
       bottomNavigationBar: BottomNavigationBar(
         onTap: _tabController.animateTo,
