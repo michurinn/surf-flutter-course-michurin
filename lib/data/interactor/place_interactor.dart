@@ -16,8 +16,9 @@ class PlaceInteractor {
 
   static late final IPlaceRepository placeRepository;
 
-  Future<void> addNewPlace(final Place place) async {
-    await placeRepository.addPlace(place);
+  Future<Place> addNewPlace(final Place place) async {
+    final response = await placeRepository.addPlace(place);
+    return response;
   }
 
   void addToVisitingPlaces(final Place place) {

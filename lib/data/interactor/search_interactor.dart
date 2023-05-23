@@ -18,7 +18,7 @@ class SearchInteractor {
   SearchInteractor._internal();
 
   static PlacesFilterRequestDto _filter = const PlacesFilterRequestDto();
-
+  PlacesFilterRequestDto get filter => _filter;
   List<String> get favoriteCategories => _filter.typeFilter ?? [];
   List<Place> get filteredPlaces => _filteredPlaces;
   List<String> get history => _history;
@@ -82,10 +82,6 @@ class SearchInteractor {
     _filteredPlaces = response;
     return _filteredPlaces;
   }
-
-  final StreamController<List<Place>?> _searchStreamController =
-      StreamController();
-  Stream<List<Place>?> get searchPlaceStream => _searchStreamController.stream;
 
   void addToHistory(String name) {
     name = name.trim();

@@ -17,8 +17,8 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
   @override
   Widget build(BuildContext context) {
-    // ignore: no_leading_underscores_for_local_identifiers
     final themeProvider = context.watch<SettingsInteractor>().appTheme;
+    // ignore: no_leading_underscores_for_local_identifiers
     bool _switch = !context.watch<SettingsInteractor>().isLight;
     return Scaffold(
       appBar: AppBar(
