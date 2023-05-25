@@ -1,7 +1,9 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/data/bloc/planned_bloc/planned_places_bloc.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/domain/place.dart';
@@ -46,21 +48,24 @@ class SightDetails extends StatelessWidget {
                   child: Spacer(),
                 ),
                 const Spacer(),
-                _BottomWithButtons(
-                    isFavorite: context
-                        .watch<PlaceInteractor>()
-                        .favoritePlaces
-                        .contains(sight),
-                    onFavoriteTap: () => context
-                            .watch<PlaceInteractor>()
-                            .favoritePlaces
-                            .contains(sight)
-                        ? context
-                            .read<PlaceInteractor>()
-                            .removeFromFavorites(sight)
-                        : context
-                            .read<PlaceInteractor>()
-                            .addToFavorites(sight)),
+                BlocBuilder<PlannedPlacesBloc, PlannedPlacesState>(
+                  builder: (context, state) {
+                    return state.map(
+                      loaded: (value) {
+                        return _BottomWithButtons(
+                          isFavorite: value.favoritePlaces.contains(sight),
+                          onFavoriteTap: () => value.favoritePlaces.contains(sight)
+                              ? context
+                                  .read<PlannedPlacesBloc>()
+                                  .add(PlannedPlacesEvent.remove(placePlanned: sight))
+                              : context
+                                  .read<PlannedPlacesBloc>()
+                                  .add(PlannedPlacesEvent.add(placePlanned: sight)));
+                      },
+                      loading: (value) => const CircularProgressIndicator.adaptive(),
+                    );
+                  },
+                ),
               ]),
             ),
           ],

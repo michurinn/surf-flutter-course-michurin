@@ -3,9 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/data/bloc/planned_bloc/planned_places_bloc.dart';
 import 'package:places/data/bloc/visited_bloc/bloc/visited_places_bloc.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
-import 'package:places/data/repository/favorite_repository.dart';
-import 'package:places/data/repository/favorite_repository_interface.dart';
+import 'package:places/data/repository/planned_repository.dart';
 import 'package:places/data/repository/place_repository.dart';
+import 'package:places/data/repository/planned_repository_interface.dart';
 import 'package:places/data/repository/visited_repository.dart';
 import 'package:places/data/repository/visited_repository_interface.dart';
 import 'package:places/data/store/sight_list_store.dart';
@@ -42,39 +42,42 @@ class _HomeScreenState extends State<HomeScreen>
   Widget build(BuildContext context) {
     final themeProvider = context.watch<SettingsInteractor>().appTheme;
     return Scaffold(
-      body: TabBarView(controller: _tabController, children: [
-        Provider<SightListStore>(
-          create: (context) => SightListStore(context.watch<PlaceRepository>()),
-          builder: (context, child) => const SightListScreen(),
-        ),
-        const SizedBox.shrink(), // Map screen
-        MultiRepositoryProvider(
+      // Используется в SightListScreen() и VisitingScreen()
+      body: MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider<IPlannedRepository>(
+            create: (context) => FavoriteRepository(),
+          ),
+          RepositoryProvider<IVisitedRepository>(
+            create: (context) => VisitedRepository(),
+          ),
+        ],
+        // Используется в SightListScreen() и VisitingScreen()
+        child: MultiBlocProvider(
           providers: [
-            RepositoryProvider<IFavoriteRepository>(
-              create: (context) => FavoriteRepository(),
+            BlocProvider<PlannedPlacesBloc>(
+              create: (context) => PlannedPlacesBloc(
+                favoritePlacesRepository: context.read<IPlannedRepository>(),
+              ),
             ),
-            RepositoryProvider<IVisitedRepository>(
-              create: (context) => VisitedRepository(),
+            BlocProvider<VisitedPlacesBloc>(
+              create: (context) => VisitedPlacesBloc(
+                visitedPlacesRepository: context.read<IVisitedRepository>(),
+              ),
             ),
           ],
-          child: MultiBlocProvider(
-            providers: [
-              BlocProvider<PlannedPlacesBloc>(
-                create: (context) => PlannedPlacesBloc(
-                  favoritePlacesRepository: context.read<IFavoriteRepository>(),
-                ),
-              ),
-              BlocProvider<VisitedPlacesBloc>(
-                create: (context) => VisitedPlacesBloc(
-                  visitedPlacesRepository: context.read<IVisitedRepository>(),
-                ),
-              ),
-            ],
-            child: const VisitingScreen(),
-          ),
+          child: TabBarView(controller: _tabController, children: [
+            Provider<SightListStore>(
+              create: (context) =>
+                  SightListStore(context.watch<PlaceRepository>()),
+              builder: (context, child) => const SightListScreen(),
+            ),
+            const VisitingScreen(), // Map screen
+            const SizedBox.shrink(),
+            const SettingScreen(),
+          ]),
         ),
-        const SettingScreen(),
-      ]),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: _tabController.animateTo,
         currentIndex: _tabController.index,

@@ -19,32 +19,50 @@ mixin _$VisitedPlacesEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() load,
+    required TResult Function(PlaceVisited visitedPlace) remove,
+    required TResult Function(PlaceVisited visitedPlace) add,
+    required TResult Function(int draggedPlaceId, int targetPlaceId) swipe,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? load,
+    TResult? Function(PlaceVisited visitedPlace)? remove,
+    TResult? Function(PlaceVisited visitedPlace)? add,
+    TResult? Function(int draggedPlaceId, int targetPlaceId)? swipe,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? load,
+    TResult Function(PlaceVisited visitedPlace)? remove,
+    TResult Function(PlaceVisited visitedPlace)? add,
+    TResult Function(int draggedPlaceId, int targetPlaceId)? swipe,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Load value) load,
+    required TResult Function(_Remove value) remove,
+    required TResult Function(_Add value) add,
+    required TResult Function(_Swipe value) swipe,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Load value)? load,
+    TResult? Function(_Remove value)? remove,
+    TResult? Function(_Add value)? add,
+    TResult? Function(_Swipe value)? swipe,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Load value)? load,
+    TResult Function(_Remove value)? remove,
+    TResult Function(_Add value)? add,
+    TResult Function(_Swipe value)? swipe,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -105,6 +123,9 @@ class _$_Load implements _Load {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() load,
+    required TResult Function(PlaceVisited visitedPlace) remove,
+    required TResult Function(PlaceVisited visitedPlace) add,
+    required TResult Function(int draggedPlaceId, int targetPlaceId) swipe,
   }) {
     return load();
   }
@@ -113,6 +134,9 @@ class _$_Load implements _Load {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? load,
+    TResult? Function(PlaceVisited visitedPlace)? remove,
+    TResult? Function(PlaceVisited visitedPlace)? add,
+    TResult? Function(int draggedPlaceId, int targetPlaceId)? swipe,
   }) {
     return load?.call();
   }
@@ -121,6 +145,9 @@ class _$_Load implements _Load {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? load,
+    TResult Function(PlaceVisited visitedPlace)? remove,
+    TResult Function(PlaceVisited visitedPlace)? add,
+    TResult Function(int draggedPlaceId, int targetPlaceId)? swipe,
     required TResult orElse(),
   }) {
     if (load != null) {
@@ -133,6 +160,9 @@ class _$_Load implements _Load {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_Load value) load,
+    required TResult Function(_Remove value) remove,
+    required TResult Function(_Add value) add,
+    required TResult Function(_Swipe value) swipe,
   }) {
     return load(this);
   }
@@ -141,6 +171,9 @@ class _$_Load implements _Load {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Load value)? load,
+    TResult? Function(_Remove value)? remove,
+    TResult? Function(_Add value)? add,
+    TResult? Function(_Swipe value)? swipe,
   }) {
     return load?.call(this);
   }
@@ -149,6 +182,9 @@ class _$_Load implements _Load {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Load value)? load,
+    TResult Function(_Remove value)? remove,
+    TResult Function(_Add value)? add,
+    TResult Function(_Swipe value)? swipe,
     required TResult orElse(),
   }) {
     if (load != null) {
@@ -160,6 +196,449 @@ class _$_Load implements _Load {
 
 abstract class _Load implements VisitedPlacesEvent {
   const factory _Load() = _$_Load;
+}
+
+/// @nodoc
+abstract class _$$_RemoveCopyWith<$Res> {
+  factory _$$_RemoveCopyWith(_$_Remove value, $Res Function(_$_Remove) then) =
+      __$$_RemoveCopyWithImpl<$Res>;
+  @useResult
+  $Res call({PlaceVisited visitedPlace});
+}
+
+/// @nodoc
+class __$$_RemoveCopyWithImpl<$Res>
+    extends _$VisitedPlacesEventCopyWithImpl<$Res, _$_Remove>
+    implements _$$_RemoveCopyWith<$Res> {
+  __$$_RemoveCopyWithImpl(_$_Remove _value, $Res Function(_$_Remove) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? visitedPlace = null,
+  }) {
+    return _then(_$_Remove(
+      visitedPlace: null == visitedPlace
+          ? _value.visitedPlace
+          : visitedPlace // ignore: cast_nullable_to_non_nullable
+              as PlaceVisited,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_Remove implements _Remove {
+  const _$_Remove({required this.visitedPlace});
+
+  @override
+  final PlaceVisited visitedPlace;
+
+  @override
+  String toString() {
+    return 'VisitedPlacesEvent.remove(visitedPlace: $visitedPlace)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_Remove &&
+            (identical(other.visitedPlace, visitedPlace) ||
+                other.visitedPlace == visitedPlace));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, visitedPlace);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_RemoveCopyWith<_$_Remove> get copyWith =>
+      __$$_RemoveCopyWithImpl<_$_Remove>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() load,
+    required TResult Function(PlaceVisited visitedPlace) remove,
+    required TResult Function(PlaceVisited visitedPlace) add,
+    required TResult Function(int draggedPlaceId, int targetPlaceId) swipe,
+  }) {
+    return remove(visitedPlace);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? load,
+    TResult? Function(PlaceVisited visitedPlace)? remove,
+    TResult? Function(PlaceVisited visitedPlace)? add,
+    TResult? Function(int draggedPlaceId, int targetPlaceId)? swipe,
+  }) {
+    return remove?.call(visitedPlace);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? load,
+    TResult Function(PlaceVisited visitedPlace)? remove,
+    TResult Function(PlaceVisited visitedPlace)? add,
+    TResult Function(int draggedPlaceId, int targetPlaceId)? swipe,
+    required TResult orElse(),
+  }) {
+    if (remove != null) {
+      return remove(visitedPlace);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Load value) load,
+    required TResult Function(_Remove value) remove,
+    required TResult Function(_Add value) add,
+    required TResult Function(_Swipe value) swipe,
+  }) {
+    return remove(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Load value)? load,
+    TResult? Function(_Remove value)? remove,
+    TResult? Function(_Add value)? add,
+    TResult? Function(_Swipe value)? swipe,
+  }) {
+    return remove?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Load value)? load,
+    TResult Function(_Remove value)? remove,
+    TResult Function(_Add value)? add,
+    TResult Function(_Swipe value)? swipe,
+    required TResult orElse(),
+  }) {
+    if (remove != null) {
+      return remove(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Remove implements VisitedPlacesEvent {
+  const factory _Remove({required final PlaceVisited visitedPlace}) = _$_Remove;
+
+  PlaceVisited get visitedPlace;
+  @JsonKey(ignore: true)
+  _$$_RemoveCopyWith<_$_Remove> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$_AddCopyWith<$Res> {
+  factory _$$_AddCopyWith(_$_Add value, $Res Function(_$_Add) then) =
+      __$$_AddCopyWithImpl<$Res>;
+  @useResult
+  $Res call({PlaceVisited visitedPlace});
+}
+
+/// @nodoc
+class __$$_AddCopyWithImpl<$Res>
+    extends _$VisitedPlacesEventCopyWithImpl<$Res, _$_Add>
+    implements _$$_AddCopyWith<$Res> {
+  __$$_AddCopyWithImpl(_$_Add _value, $Res Function(_$_Add) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? visitedPlace = null,
+  }) {
+    return _then(_$_Add(
+      visitedPlace: null == visitedPlace
+          ? _value.visitedPlace
+          : visitedPlace // ignore: cast_nullable_to_non_nullable
+              as PlaceVisited,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_Add implements _Add {
+  const _$_Add({required this.visitedPlace});
+
+  @override
+  final PlaceVisited visitedPlace;
+
+  @override
+  String toString() {
+    return 'VisitedPlacesEvent.add(visitedPlace: $visitedPlace)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_Add &&
+            (identical(other.visitedPlace, visitedPlace) ||
+                other.visitedPlace == visitedPlace));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, visitedPlace);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_AddCopyWith<_$_Add> get copyWith =>
+      __$$_AddCopyWithImpl<_$_Add>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() load,
+    required TResult Function(PlaceVisited visitedPlace) remove,
+    required TResult Function(PlaceVisited visitedPlace) add,
+    required TResult Function(int draggedPlaceId, int targetPlaceId) swipe,
+  }) {
+    return add(visitedPlace);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? load,
+    TResult? Function(PlaceVisited visitedPlace)? remove,
+    TResult? Function(PlaceVisited visitedPlace)? add,
+    TResult? Function(int draggedPlaceId, int targetPlaceId)? swipe,
+  }) {
+    return add?.call(visitedPlace);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? load,
+    TResult Function(PlaceVisited visitedPlace)? remove,
+    TResult Function(PlaceVisited visitedPlace)? add,
+    TResult Function(int draggedPlaceId, int targetPlaceId)? swipe,
+    required TResult orElse(),
+  }) {
+    if (add != null) {
+      return add(visitedPlace);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Load value) load,
+    required TResult Function(_Remove value) remove,
+    required TResult Function(_Add value) add,
+    required TResult Function(_Swipe value) swipe,
+  }) {
+    return add(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Load value)? load,
+    TResult? Function(_Remove value)? remove,
+    TResult? Function(_Add value)? add,
+    TResult? Function(_Swipe value)? swipe,
+  }) {
+    return add?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Load value)? load,
+    TResult Function(_Remove value)? remove,
+    TResult Function(_Add value)? add,
+    TResult Function(_Swipe value)? swipe,
+    required TResult orElse(),
+  }) {
+    if (add != null) {
+      return add(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Add implements VisitedPlacesEvent {
+  const factory _Add({required final PlaceVisited visitedPlace}) = _$_Add;
+
+  PlaceVisited get visitedPlace;
+  @JsonKey(ignore: true)
+  _$$_AddCopyWith<_$_Add> get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$_SwipeCopyWith<$Res> {
+  factory _$$_SwipeCopyWith(_$_Swipe value, $Res Function(_$_Swipe) then) =
+      __$$_SwipeCopyWithImpl<$Res>;
+  @useResult
+  $Res call({int draggedPlaceId, int targetPlaceId});
+}
+
+/// @nodoc
+class __$$_SwipeCopyWithImpl<$Res>
+    extends _$VisitedPlacesEventCopyWithImpl<$Res, _$_Swipe>
+    implements _$$_SwipeCopyWith<$Res> {
+  __$$_SwipeCopyWithImpl(_$_Swipe _value, $Res Function(_$_Swipe) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? draggedPlaceId = null,
+    Object? targetPlaceId = null,
+  }) {
+    return _then(_$_Swipe(
+      draggedPlaceId: null == draggedPlaceId
+          ? _value.draggedPlaceId
+          : draggedPlaceId // ignore: cast_nullable_to_non_nullable
+              as int,
+      targetPlaceId: null == targetPlaceId
+          ? _value.targetPlaceId
+          : targetPlaceId // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$_Swipe implements _Swipe {
+  const _$_Swipe({required this.draggedPlaceId, required this.targetPlaceId});
+
+  @override
+  final int draggedPlaceId;
+  @override
+  final int targetPlaceId;
+
+  @override
+  String toString() {
+    return 'VisitedPlacesEvent.swipe(draggedPlaceId: $draggedPlaceId, targetPlaceId: $targetPlaceId)';
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$_Swipe &&
+            (identical(other.draggedPlaceId, draggedPlaceId) ||
+                other.draggedPlaceId == draggedPlaceId) &&
+            (identical(other.targetPlaceId, targetPlaceId) ||
+                other.targetPlaceId == targetPlaceId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, draggedPlaceId, targetPlaceId);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$_SwipeCopyWith<_$_Swipe> get copyWith =>
+      __$$_SwipeCopyWithImpl<_$_Swipe>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() load,
+    required TResult Function(PlaceVisited visitedPlace) remove,
+    required TResult Function(PlaceVisited visitedPlace) add,
+    required TResult Function(int draggedPlaceId, int targetPlaceId) swipe,
+  }) {
+    return swipe(draggedPlaceId, targetPlaceId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? load,
+    TResult? Function(PlaceVisited visitedPlace)? remove,
+    TResult? Function(PlaceVisited visitedPlace)? add,
+    TResult? Function(int draggedPlaceId, int targetPlaceId)? swipe,
+  }) {
+    return swipe?.call(draggedPlaceId, targetPlaceId);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? load,
+    TResult Function(PlaceVisited visitedPlace)? remove,
+    TResult Function(PlaceVisited visitedPlace)? add,
+    TResult Function(int draggedPlaceId, int targetPlaceId)? swipe,
+    required TResult orElse(),
+  }) {
+    if (swipe != null) {
+      return swipe(draggedPlaceId, targetPlaceId);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Load value) load,
+    required TResult Function(_Remove value) remove,
+    required TResult Function(_Add value) add,
+    required TResult Function(_Swipe value) swipe,
+  }) {
+    return swipe(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Load value)? load,
+    TResult? Function(_Remove value)? remove,
+    TResult? Function(_Add value)? add,
+    TResult? Function(_Swipe value)? swipe,
+  }) {
+    return swipe?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Load value)? load,
+    TResult Function(_Remove value)? remove,
+    TResult Function(_Add value)? add,
+    TResult Function(_Swipe value)? swipe,
+    required TResult orElse(),
+  }) {
+    if (swipe != null) {
+      return swipe(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Swipe implements VisitedPlacesEvent {
+  const factory _Swipe(
+      {required final int draggedPlaceId,
+      required final int targetPlaceId}) = _$_Swipe;
+
+  int get draggedPlaceId;
+  int get targetPlaceId;
+  @JsonKey(ignore: true)
+  _$$_SwipeCopyWith<_$_Swipe> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc

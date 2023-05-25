@@ -9,7 +9,7 @@ class VisitedRepository implements IVisitedRepository {
 
   /// отметить для посещения в будущем
   @override
-  Future<void> markVisited(PlaceVisited place) async  {
+  Future<void> markVisited(PlaceVisited place) async {
     _visitedPlaces.add(place);
   }
 
@@ -21,9 +21,21 @@ class VisitedRepository implements IVisitedRepository {
 
   /// TODO(me) Данные должны храниться в БД
   final List<PlaceVisited> _visitedPlaces = [];
-  
+
   @override
   Future<List<PlaceVisited>> getVisitedPlaces() async {
     return Future.value(_visitedPlaces);
+  }
+
+  /// Поменять местами draggedPlace & targetPlace
+  @override
+  Future<void> swipe(
+      {required int draggedPlaceId, required int targetPlaceId}) async {
+    _visitedPlaces.insert(
+      _visitedPlaces.indexWhere((element) => element.id == targetPlaceId),
+      _visitedPlaces.removeAt(
+        _visitedPlaces.indexWhere((element) => element.id == draggedPlaceId),
+      ),
+    );
   }
 }

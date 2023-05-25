@@ -17,6 +17,7 @@ class PlaceInteractor {
   static late final IPlaceRepository placeRepository;
 
   ///Добавить новое место
+  @Deprecated('now inside SightListStore')
   Future<Place> addNewPlace(final Place place) async {
     final response = await placeRepository.addPlace(place);
     return response;
@@ -28,7 +29,17 @@ class PlaceInteractor {
     return place.description;
   }
 
+  ///Список избранных мест , отфильтрованный по расстоянию
+  @Deprecated('now inside SightListStore')
+  List<Place> getFavoritePlacesSortedByDistance() {
+    //final result = _favoritePlaces;
+    //result.sort((a, b) => compareDistanses(a, b, mockCoordinates));
+    //return result;
+    return [];
+  }
+
   ///Список мест на расстоянии radius, отфильтрованный по расстоянию
+  @Deprecated('now inside SightListStore')
   Future<List<Place>> getPlaces(
       {final double? radius, final String? category}) async {
     final List<Place> response = await placeRepository.getPlacesList();

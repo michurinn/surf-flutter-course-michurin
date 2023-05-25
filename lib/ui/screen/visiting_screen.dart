@@ -9,6 +9,7 @@ import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/domain/place.dart';
 import 'package:places/domain/place_planned.dart';
+import 'package:places/domain/place_visited.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
@@ -29,50 +30,51 @@ class _VisitingScreenState extends State<VisitingScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: const _FavoriteAppBar(),
-          body: TabBarView(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 30),
-                    BlocBuilder<PlannedPlacesBloc, PlannedPlacesState>(
-                      builder: (context, state) {
-                        return state.map(
-                          loaded: (value) => _PlannedPlaces(
-                              plannedPlaces: value.favoritePlaces),
-                          loading: (value) =>
-                              const CircularProgressIndicator.adaptive(),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+      length: 2,
+      child: Scaffold(
+        appBar: const _FavoriteAppBar(),
+        body: TabBarView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 30),
+                  BlocBuilder<PlannedPlacesBloc, PlannedPlacesState>(
+                    builder: (context, state) {
+                      return state.map(
+                        loaded: (value) =>
+                            _PlannedPlaces(plannedPlaces: value.favoritePlaces),
+                        loading: (value) =>
+                            const CircularProgressIndicator.adaptive(),
+                      );
+                    },
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 30),
-                    BlocBuilder<VisitedPlacesBloc, VisitedPlacesState>(
-                      builder: (context, state) {
-                        return state.map(
-                          loaded: (value) => _VisitedPlaces(
-                              favoritePlaces: value.visitedPlaces),
-                          loading: (value) =>
-                              const CircularProgressIndicator.adaptive(),
-                        );
-                      },
-                    ),
-                  ],
-                ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 30),
+                  BlocBuilder<VisitedPlacesBloc, VisitedPlacesState>(
+                    builder: (context, state) {
+                      return state.map(
+                        loaded: (value) =>
+                            _VisitedPlaces(visitedPlaces: value.visitedPlaces),
+                        loading: (value) =>
+                            const CircularProgressIndicator.adaptive(),
+                      );
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -81,7 +83,7 @@ class _PlannedPlaces extends StatefulWidget {
     Key? key,
     required this.plannedPlaces,
   }) : super(key: key);
-  final List<PlacePlanned> plannedPlaces;
+  final List<Place> plannedPlaces;
   @override
   State<_PlannedPlaces> createState() => _PlannedPlacesState();
 }
@@ -142,68 +144,47 @@ class _PlannedPlacesState extends State<_PlannedPlaces> {
                   key: ValueKey<int>(widget.plannedPlaces[index].hashCode),
                   direction: DismissDirection.endToStart,
                   onDismissed: (direction) {
-                    context
-                        .read<PlannedPlacesBloc>().add(event);
-                        
+                    context.read<PlannedPlacesBloc>().add(
+                          PlannedPlacesEvent.remove(
+                              placePlanned: widget.plannedPlaces[index]),
+                        );
                   },
                   child: DragTarget(
                     onAccept: (data) {
-                      ValueKey<String> rawData = data as ValueKey<String>;
-
-                      setState(() {
-                        context.read<PlaceInteractor>().favoritePlaces.insert(
-                              context
-                                  .read<PlaceInteractor>()
-                                  .favoritePlaces
-                                  .indexOf(context
-                                      .read<PlaceInteractor>()
-                                      .favoritePlaces[index]),
-                              context
-                                  .read<PlaceInteractor>()
-                                  .favoritePlaces
-                                  .removeAt(
-                                    context
-                                        .read<PlaceInteractor>()
-                                        .favoritePlaces
-                                        .indexWhere(
-                                          (element) =>
-                                              element.name ==
-                                              rawData.value.toString(),
-                                        ),
-                                  ),
-                            );
-                      });
+                      ValueKey<int> rawData = data as ValueKey<int>;
+                      context.read<PlannedPlacesBloc>().add(
+                            PlannedPlacesEvent.swipe(
+                                draggedPlaceId: rawData.value,
+                                targetPlaceId: widget.plannedPlaces[index].id),
+                          );
                     },
                     builder: (context, candidateData, rejectedData) {
                       return Column(
                         children: [
                           LongPressDraggable(
-                            data: ValueKey<String>(
-                                widget.plannedPlaces[index].name),
+                            data: ValueKey<int>(widget.plannedPlaces[index].id),
                             axis: Axis.vertical,
                             feedback: Opacity(
                               opacity: 0.8,
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: FavoriteSight(
-                                  sight: widget.plannedPlaces[index],
-                                  isFinished: false,
-                                  onClosePressed: () => context
-                                      .read<PlaceInteractor>()
-                                      .removeFromFavorites(
-                                          widget.plannedPlaces[index]),
-                                ),
+                                    sight: widget.plannedPlaces[index],
+                                    isFinished: false,
+                                    onClosePressed:
+                                        () {} // На feedback не нужна возможность нажимать крестик
+                                    ),
                               ),
                             ),
                             child: FavoriteSight(
                               sight: widget.plannedPlaces[index],
                               isFinished: false,
                               onClosePressed: () {
-                                context
-                                    .read<PlaceInteractor>()
-                                    .removeFromFavorites(
-                                        widget.plannedPlaces[index]);
-                                setState(() {});
+                                context.read<PlannedPlacesBloc>().add(
+                                      PlannedPlacesEvent.remove(
+                                          placePlanned:
+                                              widget.plannedPlaces[index]),
+                                    );
                               },
                             ),
                           ),
@@ -222,13 +203,12 @@ class _PlannedPlacesState extends State<_PlannedPlaces> {
   }
 }
 
-
 class _VisitedPlaces extends StatefulWidget {
   const _VisitedPlaces({
     Key? key,
-    required this.favoritePlaces,
+    required this.visitedPlaces,
   }) : super(key: key);
-  final List<Place> favoritePlaces;
+  final List<PlaceVisited> visitedPlaces;
   @override
   State<_VisitedPlaces> createState() => _VisitedPlacesState();
 }
@@ -242,7 +222,7 @@ class _VisitedPlacesState extends State<_VisitedPlaces> {
               ? const ClampingScrollPhysics()
               : const BouncingScrollPhysics(),
           shrinkWrap: true,
-          itemCount: widget.favoritePlaces.length,
+          itemCount: widget.visitedPlaces.length,
           itemBuilder: (context, index) {
             return Stack(
               children: [
@@ -286,72 +266,46 @@ class _VisitedPlacesState extends State<_VisitedPlaces> {
                   ),
                 ),
                 Dismissible(
-                  key: ValueKey<int>(widget.favoritePlaces[index].hashCode),
+                  key: ValueKey<int>(widget.visitedPlaces[index].hashCode),
                   direction: DismissDirection.endToStart,
                   onDismissed: (direction) {
-                    context
-                        .read<PlaceInteractor>()
-                        .removeFromFavorites(widget.favoritePlaces[index]);
-                    setState(() {});
+                    context.read<VisitedPlacesBloc>().add(
+                          VisitedPlacesEvent.remove(
+                              visitedPlace: widget.visitedPlaces[index]),
+                        );
                   },
                   child: DragTarget(
                     onAccept: (data) {
                       ValueKey<String> rawData = data as ValueKey<String>;
-
-                      setState(() {
-                        context.read<PlaceInteractor>().favoritePlaces.insert(
-                              context
-                                  .read<PlaceInteractor>()
-                                  .favoritePlaces
-                                  .indexOf(context
-                                      .read<PlaceInteractor>()
-                                      .favoritePlaces[index]),
-                              context
-                                  .read<PlaceInteractor>()
-                                  .favoritePlaces
-                                  .removeAt(
-                                    context
-                                        .read<PlaceInteractor>()
-                                        .favoritePlaces
-                                        .indexWhere(
-                                          (element) =>
-                                              element.name ==
-                                              rawData.value.toString(),
-                                        ),
-                                  ),
-                            );
-                      });
                     },
                     builder: (context, candidateData, rejectedData) {
                       return Column(
                         children: [
                           LongPressDraggable(
                             data: ValueKey<String>(
-                                widget.favoritePlaces[index].name),
+                                widget.visitedPlaces[index].name),
                             axis: Axis.vertical,
                             feedback: Opacity(
                               opacity: 0.8,
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: FavoriteSight(
-                                  sight: widget.favoritePlaces[index],
+                                  sight: widget.visitedPlaces[index],
                                   isFinished: false,
-                                  onClosePressed: () => context
-                                      .read<PlaceInteractor>()
-                                      .removeFromFavorites(
-                                          widget.favoritePlaces[index]),
+                                  onClosePressed:
+                                      () {}, // На feedback не нужна возможность нажимать крестик
                                 ),
                               ),
                             ),
                             child: FavoriteSight(
-                              sight: widget.favoritePlaces[index],
+                              sight: widget.visitedPlaces[index],
                               isFinished: false,
                               onClosePressed: () {
-                                context
-                                    .read<PlaceInteractor>()
-                                    .removeFromFavorites(
-                                        widget.favoritePlaces[index]);
-                                setState(() {});
+                                context.read<VisitedPlacesBloc>().add(
+                                      VisitedPlacesEvent.remove(
+                                          visitedPlace:
+                                              widget.visitedPlaces[index]),
+                                    );
                               },
                             ),
                           ),
@@ -387,9 +341,13 @@ class _FavoriteAppBar extends StatelessWidget implements PreferredSizeWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Material(
             color: themeProvider.cardColor,
-            borderRadius: const BorderRadius.all(Radius.circular(40.0)),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(40.0),
+            ),
             child: TabBar(
-              splashBorderRadius: const BorderRadius.all(Radius.circular(40.0)),
+              splashBorderRadius: const BorderRadius.all(
+                Radius.circular(40.0),
+              ),
               labelPadding:
                   const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               tabs: const [

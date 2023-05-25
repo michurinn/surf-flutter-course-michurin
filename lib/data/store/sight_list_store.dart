@@ -14,7 +14,7 @@ abstract class SightListStoreBase with Store {
 
   @observable
   late ObservableFuture<List<Place>> places;
-
+  //  Получить список мест
   @action
   Future<void> checkPlaces({
     bool isHidden = false,
@@ -27,12 +27,14 @@ abstract class SightListStoreBase with Store {
     }
   }
 
+  //  Получить список отфильтрованных мест
   @action
   Future<void> checkPlacesWithFilter(
       {required PlacesFilterRequestDto filter}) async {
     places = ObservableFuture(_placeRepository.getFilteredPlaces(filter));
   }
 
+  //  Добавить новое место
   @action
   Future<void> addPlace(Place newPlace) async {
     await _placeRepository.addPlace(newPlace);

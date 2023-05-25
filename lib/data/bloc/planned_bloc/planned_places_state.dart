@@ -5,5 +5,5 @@ class PlannedPlacesState with _$PlannedPlacesState {
   //Данные загружаются
   const factory PlannedPlacesState.loading() = _Loading;
   //Данные загружены
-  const factory PlannedPlacesState.loaded({required List<PlacePlanned> favoritePlaces}) = _Loaded;
+  const factory PlannedPlacesState.loaded({required List<Place> favoritePlaces}) = _Loaded;
 }
