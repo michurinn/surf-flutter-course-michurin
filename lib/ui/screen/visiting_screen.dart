@@ -5,17 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/data/bloc/planned_bloc/planned_places_bloc.dart';
 import 'package:places/data/bloc/visited_bloc/bloc/visited_places_bloc.dart';
-import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/domain/place.dart';
-import 'package:places/domain/place_planned.dart';
 import 'package:places/domain/place_visited.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
 import 'package:places/ui/screen/favorite_card.dart';
-import 'package:provider/provider.dart';
 
 // Екран Хочу посетить/Посещённые
 class VisitingScreen extends StatefulWidget {
@@ -277,6 +274,7 @@ class _VisitedPlacesState extends State<_VisitedPlaces> {
                   child: DragTarget(
                     onAccept: (data) {
                       ValueKey<String> rawData = data as ValueKey<String>;
+                      //TODO(me) make it
                     },
                     builder: (context, candidateData, rejectedData) {
                       return Column(

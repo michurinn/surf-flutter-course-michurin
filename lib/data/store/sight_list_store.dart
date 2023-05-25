@@ -13,7 +13,7 @@ abstract class SightListStoreBase with Store {
   final IPlaceRepository _placeRepository;
 
   @observable
-  late ObservableFuture<List<Place>> places;
+  ObservableFuture<List<Place>> places = ObservableFuture(Future.value([]));
   //  Получить список мест
   @action
   Future<void> checkPlaces({

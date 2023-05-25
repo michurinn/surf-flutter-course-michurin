@@ -1,6 +1,5 @@
 // Репозиторий избранных мест
 import 'package:places/domain/place.dart';
-import 'package:places/domain/place_planned.dart';
 
 abstract class IPlannedRepository {
   /// отметить для посещения в будущем

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/data/bloc/planned_bloc/planned_places_bloc.dart';
-import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/store/sight_list_store.dart';
@@ -12,7 +11,6 @@ import 'package:places/domain/place.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
-import 'package:places/ui/dialogs/sight_details_bottom_sheet.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/widgets/sight_card.dart';
@@ -20,7 +18,6 @@ import 'package:places/ui/screen/sight_details.dart';
 import 'package:places/ui/screen/sight_search_screen.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 import 'package:places/domain/error_widget.dart' as error_widget;
-import 'package:provider/provider.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -35,17 +32,16 @@ class SightListScreen extends StatefulWidget {
 
 class _SightListScreenState extends State<SightListScreen> {
   final ScrollController _scrollController = ScrollController();
-  late final ObservableFuture<List<Place>> places;
 
   @override
-  void initState() {
-    super.initState();
-    places = context.read<SightListStore>().places;
-    context.read<SightListStore>().checkPlaces();
+  void didChangeDependencies() async  {
+    super.didChangeDependencies();
+    await context.read<SightListStore>().checkPlaces();
   }
 
   @override
   Widget build(BuildContext context) {
+    ObservableFuture<List<Place>> places = context.watch<SightListStore>().places;
     return Scaffold(
       body: SafeArea(
         child: Padding(

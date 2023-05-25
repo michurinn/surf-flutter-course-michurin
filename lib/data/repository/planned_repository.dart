@@ -1,6 +1,5 @@
 import 'package:places/data/repository/planned_repository_interface.dart';
 import 'package:places/domain/place.dart';
-import 'package:places/domain/place_planned.dart';
 import 'package:places/mocks.dart';
 import 'package:places/utils/distance_measure.dart';
 

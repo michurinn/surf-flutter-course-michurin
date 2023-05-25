@@ -1,8 +1,9 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:places/data/repository/planned_repository_interface.dart';
 import 'package:places/domain/place.dart';
-import 'package:places/domain/place_planned.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 part 'planned_places_event.dart';

@@ -1,6 +1,4 @@
 import 'package:places/data/repository/visited_repository_interface.dart';
-import 'package:places/domain/place.dart';
-import 'package:places/domain/place_planned.dart';
 import 'package:places/domain/place_visited.dart';
 
 /// Репозиторий посещённых мест
