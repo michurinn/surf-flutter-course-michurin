@@ -1,10 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/data/bloc/planned_bloc/planned_places_bloc.dart';
+import 'package:places/data/bloc/visited_bloc/bloc/visited_places_bloc.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/domain/place.dart';
+import 'package:places/domain/place_planned.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
@@ -24,10 +28,6 @@ class VisitingScreen extends StatefulWidget {
 class _VisitingScreenState extends State<VisitingScreen> {
   @override
   Widget build(BuildContext context) {
-    final List<Place> favoritePlaces =
-        context.watch<PlaceInteractor>().getFavoritePlacesSortedByDistance();
-    final List<Place> visitedPlaces =
-        context.watch<PlaceInteractor>().visitedPlaces;
     return DefaultTabController(
         length: 2,
         child: Scaffold(
@@ -39,7 +39,16 @@ class _VisitingScreenState extends State<VisitingScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 30),
-                    _FavoriteSightMocks(favoritePlaces: favoritePlaces),
+                    BlocBuilder<PlannedPlacesBloc, PlannedPlacesState>(
+                      builder: (context, state) {
+                        return state.map(
+                          loaded: (value) => _PlannedPlaces(
+                              plannedPlaces: value.favoritePlaces),
+                          loading: (value) =>
+                              const CircularProgressIndicator.adaptive(),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -48,7 +57,16 @@ class _VisitingScreenState extends State<VisitingScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 30),
-                    _FavoriteSightMocks(favoritePlaces: visitedPlaces),
+                    BlocBuilder<VisitedPlacesBloc, VisitedPlacesState>(
+                      builder: (context, state) {
+                        return state.map(
+                          loaded: (value) => _VisitedPlaces(
+                              favoritePlaces: value.visitedPlaces),
+                          loading: (value) =>
+                              const CircularProgressIndicator.adaptive(),
+                        );
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -58,17 +76,164 @@ class _VisitingScreenState extends State<VisitingScreen> {
   }
 }
 
-class _FavoriteSightMocks extends StatefulWidget {
-  const _FavoriteSightMocks({
+class _PlannedPlaces extends StatefulWidget {
+  const _PlannedPlaces({
+    Key? key,
+    required this.plannedPlaces,
+  }) : super(key: key);
+  final List<PlacePlanned> plannedPlaces;
+  @override
+  State<_PlannedPlaces> createState() => _PlannedPlacesState();
+}
+
+class _PlannedPlacesState extends State<_PlannedPlaces> {
+  @override
+  Widget build(BuildContext context) {
+    return Flexible(
+      child: ListView.builder(
+          physics: Platform.isAndroid
+              ? const ClampingScrollPhysics()
+              : const BouncingScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: widget.plannedPlaces.length,
+          itemBuilder: (context, index) {
+            return Stack(
+              children: [
+                AspectRatio(
+                  aspectRatio: 3 / 2,
+                  child: Card(
+                    child: Container(
+                      alignment: Alignment.centerRight,
+                      decoration: BoxDecoration(
+                        color: context
+                            .watch<SettingsInteractor>()
+                            .appTheme
+                            .errorColor,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              AppAssets.bucket,
+                              color: AppColors.white,
+                              width: 22,
+                              height: 22,
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              AppStrings.delete,
+                              style: AppTypography.small
+                                  .copyWith(color: AppColors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Dismissible(
+                  key: ValueKey<int>(widget.plannedPlaces[index].hashCode),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) {
+                    context
+                        .read<PlannedPlacesBloc>().add(event);
+                        
+                  },
+                  child: DragTarget(
+                    onAccept: (data) {
+                      ValueKey<String> rawData = data as ValueKey<String>;
+
+                      setState(() {
+                        context.read<PlaceInteractor>().favoritePlaces.insert(
+                              context
+                                  .read<PlaceInteractor>()
+                                  .favoritePlaces
+                                  .indexOf(context
+                                      .read<PlaceInteractor>()
+                                      .favoritePlaces[index]),
+                              context
+                                  .read<PlaceInteractor>()
+                                  .favoritePlaces
+                                  .removeAt(
+                                    context
+                                        .read<PlaceInteractor>()
+                                        .favoritePlaces
+                                        .indexWhere(
+                                          (element) =>
+                                              element.name ==
+                                              rawData.value.toString(),
+                                        ),
+                                  ),
+                            );
+                      });
+                    },
+                    builder: (context, candidateData, rejectedData) {
+                      return Column(
+                        children: [
+                          LongPressDraggable(
+                            data: ValueKey<String>(
+                                widget.plannedPlaces[index].name),
+                            axis: Axis.vertical,
+                            feedback: Opacity(
+                              opacity: 0.8,
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.9,
+                                child: FavoriteSight(
+                                  sight: widget.plannedPlaces[index],
+                                  isFinished: false,
+                                  onClosePressed: () => context
+                                      .read<PlaceInteractor>()
+                                      .removeFromFavorites(
+                                          widget.plannedPlaces[index]),
+                                ),
+                              ),
+                            ),
+                            child: FavoriteSight(
+                              sight: widget.plannedPlaces[index],
+                              isFinished: false,
+                              onClosePressed: () {
+                                context
+                                    .read<PlaceInteractor>()
+                                    .removeFromFavorites(
+                                        widget.plannedPlaces[index]);
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          }),
+    );
+  }
+}
+
+
+class _VisitedPlaces extends StatefulWidget {
+  const _VisitedPlaces({
     Key? key,
     required this.favoritePlaces,
   }) : super(key: key);
   final List<Place> favoritePlaces;
   @override
-  State<_FavoriteSightMocks> createState() => _FavoriteSightMocksState();
+  State<_VisitedPlaces> createState() => _VisitedPlacesState();
 }
 
-class _FavoriteSightMocksState extends State<_FavoriteSightMocks> {
+class _VisitedPlacesState extends State<_VisitedPlaces> {
   @override
   Widget build(BuildContext context) {
     return Flexible(

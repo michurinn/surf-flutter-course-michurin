@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/data/bloc/planned_bloc/planned_places_bloc.dart';
+import 'package:places/data/bloc/visited_bloc/bloc/visited_places_bloc.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
+import 'package:places/data/repository/favorite_repository.dart';
+import 'package:places/data/repository/favorite_repository_interface.dart';
 import 'package:places/data/repository/place_repository.dart';
+import 'package:places/data/repository/visited_repository.dart';
+import 'package:places/data/repository/visited_repository_interface.dart';
 import 'package:places/data/store/sight_list_store.dart';
 import 'package:places/res/app_assets.dart';
 import 'package:places/ui/screen/settings_screen.dart';
 import 'package:places/ui/screen/sight_list_screen.dart';
 import 'package:places/ui/screen/visiting_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -41,7 +48,31 @@ class _HomeScreenState extends State<HomeScreen>
           builder: (context, child) => const SightListScreen(),
         ),
         const SizedBox.shrink(), // Map screen
-        const VisitingScreen(),
+        MultiRepositoryProvider(
+          providers: [
+            RepositoryProvider<IFavoriteRepository>(
+              create: (context) => FavoriteRepository(),
+            ),
+            RepositoryProvider<IVisitedRepository>(
+              create: (context) => VisitedRepository(),
+            ),
+          ],
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider<PlannedPlacesBloc>(
+                create: (context) => PlannedPlacesBloc(
+                  favoritePlacesRepository: context.read<IFavoriteRepository>(),
+                ),
+              ),
+              BlocProvider<VisitedPlacesBloc>(
+                create: (context) => VisitedPlacesBloc(
+                  visitedPlacesRepository: context.read<IVisitedRepository>(),
+                ),
+              ),
+            ],
+            child: const VisitingScreen(),
+          ),
+        ),
         const SettingScreen(),
       ]),
       bottomNavigationBar: BottomNavigationBar(
