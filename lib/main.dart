@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/data/bloc/planned_bloc/planned_places_bloc.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/repository/place_repository.dart';
 import 'package:places/data/repository/place_repository_interface.dart';
+import 'package:places/data/repository/planned_repository.dart';
+import 'package:places/data/repository/planned_repository_interface.dart';
 import 'package:places/dio_client.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/theme_provider.dart';
@@ -40,8 +43,19 @@ void main() {
         ChangeNotifierProvider<SettingsInteractor>(
           create: (_) => SettingsInteractor(themeProvider: ThemeProvider()),
         ),
+        // используется в деталке места
+        RepositoryProvider<IPlannedRepository>(
+          create: (context) => FavoriteRepository(),
+        ),
       ],
-      child: const App(),
+      child:
+          // используется в деталке места
+          BlocProvider<PlannedPlacesBloc>(
+        create: (context) => PlannedPlacesBloc(
+          favoritePlacesRepository: context.read<IPlannedRepository>(),
+        )..add(const PlannedPlacesEvent.load()),
+        child: const App(),
+      ),
     ),
   );
 }

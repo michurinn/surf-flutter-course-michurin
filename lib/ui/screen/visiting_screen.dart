@@ -16,7 +16,7 @@ import 'package:places/ui/screen/favorite_card.dart';
 
 // Екран Хочу посетить/Посещённые
 class VisitingScreen extends StatefulWidget {
-  const VisitingScreen({super.key});
+  const VisitingScreen({Key? key}) : super(key: key);
   static const routeName = 'visiting_screen';
 
   @override
@@ -39,10 +39,10 @@ class _VisitingScreenState extends State<VisitingScreen> {
                   const SizedBox(height: 30),
                   BlocBuilder<PlannedPlacesBloc, PlannedPlacesState>(
                     builder: (context, state) {
-                      return state.map(
-                        loaded: (value) =>
-                            _PlannedPlaces(plannedPlaces: value.favoritePlaces),
-                        loading: (value) =>
+                      return state.when(
+                        loaded: (favoritePlaces) =>
+                            _PlannedPlaces(plannedPlaces: favoritePlaces),
+                        loading: () =>
                             const CircularProgressIndicator.adaptive(),
                       );
                     },
@@ -75,17 +75,12 @@ class _VisitingScreenState extends State<VisitingScreen> {
   }
 }
 
-class _PlannedPlaces extends StatefulWidget {
+class _PlannedPlaces extends StatelessWidget {
   const _PlannedPlaces({
     Key? key,
     required this.plannedPlaces,
   }) : super(key: key);
   final List<Place> plannedPlaces;
-  @override
-  State<_PlannedPlaces> createState() => _PlannedPlacesState();
-}
-
-class _PlannedPlacesState extends State<_PlannedPlaces> {
   @override
   Widget build(BuildContext context) {
     return Flexible(
@@ -94,7 +89,7 @@ class _PlannedPlacesState extends State<_PlannedPlaces> {
               ? const ClampingScrollPhysics()
               : const BouncingScrollPhysics(),
           shrinkWrap: true,
-          itemCount: widget.plannedPlaces.length,
+          itemCount: plannedPlaces.length,
           itemBuilder: (context, index) {
             return Stack(
               children: [
@@ -138,35 +133,38 @@ class _PlannedPlacesState extends State<_PlannedPlaces> {
                   ),
                 ),
                 Dismissible(
-                  key: ValueKey<int>(widget.plannedPlaces[index].hashCode),
+                  key: ValueKey<int>(plannedPlaces[index].id),
                   direction: DismissDirection.endToStart,
                   onDismissed: (direction) {
                     context.read<PlannedPlacesBloc>().add(
                           PlannedPlacesEvent.remove(
-                              placePlanned: widget.plannedPlaces[index]),
+                              placePlanned: plannedPlaces[index]),
                         );
                   },
                   child: DragTarget(
+                    key: ValueKey<int>(plannedPlaces[index].id),
                     onAccept: (data) {
                       ValueKey<int> rawData = data as ValueKey<int>;
+                      //TODO(me): Поразбираться, возможно путаница  в функции
                       context.read<PlannedPlacesBloc>().add(
                             PlannedPlacesEvent.swipe(
                                 draggedPlaceId: rawData.value,
-                                targetPlaceId: widget.plannedPlaces[index].id),
+                                targetPlaceId: plannedPlaces[index].id),
                           );
                     },
                     builder: (context, candidateData, rejectedData) {
                       return Column(
                         children: [
                           LongPressDraggable(
-                            data: ValueKey<int>(widget.plannedPlaces[index].id),
+                            key: ValueKey<int>(plannedPlaces[index].id),
+                            data: ValueKey<int>(plannedPlaces[index].id),
                             axis: Axis.vertical,
                             feedback: Opacity(
                               opacity: 0.8,
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: FavoriteSight(
-                                    sight: widget.plannedPlaces[index],
+                                    sight: plannedPlaces[index],
                                     isFinished: false,
                                     onClosePressed:
                                         () {} // На feedback не нужна возможность нажимать крестик
@@ -174,13 +172,12 @@ class _PlannedPlacesState extends State<_PlannedPlaces> {
                               ),
                             ),
                             child: FavoriteSight(
-                              sight: widget.plannedPlaces[index],
+                              sight: plannedPlaces[index],
                               isFinished: false,
                               onClosePressed: () {
                                 context.read<PlannedPlacesBloc>().add(
                                       PlannedPlacesEvent.remove(
-                                          placePlanned:
-                                              widget.plannedPlaces[index]),
+                                          placePlanned: plannedPlaces[index]),
                                     );
                               },
                             ),
@@ -200,17 +197,12 @@ class _PlannedPlacesState extends State<_PlannedPlaces> {
   }
 }
 
-class _VisitedPlaces extends StatefulWidget {
+class _VisitedPlaces extends StatelessWidget {
   const _VisitedPlaces({
     Key? key,
     required this.visitedPlaces,
   }) : super(key: key);
   final List<PlaceVisited> visitedPlaces;
-  @override
-  State<_VisitedPlaces> createState() => _VisitedPlacesState();
-}
-
-class _VisitedPlacesState extends State<_VisitedPlaces> {
   @override
   Widget build(BuildContext context) {
     return Flexible(
@@ -219,7 +211,7 @@ class _VisitedPlacesState extends State<_VisitedPlaces> {
               ? const ClampingScrollPhysics()
               : const BouncingScrollPhysics(),
           shrinkWrap: true,
-          itemCount: widget.visitedPlaces.length,
+          itemCount: visitedPlaces.length,
           itemBuilder: (context, index) {
             return Stack(
               children: [
@@ -263,32 +255,35 @@ class _VisitedPlacesState extends State<_VisitedPlaces> {
                   ),
                 ),
                 Dismissible(
-                  key: ValueKey<int>(widget.visitedPlaces[index].hashCode),
+                  key: ValueKey<int>(visitedPlaces[index].hashCode),
                   direction: DismissDirection.endToStart,
                   onDismissed: (direction) {
                     context.read<VisitedPlacesBloc>().add(
                           VisitedPlacesEvent.remove(
-                              visitedPlace: widget.visitedPlaces[index]),
+                              visitedPlace: visitedPlaces[index]),
                         );
                   },
                   child: DragTarget(
                     onAccept: (data) {
-                      ValueKey<String> rawData = data as ValueKey<String>;
-                      //TODO(me) make it
+                      ValueKey<int> rawData = data as ValueKey<int>;
+                      context.read<VisitedPlacesBloc>().add(
+                            VisitedPlacesEvent.swipe(
+                                draggedPlaceId: rawData.value,
+                                targetPlaceId: visitedPlaces[index].id),
+                          );
                     },
                     builder: (context, candidateData, rejectedData) {
                       return Column(
                         children: [
                           LongPressDraggable(
-                            data: ValueKey<String>(
-                                widget.visitedPlaces[index].name),
+                            data: ValueKey<int>(visitedPlaces[index].id),
                             axis: Axis.vertical,
                             feedback: Opacity(
                               opacity: 0.8,
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 child: FavoriteSight(
-                                  sight: widget.visitedPlaces[index],
+                                  sight: visitedPlaces[index],
                                   isFinished: false,
                                   onClosePressed:
                                       () {}, // На feedback не нужна возможность нажимать крестик
@@ -296,13 +291,12 @@ class _VisitedPlacesState extends State<_VisitedPlaces> {
                               ),
                             ),
                             child: FavoriteSight(
-                              sight: widget.visitedPlaces[index],
+                              sight: visitedPlaces[index],
                               isFinished: false,
                               onClosePressed: () {
                                 context.read<VisitedPlacesBloc>().add(
                                       VisitedPlacesEvent.remove(
-                                          visitedPlace:
-                                              widget.visitedPlaces[index]),
+                                          visitedPlace: visitedPlaces[index]),
                                     );
                               },
                             ),

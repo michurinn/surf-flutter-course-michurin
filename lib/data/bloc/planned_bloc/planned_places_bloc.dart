@@ -33,25 +33,35 @@ class PlannedPlacesBloc extends Bloc<PlannedPlacesEvent, PlannedPlacesState> {
   Future<void> load(_load event, Emitter<PlannedPlacesState> emitter) async {
     final responseFavorite =
         await _favoritePlacesRepository.getFavoritePlacesSortedByDistance();
-    emitter(PlannedPlacesState.loaded(favoritePlaces: responseFavorite));
+    emitter(
+      PlannedPlacesState.loaded(
+        favoritePlaces: List.unmodifiable(responseFavorite),
+      ),
+    );
   }
 
   Future<void> addPlace(_Add event, Emitter<PlannedPlacesState> emitter) async {
     await _favoritePlacesRepository.markFavorite(event.placePlanned);
-    add(const PlannedPlacesEvent.load());
+    add(
+      const PlannedPlacesEvent.load(),
+    );
   }
 
   Future<void> removePlace(
       _Remove event, Emitter<PlannedPlacesState> emitter) async {
     await _favoritePlacesRepository.unmarkFavorite(event.placePlanned);
-    add(const PlannedPlacesEvent.load());
+    add(
+      const PlannedPlacesEvent.load(),
+    );
   }
 
   Future<void> swipePlaces(
       _Swipe event, Emitter<PlannedPlacesState> emitter) async {
+    var res = await _favoritePlacesRepository.getFavoritePlaces();
     await _favoritePlacesRepository.swipe(
         draggedPlaceId: event.draggedPlaceId,
         targetPlaceId: event.targetPlaceId);
+    var res2 = await _favoritePlacesRepository.getFavoritePlaces();
     add(const PlannedPlacesEvent.load());
   }
 }

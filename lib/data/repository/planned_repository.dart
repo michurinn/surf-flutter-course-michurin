@@ -54,4 +54,10 @@ class FavoriteRepository implements IPlannedRepository {
         ? false
         : true;
   }
+
+  @override
+  Future<List<Place>> getFavoritePlaces() {
+    final result = _favoritePlaces;
+    return Future.value(result);
+  }
 }

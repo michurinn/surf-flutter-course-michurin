@@ -718,8 +718,8 @@ class __$$_LoadingCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_Loading implements _Loading {
-  const _$_Loading();
+class _$_Loading extends _Loading {
+  const _$_Loading() : super._();
 
   @override
   String toString() {
@@ -798,8 +798,9 @@ class _$_Loading implements _Loading {
   }
 }
 
-abstract class _Loading implements PlannedPlacesState {
+abstract class _Loading extends PlannedPlacesState {
   const factory _Loading() = _$_Loading;
+  const _Loading._() : super._();
 }
 
 /// @nodoc
@@ -833,9 +834,10 @@ class __$$_LoadedCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_Loaded implements _Loaded {
+class _$_Loaded extends _Loaded {
   const _$_Loaded({required final List<Place> favoritePlaces})
-      : _favoritePlaces = favoritePlaces;
+      : _favoritePlaces = favoritePlaces,
+        super._();
 
   final List<Place> _favoritePlaces;
   @override
@@ -931,9 +933,10 @@ class _$_Loaded implements _Loaded {
   }
 }
 
-abstract class _Loaded implements PlannedPlacesState {
+abstract class _Loaded extends PlannedPlacesState {
   const factory _Loaded({required final List<Place> favoritePlaces}) =
       _$_Loaded;
+  const _Loaded._() : super._();
 
   List<Place> get favoritePlaces;
   @JsonKey(ignore: true)

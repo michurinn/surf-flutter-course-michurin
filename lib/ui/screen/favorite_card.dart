@@ -142,7 +142,8 @@ class FavoriteSight extends StatelessWidget {
                           ? const Text("Цель достигнута на 12 окт. 2020",
                               style: AppTypography.small,
                               textAlign: TextAlign.start)
-                          : const Text("Запланировано на 12 окт. 2020",
+                          // TODO(me): "Запланировано на 12 окт. 2020",
+                          : Text("${sight.id}",
                               style: AppTypography.smallGreen,
                               textAlign: TextAlign.start),
                     ),

@@ -45,9 +45,6 @@ class _HomeScreenState extends State<HomeScreen>
       // Используется в SightListScreen() и VisitingScreen()
       body: MultiRepositoryProvider(
         providers: [
-          RepositoryProvider<IPlannedRepository>(
-            create: (context) => FavoriteRepository(),
-          ),
           RepositoryProvider<IVisitedRepository>(
             create: (context) => VisitedRepository(),
           ),
@@ -55,11 +52,6 @@ class _HomeScreenState extends State<HomeScreen>
         // Используется в SightListScreen() и VisitingScreen()
         child: MultiBlocProvider(
           providers: [
-            BlocProvider<PlannedPlacesBloc>(
-              create: (context) => PlannedPlacesBloc(
-                favoritePlacesRepository: context.read<IPlannedRepository>(),
-              )..add(const PlannedPlacesEvent.load()),
-            ),
             BlocProvider<VisitedPlacesBloc>(
               create: (context) => VisitedPlacesBloc(
                 visitedPlacesRepository: context.read<IVisitedRepository>(),
