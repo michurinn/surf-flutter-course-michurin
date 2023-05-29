@@ -145,7 +145,6 @@ class _PlannedPlaces extends StatelessWidget {
                     key: ValueKey<int>(plannedPlaces[index].id),
                     onAccept: (data) {
                       ValueKey<int> rawData = data as ValueKey<int>;
-                      //TODO(me): Поразбираться, возможно путаница  в функции
                       context.read<PlannedPlacesBloc>().add(
                             PlannedPlacesEvent.swipe(
                                 draggedPlaceId: rawData.value,

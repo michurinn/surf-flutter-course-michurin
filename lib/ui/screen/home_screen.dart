@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/data/bloc/planned_bloc/planned_places_bloc.dart';
 import 'package:places/data/bloc/visited_bloc/bloc/visited_places_bloc.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/repository/place_repository_interface.dart';
-import 'package:places/data/repository/planned_repository.dart';
-import 'package:places/data/repository/planned_repository_interface.dart';
 import 'package:places/data/repository/visited_repository.dart';
 import 'package:places/data/repository/visited_repository_interface.dart';
 import 'package:places/data/store/sight_list_store.dart';

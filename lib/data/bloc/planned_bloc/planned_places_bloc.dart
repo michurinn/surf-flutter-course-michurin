@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: library_private_types_in_public_api, depend_on_referenced_packages
 
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -57,11 +57,9 @@ class PlannedPlacesBloc extends Bloc<PlannedPlacesEvent, PlannedPlacesState> {
 
   Future<void> swipePlaces(
       _Swipe event, Emitter<PlannedPlacesState> emitter) async {
-    var res = await _favoritePlacesRepository.getFavoritePlaces();
     await _favoritePlacesRepository.swipe(
         draggedPlaceId: event.draggedPlaceId,
         targetPlaceId: event.targetPlaceId);
-    var res2 = await _favoritePlacesRepository.getFavoritePlaces();
     add(const PlannedPlacesEvent.load());
   }
 }

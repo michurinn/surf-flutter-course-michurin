@@ -39,12 +39,20 @@ class FavoriteRepository implements IPlannedRepository {
   @override
   Future<void> swipe(
       {required int draggedPlaceId, required int targetPlaceId}) async {
-    _favoritePlaces.insert(
-      _favoritePlaces.indexWhere((element) => element.id == targetPlaceId),
-      _favoritePlaces.removeAt(
-        _favoritePlaces.indexWhere((element) => element.id == draggedPlaceId),
-      ),
-    );
+    // Проверка содержатся ли елементы в списке
+    if (_favoritePlaces.indexWhere((element) => element.id == targetPlaceId) !=
+            -1 &&
+        _favoritePlaces.indexWhere((element) => element.id == draggedPlaceId) !=
+            -1) {
+      _favoritePlaces.insert(
+        _favoritePlaces.indexWhere((element) => element.id == targetPlaceId),
+        _favoritePlaces.removeAt(
+          _favoritePlaces.indexWhere((element) => element.id == draggedPlaceId),
+        ),
+      );
+    } else {
+      return;
+    }
   }
 
   /// Проверить есть ли место в Запланированных
