@@ -13,7 +13,7 @@ class DioClient implements IHttpClient {
     ..options.receiveTimeout = const Duration(milliseconds: 5000)
     ..options.sendTimeout = const Duration(milliseconds: 5000)
     ..options.responseType = ResponseType.json
-    ..interceptors.add(LogInterceptor(requestBody: true, responseHeader: false, responseBody: false));
+    ..interceptors.add(LogInterceptor(requestBody: false, responseHeader: false, responseBody: false));
 
   void testGet() async {
     var d = Dio()

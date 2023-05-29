@@ -243,7 +243,7 @@ class _FilterScreenState extends State<FilterScreen> {
               child: OutlinedButton(
                 onPressed: () {
                   Navigator.pop(context,
-                      context.watch<SearchInteractor>().filteredPlaces);
+                      context.read<SearchInteractor>().filteredPlaces);
                 },
                 style: OutlinedButton.styleFrom(
                   shape: const RoundedRectangleBorder(

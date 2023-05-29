@@ -34,6 +34,15 @@ mixin _$SightListStore on SightListStoreBase, Store {
         .run(() => super.checkPlaces(isHidden: isHidden));
   }
 
+  late final _$checkPlacesWithFilterAsyncAction =
+      AsyncAction('SightListStoreBase.checkPlacesWithFilter', context: context);
+
+  @override
+  Future<void> checkPlacesWithFilter({required PlacesFilterRequestDto filter}) {
+    return _$checkPlacesWithFilterAsyncAction
+        .run(() => super.checkPlacesWithFilter(filter: filter));
+  }
+
   late final _$addPlaceAsyncAction =
       AsyncAction('SightListStoreBase.addPlace', context: context);
 

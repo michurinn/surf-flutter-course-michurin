@@ -1,13 +1,1 @@
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    PlaceRepository(httpClient: DioClient()).getPlacesList().then((value) {
-      if (value != null) {
-        setState(() {
-          places = value;
-        });
-      }
-    });
-  }
-
-
+// TODO: Dragabble droppable widgets

@@ -2,7 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:places/data/interactor/place_interactor.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:places/data/bloc/planned_bloc/planned_places_bloc.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/store/sight_list_store.dart';
@@ -10,7 +11,6 @@ import 'package:places/domain/place.dart';
 import 'package:places/res/app_colors.dart';
 import 'package:places/res/app_strings.dart';
 import 'package:places/res/app_typography.dart';
-import 'package:places/ui/dialogs/sight_details_bottom_sheet.dart';
 import 'package:places/ui/screen/add_sight_screen.dart';
 import 'package:places/ui/screen/filters_screen.dart';
 import 'package:places/ui/screen/widgets/sight_card.dart';
@@ -18,7 +18,6 @@ import 'package:places/ui/screen/sight_details.dart';
 import 'package:places/ui/screen/sight_search_screen.dart';
 import 'package:places/ui/screen/widgets/search_bar.dart';
 import 'package:places/domain/error_widget.dart' as error_widget;
-import 'package:provider/provider.dart';
 import 'package:mobx/mobx.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -33,17 +32,16 @@ class SightListScreen extends StatefulWidget {
 
 class _SightListScreenState extends State<SightListScreen> {
   final ScrollController _scrollController = ScrollController();
-  late final ObservableFuture<List<Place>> places;
 
   @override
-  void initState() {
-    super.initState();
-    places = context.read<SightListStore>().places;
-    context.read<SightListStore>().checkPlaces();
+  void didChangeDependencies() async  {
+    super.didChangeDependencies();
+    await context.read<SightListStore>().checkPlaces();
   }
 
   @override
   Widget build(BuildContext context) {
+    ObservableFuture<List<Place>> places = context.watch<SightListStore>().places;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -314,10 +312,8 @@ class _ListOfPlacesLandScapeState extends State<_ListOfPlacesLandScape> {
                         height: 300 * 0.8,
                         child: SightCard(
                           sight: element,
-                          isFavorite: context
-                              .watch<PlaceInteractor>()
-                              .favoritePlaces
-                              .contains(element),
+                          isFavorite:
+                              false, // No possible to tap in 'feedback' view
                           onHeartTap: () {
                             // No possible to tap in 'feedback' view
                           },
@@ -327,23 +323,50 @@ class _ListOfPlacesLandScapeState extends State<_ListOfPlacesLandScape> {
                         ),
                       ),
                     ),
-                    child: SightCard(
-                      onHeartTap: () => context
-                              .watch<PlaceInteractor>()
-                              .favoritePlaces
-                              .contains(element)
-                          ? context
-                              .read<PlaceInteractor>()
-                              .removeFromFavorites(element)
-                          : context
-                              .read<PlaceInteractor>()
-                              .addToFavorites(element),
-                      isFavorite: context
-                          .watch<PlaceInteractor>()
-                          .favoritePlaces
-                          .contains(element),
-                      sight: element,
-                      onTap: () => showDetailsBottomSheet(context, element),
+                    child: BlocBuilder<PlannedPlacesBloc, PlannedPlacesState>(
+                      builder: (context, state) {
+                        return state.map(
+                          loaded: (value) => SightCard(
+                            sight: element,
+                            onTap: () => showModalBottomSheet(
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(20),
+                                  topRight: Radius.circular(20),
+                                ),
+                              ),
+                              isScrollControlled: true,
+                              useSafeArea: true,
+                              context: context,
+                              builder: (context) => DraggableScrollableSheet(
+                                expand: false,
+                                snap: true,
+                                maxChildSize: 0.95,
+                                minChildSize: 0.9,
+                                initialChildSize: 0.95,
+                                builder: (context, scrollController) =>
+                                    SightDetails(
+                                  sight: element,
+                                  scrollController: scrollController,
+                                ),
+                              ),
+                            ),
+                            isFavorite: value.favoritePlaces.contains(element),
+                            onHeartTap: () =>
+                                value.favoritePlaces.contains(element)
+                                    ? context.read<PlannedPlacesBloc>().add(
+                                          PlannedPlacesEvent.remove(
+                                              placePlanned: element),
+                                        )
+                                    : context.read<PlannedPlacesBloc>().add(
+                                          PlannedPlacesEvent.add(
+                                              placePlanned: element),
+                                        ),
+                          ),
+                          loading: (_) =>
+                              const CircularProgressIndicator.adaptive(),
+                        );
+                      },
                     ),
                   );
                 },
@@ -420,10 +443,8 @@ class _ListOfPlacesPortraitState extends State<_ListOfPlacesPortrait> {
                       width: MediaQuery.of(context).size.width * 0.9,
                       child: SightCard(
                         sight: places[index],
-                        isFavorite: context
-                            .watch<PlaceInteractor>()
-                            .favoritePlaces
-                            .contains(places[index]),
+                        isFavorite:
+                            false, // No possible to tap in 'feedback' view
                         onHeartTap: () {
                           // No possible to tap in 'feedback' view
                         },
@@ -433,44 +454,51 @@ class _ListOfPlacesPortraitState extends State<_ListOfPlacesPortrait> {
                       ),
                     ),
                   ),
-                  child: SightCard(
-                    sight: places[index],
-                    onTap: () => showModalBottomSheet(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        ),
-                      ),
-                      isScrollControlled: true,
-                      useSafeArea: true,
-                      context: context,
-                      builder: (context) => DraggableScrollableSheet(
-                        expand: false,
-                        snap: true,
-                        maxChildSize: 0.95,
-                        minChildSize: 0.9,
-                        initialChildSize: 0.95,
-                        builder: (context, scrollController) => SightDetails(
+                  child: BlocBuilder<PlannedPlacesBloc, PlannedPlacesState>(
+                    builder: (context, state) {
+                      return state.map(
+                        loaded: (value) => SightCard(
                           sight: places[index],
-                          scrollController: scrollController,
+                          onTap: () => showModalBottomSheet(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              ),
+                            ),
+                            isScrollControlled: true,
+                            useSafeArea: true,
+                            context: context,
+                            builder: (context) => DraggableScrollableSheet(
+                              expand: false,
+                              snap: true,
+                              maxChildSize: 0.95,
+                              minChildSize: 0.9,
+                              initialChildSize: 0.95,
+                              builder: (context, scrollController) =>
+                                  SightDetails(
+                                sight: places[index],
+                                scrollController: scrollController,
+                              ),
+                            ),
+                          ),
+                          isFavorite:
+                              value.favoritePlaces.contains(places[index]),
+                          onHeartTap: () =>
+                              value.favoritePlaces.contains(places[index])
+                                  ? context.read<PlannedPlacesBloc>().add(
+                                        PlannedPlacesEvent.remove(
+                                            placePlanned: places[index]),
+                                      )
+                                  : context.read<PlannedPlacesBloc>().add(
+                                        PlannedPlacesEvent.add(
+                                            placePlanned: places[index]),
+                                      ),
                         ),
-                      ),
-                    ),
-                    isFavorite: context
-                        .watch<PlaceInteractor>()
-                        .favoritePlaces
-                        .contains(places[index]),
-                    onHeartTap: () => context
-                            .read<PlaceInteractor>()
-                            .favoritePlaces
-                            .contains(places[index])
-                        ? context
-                            .read<PlaceInteractor>()
-                            .removeFromFavorites(places[index])
-                        : context
-                            .read<PlaceInteractor>()
-                            .addToFavorites(places[index]),
+                        loading: (_) =>
+                            const CircularProgressIndicator.adaptive(),
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(height: 20),
