@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/data/bloc/visited_bloc/bloc/visited_places_bloc.dart';
@@ -23,9 +25,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late StreamController<int> _tabIndexController;
   @override
   void initState() {
     _tabController = TabController(length: 4, vsync: this);
+    _tabIndexController = StreamController<int>();
+    _tabController.addListener(() {
+      _tabIndexController.add(_tabController.index);
+    });
     super.initState();
   }
 
@@ -33,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen>
   void dispose() {
     super.dispose();
     _tabController.dispose();
+    _tabIndexController.close();
   }
 
   @override
@@ -67,46 +75,52 @@ class _HomeScreenState extends State<HomeScreen>
           ]),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: _tabController.animateTo,
-        currentIndex: _tabController.index,
-        type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.list_alt),
-            activeIcon: SvgPicture.asset(
-              AppAssets.listFilled,
-              color: themeProvider.bottomNavBarSelectedItemColor,
-            ),
-            label: 'List of Places',
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.map_outlined),
-            activeIcon: SvgPicture.asset(
-              AppAssets.mapFilled,
-              color: themeProvider.bottomNavBarSelectedItemColor,
-            ),
-            label: 'Map',
-          ),
-          BottomNavigationBarItem(
-            icon: SvgPicture.asset(
-              AppAssets.like,
-              color: themeProvider.bottomNavBarUnselectedItemColor,
-            ),
-            activeIcon: SvgPicture.asset(
-              AppAssets.likeFilled,
-              color: themeProvider.bottomNavBarSelectedItemColor,
-            ),
-            label: 'Favorite places',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            activeIcon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
+      bottomNavigationBar: StreamBuilder<int>(
+        initialData: 0,
+        stream: _tabIndexController.stream,
+        builder: (context, snapshot) {
+          return BottomNavigationBar(
+            onTap: _tabController.animateTo,
+            currentIndex: snapshot.data?? 0,
+            type: BottomNavigationBarType.fixed,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            items: [
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.list_alt),
+                activeIcon: SvgPicture.asset(
+                  AppAssets.listFilled,
+                  color: themeProvider.bottomNavBarSelectedItemColor,
+                ),
+                label: 'List of Places',
+              ),
+              BottomNavigationBarItem(
+                icon: const Icon(Icons.map_outlined),
+                activeIcon: SvgPicture.asset(
+                  AppAssets.mapFilled,
+                  color: themeProvider.bottomNavBarSelectedItemColor,
+                ),
+                label: 'Map',
+              ),
+              BottomNavigationBarItem(
+                icon: SvgPicture.asset(
+                  AppAssets.like,
+                  color: themeProvider.bottomNavBarUnselectedItemColor,
+                ),
+                activeIcon: SvgPicture.asset(
+                  AppAssets.likeFilled,
+                  color: themeProvider.bottomNavBarSelectedItemColor,
+                ),
+                label: 'Favorite places',
+              ),
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.settings_outlined),
+                activeIcon: Icon(Icons.settings),
+                label: 'Settings',
+              ),
+            ],
+          );
+        }
       ),
     );
   }
